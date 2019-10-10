@@ -1,4 +1,4 @@
-<form class="mb-4">
+<form class="card px-3 py-3 mb-4">
     <div class="row">
         <div class="col-12">
             <div class="form-group">
@@ -24,7 +24,11 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">Origin</span>
                     </div>
-                    <select id="origin" name="origin[]" class="form-control" multiple></select>
+                    <select id="origin" name="origin[]" class="form-control" multiple>
+                        @foreach ($origins as $origin)
+                            <option value="{{ $origin->id }}" selected>{{ $origin->name }}</option>
+                        @endforeach
+                    </select>
                 </div>
 
                 <div class="input-group mb-3">

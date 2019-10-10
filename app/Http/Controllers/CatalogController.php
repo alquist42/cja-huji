@@ -13,6 +13,7 @@ class CatalogController extends Controller
     {
 
         $page = $request->query('page');
+        $origins = [];
 
 //        $search = $request->query('search');
         $origin = $request->query('origin');
@@ -22,12 +23,13 @@ class CatalogController extends Controller
             $items = Item::whereHas('origins', function($q) use ($origin) {
                 $q->whereIn('id', $origin);
             })->get();
+            $origins = Origin::select(['name', 'id'])->find($origin);
         }
         else {
-            $items = Item::paginate(30)->appends($page);
+            $items = Item::paginate(20)->appends($page);
         }
 
-        return view('index', [ "items" => $items ]);
+        return view('index', [ "items" => $items , "origins" => $origins ]);
     }
 
     public function show(Item $item)

@@ -63,6 +63,7 @@ class Items implements Importable
                 $this->errors[$key] = $e->errors();
             }
         });
+        Item::fixTree();
     }
     /**
      * @param $item

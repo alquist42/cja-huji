@@ -17,19 +17,21 @@
       <div class="col-md-8">
         <div class="card">
           <div class="card-body" v-if="items.length">
-            <template v-for="(item, i) in items">
-              <div class="col-xl-3 col-lg-6 col-md-4 col-sm-12 col-12 mb-4" :key="i">
+            <div class="row">
+              <template v-for="(item, i) in items">
+                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 mb-4" :key="i">
 
-                <div class="card">
-                  <img class="card-img-top" src="http://placeimg.com/640/480/arch" alt="Card image cap">
-                  <div class="card-body">
-                    <h5 class="card-title">{{ item.name }}</h5>
-                    <p class="card-text">{{ item.description }}</p>
+                  <div class="card">
+                    <img class="card-img-top" src="http://placeimg.com/640/480/arch" alt="Card image cap">
+                    <div class="card-body">
+                      <h5 class="card-title">{{ item.name }}</h5>
+                      <p class="card-text">{{ item.description }}</p>
+                    </div>
                   </div>
-                </div>
 
-               </div>
-            </template>
+                 </div>
+              </template>
+            </div>
           </div>
         </div>
       </div>
