@@ -6,10 +6,10 @@
 @import "variables";
 
 // Bootstrap
-@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
+@import "~bootstrap/scss/bootstrap";
 
 // select2
-@import "node_modules/select2/dist/css/select2";
+@import "~select2/dist/css/select2";
 
 .form-search {
     margin-bottom: 15px;

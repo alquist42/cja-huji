@@ -16,6 +16,9 @@ class AppServiceProvider extends ServiceProvider
     {
         //
         Schema::defaultStringLength(191);
+        $this->commands([
+            \App\Console\Commands\ImportItems::class
+        ]);
     }
 
     /**

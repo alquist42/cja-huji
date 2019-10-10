@@ -1,11 +1,13 @@
 <?php
 
 use App\User;
-use App\Models\Tag;
-use App\Models\Post;
+
 use Faker\Generator;
-use App\Models\Comment;
-use App\Models\Category;
+
+use App\Models\Origin;
+use App\Models\Subject;
+use App\Models\Image;
+use App\Models\Item;
 
 $factory->define(User::class, function (Generator $faker) {
     static $password;
@@ -18,32 +20,46 @@ $factory->define(User::class, function (Generator $faker) {
     ];
 });
 
-$factory->define(Post::class, function (Generator $faker) {
+$factory->define(Item::class, function (Generator $faker) {
     return [
-        'title'        => $faker->sentence,
-        'body'         => $faker->paragraph(30),
-        'user_id'      => rand(1, 10),
-        'category_id'  => rand(1, 10),
-        'is_published' => rand(0, 1)
+        'external_id' => $faker->word,
+        'name' => $faker->name,
+        'category' => $faker->word,
+        'description' => $faker->sentence,
+        'lat' => rand(1, 10),
+        'lon' => rand(1, 10),
+        'order'  => rand(1, 10)
     ];
 });
 
-$factory->define(Category::class, function (Generator $faker) {
+$factory->define(Image::class, function (Generator $faker) {
     return [
-        'name' => $faker->word
+        'name' => $faker->word,
+        'description' => $faker->sentence,
+        'order'  => rand(1, 10),
+        'original' => $faker->imageUrl(),
+        'big' => $faker->imageUrl(),
+        'medium'  => $faker->imageUrl(),
+        'small' => $faker->imageUrl(),
+        'publish_state' => rand(1, 2),
+        'category' => $faker->word,
+        'copyright'  => $faker->word,
+        'item_id' => rand(1, 10)
     ];
 });
 
-$factory->define(Tag::class, function (Generator $faker) {
+$factory->define(Origin::class, function (Generator $faker) {
     return [
-        'name' => $faker->word
+        'name' => $faker->word,
+        'description' => $faker->sentence,
+        'order'  => rand(1, 10)
     ];
 });
 
-$factory->define(Comment::class, function (Generator $faker) {
+$factory->define(Subject::class, function (Generator $faker) {
     return [
-        'user_id' => rand(1, 10),
-        'post_id' => rand(1, 25),
-        'body'    => $faker->paragraph
+        'name' => $faker->word,
+        'description' => $faker->sentence,
+        'order'  => rand(1, 10)
     ];
 });

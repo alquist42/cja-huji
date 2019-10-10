@@ -27,10 +27,10 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $posts      = Post::count();
-        $comments   = Comment::count();
-        $tags       = Tag::count();
-        $categories = Category::count();
+        $posts      = 0;
+        $comments   = 0;
+        $tags       = 0;
+        $categories = 0;
 
         return view('home', get_defined_vars());
     }
