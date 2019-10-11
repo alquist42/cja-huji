@@ -14,14 +14,18 @@
 
             <div class="row">
                 @forelse ($items as $item)
+
                     <div class="col-xl-3 col-lg-3 col-md-4 col-sm-12 col-12 mb-4">
-                        <div class="card">
-                            <img class="card-img-top" src="http://placeimg.com/640/480/arch" alt="Card image cap">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ str_limit($item->name, $limit = 50, $end = '...') }}</h5>
+                        <a href="/catalog/items/{{ $item->id }}">
+                            <div class="card">
+                                <img class="card-img-top image-fluid" src="http://placeimg.com/640/480/arch" alt="Card image cap">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ str_limit($item->name, $limit = 50, $end = '...') }}</h5>
+                                </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
+
                 @empty
                     <div class="panel panel-default">
                         <div class="panel-heading">Not Found!!</div>

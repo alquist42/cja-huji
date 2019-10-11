@@ -7,6 +7,16 @@ const routes = {
       path: '/',
       component: Browse,
       name: 'browse'
+    },
+    {
+      path: '/:type',
+      component: Browse,
+      name: 'browse'
+    },
+    {
+      path: '/:type/:id',
+      component: Browse,
+      name: 'browse'
     }
   ]
 };

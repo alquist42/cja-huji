@@ -14,6 +14,7 @@
 Route::get('/', 'WelcomeController@index');
 Route::get('/{project}', 'HomeController@index');
 Route::get('/{project}/items', 'CatalogController@index');
+Route::get('/{project}/items/{item}', 'CatalogController@show');
 
 /* Vue.js SPA */
 Route::get('/{project}/browse/{any?}', function ($project) {

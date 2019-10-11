@@ -19,7 +19,7 @@
           <div class="card-body" v-if="items.length">
             <div class="row">
               <template v-for="(item, i) in items">
-                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 mb-4" :key="i">
+                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 mb-4" :key="i" @click="openItem(item.id)">
 
                   <div class="card">
                     <img class="card-img-top" src="http://placeimg.com/640/480/arch" alt="Card image cap">
@@ -56,10 +56,14 @@
     methods: {
       async nodeSelect(node, isSelected) {
 
-        const { data } = await axios.get("/api/items?origin=" + node.data.id)
+        const { data } = await axios.get(`/api/items?${this.type}=${node.data.id}`)
 
         this.items = data.data
       },
+
+      openItem (id) {
+        window.open(`/catalog/items/${id}`, '_blank')
+      }
     },
 
     created () {
@@ -68,7 +72,10 @@
     },
 
     async mounted () {
-      const { data } = await axios.get("/api/origins?as_tree=1")
+      this.type = this.$route.params.type
+      const { data } = await axios.get(`/api/${this.type}s?as_tree=1`)
+
+      // TODO: select node by id
       this.treeData = data
     }
 

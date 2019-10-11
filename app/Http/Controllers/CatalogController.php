@@ -32,9 +32,9 @@ class CatalogController extends Controller
         return view('index', [ "items" => $items , "origins" => $origins ]);
     }
 
-    public function show(Item $item)
+    public function show($project, $id)
     {
-        $item = $item->load(['images']);
+        $item = Item::with(['images'])->find($id);
 
         return view('item', compact('item'));
     }
