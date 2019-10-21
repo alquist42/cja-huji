@@ -4,37 +4,69 @@ namespace App\Http\Controllers;
 
 use App\Models\Item;
 use App\Models\Origin;
-use App\Models\Post;
 use Illuminate\Http\Request;
 
 class CatalogController extends Controller
 {
-    public function index(Request $request)
+    /**
+     * Allowed Taxonomy filter
+     *
+     * @var array
+     */
+    protected $allowed_filters = [
+        'subjects',
+        'origins',
+        'collections',
+        'communities',
+        'congregations',
+        'historical_origins',
+        'locations',
+        'makers',
+        'professions',
+        'objects',
+        'periods',
+        'photographers',
+        'schools',
+    ];
+
+    public function index(Request $request, $project )
     {
 
-        $page = $request->query('page');
-        $origins = [];
+        $page = $request->get('page');
+        $search = $request->get('search');
 
-//        $search = $request->query('search');
-        $origin = $request->query('origin');
+        $filters = collect($request->only($this->allowed_filters))->filter(function($value) {
+            return null !== $value;
+        })->map(function($value) {
+            return is_array($value) ? $value : [$value];
+        })->toArray();
 
+        $query = Item::query();
 
-        if (!empty($origin)) {
-            $items = Item::whereHas('origins', function($q) use ($origin) {
-                $q->whereIn('id', $origin);
-            })->get();
-            $origins = Origin::select(['name', 'id'])->find($origin);
+        foreach ($filters as $type => $values) {
+            $query->orWhereHas($type, function($q) use ($type, $values) {
+                $q->whereIn($type . '.id', $values);
+            });
         }
-        else {
-            $items = Item::paginate(20)->appends($page);
+
+        if (!empty($search)) {
+            $query->where('name', 'LIKE', "%$search%");
         }
 
-        return view('index', [ "items" => $items , "origins" => $origins ]);
+        $items = $query->paginate(20)->appends($page);
+
+        $selected = [];
+        foreach ($filters as $type => $values) {
+            $model = '\\App\\Models\\Taxonomy\\' . ucfirst(substr_replace($type ,"",-1));
+            $selected[$type] = $model::select("id", "name")->find($values);
+        }
+
+        return view('index', [ "items" => $items , "filters" => $selected ]);
     }
 
     public function show($project, $id)
     {
-        $item = Item::with(['images'])->find($id);
+        $item = Item::with(['images', 'locations', 'origins', 'subjects', 'images.locations', 'images.origins', 'images.subjects', 'children'])->find($id);
 
         return view('item', compact('item'));
     }

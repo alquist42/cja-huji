@@ -1,7 +1,11 @@
 import Browse from './pages/Browse.vue';
 import VueRouter from 'vue-router';
 
+window.project = document.getElementById('app').dataset.project
+
 const routes = {
+  mode: 'history',
+  base: `/${window.project}/browse`,
   routes: [
     {
       path: '/',
@@ -11,36 +15,16 @@ const routes = {
     {
       path: '/:type',
       component: Browse,
-      name: 'browse'
+      name: 'browse-root'
     },
     {
       path: '/:type/:id',
       component: Browse,
-      name: 'browse'
+      name: 'browse-id'
     }
   ]
 };
 
 const router = new VueRouter(routes)
-
-// // Route 'project' dynamic base hotfix
-// if (router.mode === 'history') {
-//   router.history.getCurrentLocation = function() {
-//     let path = window.location.pathname
-//     let base = router.history.base
-//
-//     let project = path.split(base).shift()
-//
-//     router.project = project
-//     base = project + base
-//
-//     // Removes base from path (case-insensitive)
-//     if (base && path.toLowerCase().indexOf(base.toLowerCase()) === 0) {
-//       path = path.slice(base.length)
-//     }
-//
-//     return (path || '/') + window.location.search + window.location.hash
-//   }
-// }
 
 export default router

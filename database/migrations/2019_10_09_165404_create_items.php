@@ -16,13 +16,31 @@ class CreateItems extends Migration
     {
         Schema::create('items', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('external_id', 50)->nullable();
-            $table->string('name', 100)->nullable();
-            $table->string('description', 100)->nullable();
-            $table->string('category', 100)->nullable();
-            $table->float('lat');
-            $table->integer('order');
-            $table->float('lon');
+
+            $table->text('name');
+            $table->text('description')->nullable();
+            $table->text('short_description')->nullable();
+            $table->text('addenda')->nullable();
+
+            $table->string('category', 30)->nullable();
+
+            $table->float('lat')->nullable();
+            $table->float('lon')->nullable();
+            $table->string('geo_options', 50);
+
+            $table->integer('order')->nullable();
+
+            $table->integer('publish_state');
+            $table->string('publish_state_reason', 50);
+
+            $table->integer('artifact_at_risk');
+            $table->string('parental_state', 50);
+
+            $table->text('ntl');
+            $table->string('ntl_localname', 50);
+
+            $table->text('remarks')->nullable();
+
             NestedSet::columns($table);
             $table->timestamps();
         });

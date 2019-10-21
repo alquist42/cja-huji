@@ -76,7 +76,7 @@
             <div class="panel-heading">Not Found!!</div>
 
             <div class="panel-body">
-                <p>Sorry! No comment found for this post.</p>
+                <p>Sorry! No images found for this object.</p>
             </div>
         </div>
     @endforelse

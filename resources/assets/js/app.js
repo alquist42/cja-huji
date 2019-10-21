@@ -6,7 +6,7 @@ $('.select2').select2();
 $('.select2-tags').select2({tags: true});
 $('#flash-overlay-modal').modal();
 
-$('#origin, #category, #name, #collection, #community, #school, #object, #location, #subject, #artist, #dates')
+$('#origins, #categories, #names, #collections, #communities, #schools, #objects, #locations, #subjects, #artists, #dates')
     .each(function () {
         var $this = $(this);
 
