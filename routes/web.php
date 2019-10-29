@@ -10,6 +10,7 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::get('/admin/{name?}','AdminController@viewLinks')->name('{name?}');
 
 Route::get('/', 'WelcomeController@index');
 Route::get('/{project}', 'HomeController@index')->where('project', 'catalogue|wpc');
@@ -21,16 +22,8 @@ Route::get('/{project}/browse/{any?}/{other?}', function ($project) {
     return view('browse', [ 'project' => $project]);
 });
 
-Route::get('/posts/{post}', 'BlogController@post');
-Route::post('/posts/{post}/comment', 'BlogController@comment')->middleware('auth');
+
+
 
 Auth::routes();
 
-Route::group(['prefix' => 'admin', 'namespace' => 'Admin', 'middleware' => 'auth'], function() {
-    Route::resource('/posts', 'PostController');
-    Route::put('/posts/{post}/publish', 'PostController@publish')->middleware('admin');
-    Route::resource('/categories', 'CategoryController', ['except' => ['show']]);
-    Route::resource('/tags', 'TagController', ['except' => ['show']]);
-    Route::resource('/comments', 'CommentController', ['only' => ['index', 'destroy']]);
-    Route::resource('/users', 'UserController', ['middleware' => 'admin', 'only' => ['index', 'destroy']]);
-});

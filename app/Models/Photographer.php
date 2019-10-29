@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use \App\Models\Taxonomy\Taxonomy;
+
 class Photographer extends Taxonomy
 {
     /**

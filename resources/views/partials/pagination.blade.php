@@ -9,7 +9,7 @@
 
         {{-- Pagination Elements --}}
         @for ($page = 1; $page <= $paginator->lastPage(); $page++)
-            @if ($page < 10 || ($page % 10 === 0) || $page == $paginator->lastPage())
+            @if ($page < 10 || ($page >= 10 && $page < 100 && $page % 10 === 0) || ($page % 100 === 0) || $page == $paginator->lastPage())
                 @if ($page == $paginator->currentPage())
                     <li class="active page-item"><span class="page-link">{{ $page }}</span></li>
                 @else

@@ -10,13 +10,10 @@
                             {{ $item->name }}
                         </div>
                         <div class="container">
-                            <div class="row mt-5">
+                            <div class="row mt-2">
                                 <div class="col-md-6">
                                     <div class="container">
-                                        <dl class="row my-3">
-                                            <dt class="col-sm-3">Name / Title</dt>
-                                            <dd class="col-sm-9">{{ $item->name }}</dd>
-
+                                        <dl class="row my-1">
                                             <dt class="col-sm-3">Object</dt>
                                             <dd class="col-sm-9">
                                                 @foreach ($item->objects as $object)
@@ -49,7 +46,7 @@
 
                                                 <!--Google map-->
                                                 <div id="map-container-google-9" class="z-depth-1-half map-container-5" style="height: 300px">
-                                                    <iframe src="https://maps.google.com/maps?q=Madryt&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0"
+                                                    <iframe src="https://maps.google.com/maps?q={{ $item->geo_lat }},{{ $item->geo_lng }}&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0"
                                                             style="border:0" allowfullscreen></iframe>
                                                 </div>
                                             </dd>
@@ -61,17 +58,31 @@
                                                 @endforeach
                                             </dd>
 
-                                            <dt class="col-sm-3">Photograph Copyright</dt>
-                                            <dd class="col-sm-9">Center for Jewish Art</dd>
+                                            @if(!empty($item->images()->first()->copyright))
+                                                <dt class="col-sm-3">Photograph Copyright</dt>
+                                                <dd class="col-sm-9">{{ $item->images()->first()->copyright->name }}</dd>
+                                            @endif
 
                                             <dt class="col-sm-3">Photographer</dt>
-                                            <dd class="col-sm-9"> <a href="/{{ request()->project }}/browse/photographers/123">Levin, Vladimir</a></dd>
+
+                                            <dd class="col-sm-9">
+                                                @foreach ($item->images()->first()->photographers as $photographer)
+                                                    <a href="/{{ request()->project }}/browse/photographers/{{ $photographer->id }}">{{ $photographer->name }}</a> |
+                                                @endforeach
+                                            </dd>
 
                                             <dt class="col-sm-3">Photograph Date</dt>
-                                            <dd class="col-sm-9">9.2019</dd>
+                                            <dd class="col-sm-9">{{ $item->images()->first()->date }}</dd>
 
                                             <dt class="col-sm-3">Negative / Photo. No.</dt>
-                                            <dd class="col-sm-9">digital</dd>
+                                            <dd class="col-sm-9">{{ $item->images()->first()->negative }}</dd>
+                                        </dl>
+                                        <h4>Properties:</h4>
+                                        <dl>
+                                            @foreach ($item->properties as $property)
+                                                <dt class="col-sm-3">{{ $property->verbose_name }}</dt>
+                                                <dd class="col-sm-9">{{ $property->pivot->value }}</dd>
+                                            @endforeach
                                         </dl>
                                     </div>
                                 </div>
@@ -80,7 +91,7 @@
                                         <div class="carousel-inner">
                                             @forelse ($item->images as $image)
                                                 <div class="carousel-item  @if($image->id === $item->images()->first()->id) {{ 'active' }} @endif">
-                                                    <img class="d-block w-100" src="{{ $image->medium }}" alt="First slide">
+                                                    <img class="d-block w-100" src="http://cja.huji.ac.il/{{ $image->url() }}" alt="First slide">
                                                 </div>
                                             @empty
                                                 <div></div>
@@ -99,11 +110,8 @@
                             </div>
                             <div class="row mt-5">
                                 <div class="col-md-12">
-                                    <dt class="col-sm-3">Temp: Sys. Number / Doc. Name</dt>
-                                    <dd class="col-sm-9">{{ $item->name }}</dd>
-
                                     <dt class="col-sm-3">Temp: Addenda</dt>
-                                    <dd class="col-sm-9">OVRPO=ntl%3Atrue%2Cntl_localname%3Atrue%2Csubject%3A%2Csubject_detail%3A%2Cobject%3Atrue%2Cobject_detail%3A%2Cmaker_profession%3Atrue%2Cmaker_name%3Atrue%2Cmaker_detail%3Atrue%2Cdate%3Atrue%2Cperiod%3Atrue%2Cperiod_detail%3Atrue%2Cphotographer%3A%2Cphoto_date%3A%2Cphotographer_copyright%3A%2Corigin%3Atrue%2Corigin_detail%3Atrue%2Chistorical_origin%3Atrue%2Cschool%3Atrue%2Cschool_detail%3Atrue%2Ccommunity%3Atrue%2Ccommunity_detail%3Atrue%2Ccollection%3Atrue%2Ccollection_detail%3Atrue%2Ccopyright%3Atrue%2Csite%3Atrue%2Csite_detail%3Atrue%2Clocation%3Atrue%2Clocation_detail%3Atrue%2Cdescription%3A%2C&</dd>
+                                    <dd class="col-sm-9">{{ $item->addenda }}</dd>
                                 </div>
                             </div>
                         </div>
@@ -120,9 +128,9 @@
 
                                 <div class="col-4 my-2">
                                     <div class="container-fluid card">
-                                        <img src="http://placeimg.com/640/480/arch.jpg" alt="Snow" style="width:100%;">
+                                        <img src="http://cja.huji.ac.il/{{ $subitem->images()->first()->url() }}" alt="Snow" style="width:100%;">
                                         <div class="centered">
-                                            <a href="/{{ request()->project }}/items/{{ $subitem->id }}">{{ $subitem->name }}</a>
+                                            <a href="/{{ request()->project }}/items/{{ $subitem->id }}">{{ $subitem->ntl }}</a>
                                         </div>
                                     </div>
                                 </div>

@@ -14,17 +14,22 @@ use App\Models\Taxonomy\Period;
 use App\Models\Taxonomy\School;
 use App\Models\Taxonomy\Site;
 use App\Models\Taxonomy\Subject;
+
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Queue\ListenerOptions;
 
 class Classifiable extends Model
 {
+
     /**
      * @return BelongsToMany
      */
     public function origins()
     {
-        return $this->belongsToMany(Origin::class);
+        return $this->morphToMany(Origin::class, 'entity', 'taxonomy', 'entity_id', 'taxonomy_id')
+            ->wherePivot('taxonomy_type', '=', 'origin');
     }
 
     /**
@@ -32,7 +37,8 @@ class Classifiable extends Model
      */
     public function subjects()
     {
-        return $this->belongsToMany(Subject::class);
+        return $this->morphToMany(Subject::class, 'entity', 'taxonomy', 'entity_id', 'taxonomy_id')
+            ->wherePivot('taxonomy_type', '=', 'subject');
     }
 
     /**
@@ -40,7 +46,8 @@ class Classifiable extends Model
      */
     public function objects()
     {
-        return $this->belongsToMany(Object::class);
+        return $this->morphToMany(Object::class, 'entity', 'taxonomy', 'entity_id', 'taxonomy_id')
+            ->wherePivot('taxonomy_type', '=', 'object');
     }
 
     /**
@@ -48,7 +55,8 @@ class Classifiable extends Model
      */
     public function locations()
     {
-        return $this->belongsToMany(Location::class);
+        return $this->morphToMany(Location::class, 'entity', 'taxonomy', 'entity_id', 'taxonomy_id')
+            ->wherePivot('taxonomy_type', '=', 'location');
     }
 
     /**
@@ -56,7 +64,8 @@ class Classifiable extends Model
      */
     public function collections()
     {
-        return $this->belongsToMany(Collection::class);
+        return $this->morphToMany(Collection::class, 'entity', 'taxonomy', 'entity_id', 'taxonomy_id')
+            ->wherePivot('taxonomy_type', '=', 'collection');
     }
 
     /**
@@ -64,7 +73,8 @@ class Classifiable extends Model
      */
     public function communities()
     {
-        return $this->belongsToMany(Community::class);
+        return $this->morphToMany(Community::class, 'entity', 'taxonomy', 'entity_id', 'taxonomy_id')
+            ->wherePivot('taxonomy_type', '=', 'community');
     }
 
     /**
@@ -72,15 +82,17 @@ class Classifiable extends Model
      */
     public function congregations()
     {
-        return $this->belongsToMany(Congregation::class);
+        return $this->morphToMany(Congregation::class, 'entity', 'taxonomy', 'entity_id', 'taxonomy_id')
+            ->wherePivot('taxonomy_type', '=', 'congregation');
     }
 
     /**
      * @return BelongsToMany
      */
-    public function historical_origins()
+    public function historic_origins()
     {
-        return $this->belongsToMany(HistoricOrigin::class);
+        return $this->morphToMany(HistoricOrigin::class, 'entity', 'taxonomy', 'entity_id', 'taxonomy_id')
+            ->wherePivot('taxonomy_type', '=', 'historical_origin');
     }
 
     /**
@@ -88,7 +100,8 @@ class Classifiable extends Model
      */
     public function periods()
     {
-        return $this->belongsToMany(Period::class);
+        return $this->morphToMany(Period::class, 'entity', 'taxonomy', 'entity_id', 'taxonomy_id')
+            ->wherePivot('taxonomy_type', '=', 'period');
     }
 
     /**
@@ -96,7 +109,8 @@ class Classifiable extends Model
      */
     public function schools()
     {
-        return $this->belongsToMany(School::class);
+        return $this->morphToMany(School::class, 'entity', 'taxonomy', 'entity_id', 'taxonomy_id')
+            ->wherePivot('taxonomy_type', '=', 'school');
     }
 
     /**
@@ -104,16 +118,36 @@ class Classifiable extends Model
      */
     public function sites()
     {
-        return $this->belongsToMany(Site::class);
+        return $this->morphToMany(Site::class, 'entity', 'taxonomy', 'entity_id', 'taxonomy_id')
+            ->wherePivot('taxonomy_type', '=', 'site');
+    }
+
+    /**
+     * @return BelongsToMany
+     */
+    public function images()
+    {
+        return $this->morphToMany(Image::class, 'entity', 'entity_images');
+    }
+
+    /**
+     * @return HasOne
+     */
+    public function copyright()
+    {
+        return $this->hasOne(Copyright::class, 'id', 'copyright_id');
+    }
+
+    /**
+     * @return BelongsToMany
+     */
+    public function properties()
+    {
+        return $this->morphToMany(Property::class, 'entity', 'entity_properties')->withPivot('value', 'prop_flags');
     }
 
 //    public function category()
 //    {
-//        return $this->morphedByMany(Site::class);
-//    }
-//
-//    public function properties()
-//    {
-//        return $this->morphedByMany(Site::class);
+//        return $this->morphedByMany(Site::class, 'taxonomy', 'taxonomy');
 //    }
 }

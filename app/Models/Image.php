@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Image extends Classifiable
 {
@@ -47,11 +48,19 @@ class Image extends Classifiable
     ];
 
     /**
-     * @return BelongsTo
+     * @return MorphTo
      */
-    public function item()
+    public function items()
     {
-        return $this->belongsTo(Item::class, 'item_id');
+        return $this->morphTo(Item::class, 'entity');
+    }
+
+    /**
+     * @return MorphTo
+     */
+    public function sets()
+    {
+        return $this->morphTo(Set::class, 'entity');
     }
 
     /**
@@ -59,14 +68,23 @@ class Image extends Classifiable
      */
     public function copyright()
     {
-        return $this->hasOne(Copyright::class, 'copyright_id');
+        return $this->hasOne(Copyright::class, 'id', 'copyright_id');
     }
 
     /**
-     * @return HasOne
+     * @return BelongsToMany
      */
-    public function photographer()
+    public function photographers()
     {
-        return $this->hasOne(Photographer::class, 'photographer_id');
+        return $this->morphToMany(Photographer::class, 'entity', 'taxonomy', 'entity_id', 'taxonomy_id')
+            ->wherePivot('taxonomy_type', '=', 'photographer');
+    }
+
+    /**
+     * @return string
+     */
+    public function url()
+    {
+        return $this->def ? $this->def : $this->batch_url;
     }
 }

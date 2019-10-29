@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid">
     <div class="row mt-5">
-      <div class="col-md-4">
+      <div class="taxonomy-container col-md-4">
         <div class="card">
 
           <div class="card-body" v-if="!rendered">
@@ -40,9 +40,9 @@
                 <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 mb-4" :key="i" @click="openItem(item.id)">
 
                   <div class="card">
-                    <img class="card-img-top" src="http://placeimg.com/640/480/arch" alt="Card image cap">
+                    <img class="card-img-top" :src="`http://cja.huji.ac.il/${item.images[0].def}`" alt="Card image cap">
                     <div class="card-body">
-                      <h5 class="card-title">{{ item.name }}</h5>
+                      <h5 class="card-title">{{ item.ntl || item.name  }}</h5>
                     </div>
                   </div>
 
@@ -83,10 +83,15 @@
           this.initialize()
         },
         immediate: true
+      },
+      '$route.params.id': async function (val) {
+        this.selected = val
+        await this.loadItems()
       }
     },
     methods: {
       async initialize() {
+        console.log('init')
         this.type = this.$route.params.type
         this.selected = parseInt(this.$route.params.id)
         this.rendered = false
@@ -94,6 +99,8 @@
         const { data } = await axios.get(`/api/taxonomy/${this.type}?as_tree=1`)
 
         this.treeData = data
+
+
 
         this.$nextTick(() => {
           this.rendered = true
@@ -104,24 +111,12 @@
                 this.select()
               })
             }
-
-            else {
-              this.$refs.tree.$refs.rootNodes.forEach(node => {
-                node.expand()
-              })
-            }
           })
         })
-      },
-      select (id) {
-        if (id) {
-          this.hideSelected(id)
-          this.selected = id
-        }
 
-        this.showSelected()
+        await this.loadItems()
       },
-      showSelected() {
+      select () {
         const roots = this.$refs.tree.$refs.rootNodes.map(r => r._uid)
         let node = this.$refs.tree.getNodeByKey(this.selected)
         node.select()
@@ -131,35 +126,38 @@
           node.expand()
         }
       },
-      hideSelected() {
-        const roots = this.$refs.tree.$refs.rootNodes.map(r => r._uid)
-        let node = this.$refs.tree.getNodeByKey(this.selected)
-        node.deselect()
 
-        while (!roots.includes(node._uid)) {
-          node = node.$parent
-          node.collapse()
-        }
-      },
       async nodeSelect(node, isSelected) {
 
-        console.log(this.selected, node.data.id)
-
-        // TODO: fix selected
-        if (this.selected !== node.data.id) {
-          this.$router.push({ name: 'browse-id', params: { id: node.data.id }})
-          this.selected = node.data.id
-
-          this.items = []
-          this.loading = true
-
-          const { data } = await axios.get(`/api/items?${this.type}[]=${node.data.id}`)
-
-          this.items = data.data
-          this.loading = false
-        }
-        else {
+        if (!isSelected && this.selected === node.data.id) {
           node.select()
+        }
+
+        if (isSelected && this.selected !== node.data.id) {
+          await this.$router.push({ name: 'browse-id', params: { id: node.data.id }})
+        }
+
+      },
+
+      async loadItems() {
+        if (!this.selected) {
+          return
+        }
+
+        this.items = []
+        this.loading = true
+
+        const { data } = await axios.get(`/api/items?${this.type}[]=${this.selected}`)
+
+        this.items = data.data
+        this.loading = false
+      },
+
+      scrollTo() {
+        const el = document.querySelector('.tree-branch.selected')[0];
+
+        if (el) {
+          el.scrollIntoView();
         }
       },
 
@@ -170,11 +168,14 @@
 
     created () {
       this.project = window.project
-    },
-
-    mounted () {
-      this.initialize()
     }
 
   }
 </script>
+
+<style>
+  .taxonomy-container {
+    max-height: 700px;
+    overflow-y: scroll;
+  }
+</style>

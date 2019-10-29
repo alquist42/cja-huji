@@ -44,7 +44,6 @@ class CreateImages extends Migration
 
             $table->timestamps();
 
-            $table->foreign('item_id')->references('id')->on('items');
             $table->foreign('copyright_id')->references('id')->on('copyright');
             $table->foreign('photographer_id')->references('id')->on('photographers');
 

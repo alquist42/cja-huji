@@ -16,11 +16,3 @@ Route::group(['namespace' => 'Api'], function() {
     Route::get('/taxonomy/{type}/{id}', 'TaxonomyController@show');
     Route::get('/autocomplete', 'TaxonomyController@search');
 });
-
-Route::group(['middleware' => 'auth:api', 'namespace' => 'Api'], function() {
-    Route::get('/tags', 'ListingController@tags');
-    Route::get('/categories', 'ListingController@categories');
-    Route::get('/users', 'ListingController@users')->middleware('admin');
-
-    Route::resource('/posts', 'PostController', ['only' => ['index', 'show']]);
-});

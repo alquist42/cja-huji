@@ -40,7 +40,7 @@ class Taxonomy extends Model
      */
     public function items()
     {
-        return $this->belongsToMany(Item::class);
+        return $this->morphedByMany(Item::class, 'taxonomy', 'taxonomy');
     }
 
     /**

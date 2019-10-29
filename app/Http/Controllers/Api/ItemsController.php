@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Item;
+use App\Models\Set;
 
 class ItemsController extends Controller
 {
@@ -40,10 +40,10 @@ class ItemsController extends Controller
             return is_array($value) ? $value : [$value];
         })->toArray();
 
-        $query = Item::with('images');
+        $query = Set::with('images');
 
         foreach ($filters as $type => $values) {
-            $query->orWhereHas($type, function($q) use ($type, $values) {
+            $query->whereHas($type, function($q) use ($type, $values) {
                 $q->whereIn($type . '.id', $values);
             });
         }
@@ -57,7 +57,7 @@ class ItemsController extends Controller
         return response()->json($items);
     }
 
-    public function show(Item $item)
+    public function show(Set $item)
     {
         $item->loadMissing(['children', 'parent']);
         return response()->json($item);

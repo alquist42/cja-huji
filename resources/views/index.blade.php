@@ -18,11 +18,11 @@
                     <div class="col-xl-3 col-lg-3 col-md-4 col-sm-12 col-12 mb-4">
 
                             <div class="card">
-                                <img class="card-img-top image-fluid" src="http://placeimg.com/640/480/arch" alt="Card image cap">
+                                <img class="card-img-top image-fluid" src="http://cja.huji.ac.il/{{ $item->images()->first()->url() }}" alt="Card image cap">
                                 <div class="card-body">
                                     <h5 class="card-title text-truncate">
                                         <a href="/{{ request()->project }}/items/{{ $item->id }}">
-                                            {{ $item->name }}
+                                            {{ $item->ntl }}
                                          </a>
                                     </h5>
                                 </div>

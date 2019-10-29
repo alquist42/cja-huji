@@ -152,7 +152,7 @@
         </div>
         <div class="col-12">
             <button type="submit" class="btn btn-primary">Submit</button>
-            <button type="reset" class="btn">Clear selected</button>
+            <button type="reset" class="btn" onclick="window.location = location.protocol + '//' + location.host + location.pathname">Clear selected</button>
         </div>
     </div>
 </form>

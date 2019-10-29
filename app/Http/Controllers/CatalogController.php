@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Item;
+use App\Models\Set;
 use App\Models\Origin;
 use Illuminate\Http\Request;
 
@@ -41,10 +41,10 @@ class CatalogController extends Controller
             return is_array($value) ? $value : [$value];
         })->toArray();
 
-        $query = Item::query();
+        $query = Set::query();
 
         foreach ($filters as $type => $values) {
-            $query->orWhereHas($type, function($q) use ($type, $values) {
+            $query->whereHas($type, function($q) use ($type, $values) {
                 $q->whereIn($type . '.id', $values);
             });
         }
@@ -57,7 +57,7 @@ class CatalogController extends Controller
 
         $selected = [];
         foreach ($filters as $type => $values) {
-            $model = '\\App\\Models\\Taxonomy\\' . ucfirst(substr_replace($type ,"",-1));
+            $model = '\\App\\Models\\Taxonomy\\' . ucfirst(str_singular($type));
             $selected[$type] = $model::select("id", "name")->find($values);
         }
 
@@ -66,7 +66,7 @@ class CatalogController extends Controller
 
     public function show($project, $id)
     {
-        $item = Item::with(['images', 'locations', 'origins', 'subjects', 'images.locations', 'images.origins', 'images.subjects', 'children'])->find($id);
+        $item = Set::with(['locations', 'origins', 'schools', 'items', 'children', 'images'])->find($id);
 
         return view('item', compact('item'));
     }

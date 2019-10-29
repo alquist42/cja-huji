@@ -23,13 +23,13 @@ class TaxonomyController extends Controller
     public function index($type)
     {
 
-        $model = $this->nameSpace . ucfirst(substr_replace($type ,"",-1));
+        $model = $this->nameSpace . ucfirst(str_singular($type));
 
         if (!class_exists($model)) {
             return response()->json([ 'error' => 400, 'message' => 'Missing or unsupported type' ], 400);
         }
 
-        $items = request()->get('as_tree') ? $model::get()->toTree() : $model::paginate();
+        $items = request()->get('as_tree') ? $model::where('id', '!=', '-1')->get()->toTree() : $model::paginate();
 
         return response()->json($items);
     }
@@ -41,7 +41,7 @@ class TaxonomyController extends Controller
      */
     public function show($type, $id)
     {
-        $model = $this->nameSpace . ucfirst(substr_replace($type ,"",-1));
+        $model = $this->nameSpace . ucfirst(str_singular($type));
 
         if (!class_exists($model)) {
             return response()->json([ 'error' => 400, 'message' => 'Missing or unsupported type' ], 400);
@@ -60,7 +60,7 @@ class TaxonomyController extends Controller
     public function search(Request $request)
     {
 
-        $type = substr_replace($request->get('type') ,"",-1);
+        $type = str_singular($request->get('type'));
         $model = $this->nameSpace . ucfirst($type);
 
         $search = $request->get('term');

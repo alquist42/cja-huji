@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use \Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Kalnoy\Nestedset\NodeTrait;
 
 class Item extends Classifiable
@@ -48,12 +48,11 @@ class Item extends Classifiable
         'remarks',
     ];
 
-
     /**
-     * @return HasMany
+     * @return BelongsTo
      */
-    public function images()
+    public function set()
     {
-        return $this->hasMany(Image::class, 'item_id');
+        return $this->belongsTo(Set::class);
     }
 }
