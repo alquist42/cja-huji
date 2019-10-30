@@ -9,6 +9,8 @@ class Set extends Classifiable
 {
     use NodeTrait;
 
+    public $timestamps = false;
+
     /**
      * DB Table name
      *
@@ -82,6 +84,9 @@ class Set extends Classifiable
 
         'children',
         'children.images',
+
+        'ancestors',
+        'descendants'
     ];
 
     /**
@@ -101,5 +106,9 @@ class Set extends Classifiable
      */
     public function name() {
         return $this->ntl ? $this->ntl : $this->name;
+    }
+
+    public function leaf() {
+        return $this->getSiblings()->merge($this->ancestors)->merge($this->descendants)->toTree();
     }
 }

@@ -139,29 +139,74 @@
                 </div>
 
                 <div class="col-md-4">
+                    <div class="card mx-1 mb-4">
+                        <div class="card-header">
+                            Description
+                        </div>
+                        <div class="card-body">
+                            {!! $item->description !!}
+                        </div>
+                    </div>
                     <div class="card mx-1">
                         <div class="card-header">
                             Child Items
                         </div>
-                        <div class="row">
-                        @foreach ($item->children as $subitem)
+                        <div class="card-body">
+                            <div class="row">
+                            @foreach ($item->children as $subitem)
 
-                                <div class="col-4 my-2">
-                                    <div class="container-fluid card">
-                                        <img src="http://cja.huji.ac.il/{{ $subitem->images[0]->url() }}" alt="Snow" style="width:100%;">
-                                        <div class="centered">
-                                            <a href="/{{ request()->project }}/items/{{ $subitem->id }}">{{ $subitem->ntl }}</a>
+                                    <div class="col-6 my-2">
+                                        <div class="card">
+                                            <img class="card-img-top image-fluid" src="http://cja.huji.ac.il/{{ $subitem->images[0]->url() }}" alt=" {{ $subitem->name() }}">
+                                            <div class="card-body">
+                                                <h5 class="card-title text-truncate">
+                                                    <a href="/{{ request()->project }}/items/{{ $subitem->id }}">
+                                                        {{ $subitem->name() }}
+                                                    </a>
+                                                </h5>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                        @endforeach
+
+                            @endforeach
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card mx-1 mb-4">
+                        <div class="card-header">
+                            Item Tree
+                        </div>
+                        <div class="card-body">
+                            @php
+                                $nodes = $item->leaf();
+
+                                $traverse = function ($categories, $prefix = '<li>', $suffix = '</li>') use (&$traverse) {
+                                    foreach ($categories as $category) {
+                                        echo $prefix.$category->name().$suffix;
+
+                                        $hasChildren = (count($category->children) > 0);
+
+                                        if($hasChildren) {
+                                            echo('<ul>');
+                                        }
+
+                                        $traverse($category->children);
+
+                                        if($hasChildren) {
+                                            echo('</ul>');
+                                        }
+                                    }
+                                };
+
+                                $traverse($nodes);
+                            @endphp
                         </div>
                     </div>
                 </div>
 
                 <div class="col-md-12">
                     <hr style="margin-top: 50px; width: 100%; color: grey; height: 1px; background-color:grey;" />
-                    <p class="h3 text-center">Object's Images</p>
+                    <p class="h3 text-center">Object's Images ({{ count($item->items) }})</p>
 
                     @include('images')
                 </div>

@@ -13,6 +13,7 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link rel="icon" href="http://cja.huji.ac.il/favicon.ico" type="image/x-icon" />
 
     <!-- Scripts -->
     <script>
