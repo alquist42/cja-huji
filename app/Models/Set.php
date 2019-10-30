@@ -48,11 +48,58 @@ class Set extends Classifiable
         'remarks',
     ];
 
+    public static $relationships = [
+        'locations',
+        'origins',
+        'schools',
+        'properties',
+        'objects',
+        'subjects',
+        'historic_origins',
+        'periods',
+        'collections',
+        'communities',
+
+        'items',
+        'items.locations',
+        'items.origins',
+        'items.schools',
+        'items.properties',
+        'items.objects',
+        'items.subjects',
+        'items.historic_origins',
+        'items.periods',
+        'items.collections',
+        'items.communities',
+        'items.images',
+        'items.images.photographers',
+        'items.images.copyright',
+
+
+        'images',
+        'images.photographers',
+        'images.copyright',
+
+        'children',
+        'children.images',
+    ];
+
     /**
      * @return HasMany
      */
     public function items()
     {
         return $this->hasMany(Item::class);
+    }
+
+    public static function withAllRelations() {
+        return static::with(Set::$relationships);
+    }
+
+    /**
+     * @return string
+     */
+    public function name() {
+        return $this->ntl ? $this->ntl : $this->name;
     }
 }

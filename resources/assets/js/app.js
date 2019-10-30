@@ -2,41 +2,45 @@ import $ from 'jquery';
 import 'select2';
 import 'bootstrap';
 
-$('.select2').select2();
-$('.select2-tags').select2({tags: true});
-$('#flash-overlay-modal').modal();
+$(document).ready(function () {
 
-$('#origins, #categories, #names, #collections, #communities, #schools, #objects, #locations, #subjects, #artists, #dates')
-    .each(function () {
-        var $this = $(this);
 
-        $this.select2({
-            // placeholder: "Choose origin...",
-            minimumInputLength: 2,
-            ajax: {
-                url: '/api/autocomplete',
-                dataType: 'json',
-                data: function (params) {
-                    return {
-                        term: $.trim(params.term),
-                        type: $this.attr('id')
-                      }
-                },
-                delay: 250,
-                processResults: function (data) {
-                    return {
-                        results: $.map(data, function (item) {
-                            return {
-                                text: item.name,
-                                id: item.id
-                            }
-                        })
-                    };
-                },
-                cache: true
-            }
-        });
-    })
+    $('.select2').select2();
+    $('.select2-tags').select2({tags: true});
+    $('#flash-overlay-modal').modal();
+
+    $('#origins, #categories, #names, #collections, #communities, #schools, #objects, #locations, #subjects, #artists, #dates')
+        .each(function () {
+            var $this = $(this);
+
+            $this.select2({
+                // placeholder: "Choose origin...",
+                minimumInputLength: 2,
+                ajax: {
+                    url: '/api/autocomplete',
+                    dataType: 'json',
+                    data: function (params) {
+                        return {
+                            term: $.trim(params.term),
+                            type: $this.attr('id')
+                        }
+                    },
+                    delay: 250,
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return {
+                                    text: item.name,
+                                    id: item.id
+                                }
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+        })
+});
 
 var laravel = {
    initialize: function() {

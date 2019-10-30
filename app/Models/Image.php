@@ -85,6 +85,7 @@ class Image extends Classifiable
      */
     public function url()
     {
-        return $this->def ? $this->def : $this->batch_url;
+        $url = $this->medium ? $this->medium : $this->def;
+        return $url ? $url : $this->batch_url;
     }
 }

@@ -18,7 +18,6 @@ use App\Models\Taxonomy\Subject;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Queue\ListenerOptions;
 
 class Classifiable extends Model
 {

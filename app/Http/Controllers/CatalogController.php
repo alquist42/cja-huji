@@ -66,7 +66,8 @@ class CatalogController extends Controller
 
     public function show($project, $id)
     {
-        $item = Set::with(['locations', 'origins', 'schools', 'items', 'children', 'images'])->find($id);
+        $item = Set::findOrFail($id);
+        $item->load(Set::$relationships);
 
         return view('item', compact('item'));
     }

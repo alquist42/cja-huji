@@ -40,7 +40,7 @@
                 <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 mb-4" :key="i" @click="openItem(item.id)">
 
                   <div class="card">
-                    <img class="card-img-top" :src="`http://cja.huji.ac.il/${item.images[0].def}`" alt="Card image cap">
+                    <img class="card-img-top" :src="`http://cja.huji.ac.il/${item.images[0].small || item.images[0].medium || item.images[0].def || item.images[0].batch_url}`" alt="Card image cap">
                     <div class="card-body">
                       <h5 class="card-title">{{ item.ntl || item.name  }}</h5>
                     </div>
