@@ -109,6 +109,6 @@ class Set extends Classifiable
     }
 
     public function leaf() {
-        return $this->getSiblings()->merge($this->ancestors)->merge($this->descendants)->toTree();
+        return Set::ancestorsAndSelf($this->id)->merge($this->descendants)->toTree();
     }
 }
