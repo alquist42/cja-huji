@@ -13,7 +13,7 @@
                             <div class="row mt-2">
                                 <div class="col-md-6">
                                     <div class="container">
-                                        <h4 class="lead">Taxonomy</h4>
+                                        <h4 class="lead"><u>Taxonomy</u></h4>
                                         <dl class="row my-1">
                                             <dt class="col-sm-3">Object</dt>
                                             <dd class="col-sm-9">
@@ -53,21 +53,6 @@
                                                 @endforeach
                                             </dd>
 
-                                            <dt class="col-sm-3">Location</dt>
-                                            <dd class="col-sm-9">
-                                                @foreach ($item->locations as $location)
-                                                    <a href="/{{ request()->project }}/browse/locations/{{ $location->id }}">{{ $location->name }}</a> @if(!$loop->last) | @endif
-                                                @endforeach
-
-                                                @if(!empty($item->geo_lat) && !empty($item->geo_lng))
-                                                    <!--Google map-->
-                                                    <div id="map-container-google-9" class="z-depth-1-half map-container-5" style="height: 300px">
-                                                        <iframe src="https://maps.google.com/maps?q={{ $item->geo_lat }},{{ $item->geo_lng }}&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0"
-                                                                style="border:0" allowfullscreen></iframe>
-                                                    </div>
-                                                @endif
-                                            </dd>
-
                                             <dt class="col-sm-3">School / Style</dt>
                                             <dd class="col-sm-9">
                                                 @foreach ($item->schools as $school)
@@ -75,26 +60,41 @@
                                                 @endforeach
                                             </dd>
 
-                                            @if(!empty($item->images[0]->copyright))
-                                                <dt class="col-sm-3">Photograph Copyright</dt>
-                                                <dd class="col-sm-9">{{ $item->images[0]->copyright->name }}</dd>
+                                            <dt class="col-sm-3">Location</dt>
+                                            <dd class="col-sm-9">
+                                                @foreach ($item->locations as $location)
+                                                    <a href="/{{ request()->project }}/browse/locations/{{ $location->id }}">{{ $location->name }}</a> @if(!$loop->last) | @endif
+                                                @endforeach
+                                            </dd>
+                                            @if(!empty($item->geo_lat) && !empty($item->geo_lng))
+                                            <!--Google map-->
+                                                <div id="map-container-google-9" class="z-depth-1-half map-container-5" style="height: 130px">
+                                                    <iframe src="https://maps.google.com/maps?q={{ $item->geo_lat }},{{ $item->geo_lng }}&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0"
+                                                            style="border:0" allowfullscreen></iframe>
+                                                </div>
                                             @endif
+
+                                        </dl>
+                                        <h4 class="mt-5 lead"><u>Photo / Image</u></h4>
+                                        <dl class="row my-1">
+                                            <dt class="col-sm-3">Copyright</dt>
+                                            <dd class="col-sm-9">{{ array_get($item->images,'0.copyright.name') }}</dd>
 
                                             <dt class="col-sm-3">Photographer</dt>
 
                                             <dd class="col-sm-9">
-                                                @foreach ($item->images[0]->photographers as $photographer)
+                                                @foreach (array_get($item->images,'0.photographers', []) as $photographer)
                                                     <a href="/{{ request()->project }}/browse/photographers/{{ $photographer->id }}">{{ $photographer->name }}</a> @if(!$loop->last) | @endif
                                                 @endforeach
                                             </dd>
 
-                                            <dt class="col-sm-3">Photograph Date</dt>
-                                            <dd class="col-sm-9">{{ $item->images[0]->date }}</dd>
+                                            <dt class="col-sm-3">Date</dt>
+                                            <dd class="col-sm-9">{{ array_get($item->images,'0.date') }}</dd>
 
                                             <dt class="col-sm-3">Negative / Photo. No.</dt>
-                                            <dd class="col-sm-9">{{ $item->images[0]->negative }}</dd>
+                                            <dd class="col-sm-9">{{ array_get($item->images,'0.negative') }}</dd>
                                         </dl>
-                                        <h4 class="mt-5 lead" data-toggle="collapses" data-target="#multiCollapseExample2" aria-expanded="true" aria-controls="multiCollapseExample2">Properties</h4>
+                                        <h4 class="mt-5 lead" data-toggle="collapses" data-target="#multiCollapseExample2" aria-expanded="true" aria-controls="multiCollapseExample2"><u>Properties</u></h4>
                                         <div class="collapses multi-collapse" id="multiCollapseExample2">
                                             <dl class="row my-1">
                                                 @foreach ($item->properties as $property)
@@ -103,7 +103,6 @@
                                                 @endforeach
                                             </dl>
                                         </div>
-
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -147,7 +146,7 @@
                             {!! $item->description !!}
                         </div>
                     </div>
-                    <div class="card mx-1">
+                    <div class="card mx-1 mb-4">
                         <div class="card-header">
                             Child Items
                         </div>
@@ -180,9 +179,10 @@
                             @php
                                 $nodes = $item->leaf();
 
-                                $traverse = function ($categories, $prefix = '<li>', $suffix = '</li>') use (&$traverse) {
+                                $traverse = function ($categories, $prefix = '<li>', $suffix = '</li>') use (&$traverse, $item) {
                                     foreach ($categories as $category) {
-                                        echo $prefix.$category->name().$suffix;
+                                        $me = $category->id === $item->id ? '[ME] ' : '';
+                                        echo $prefix.'<a href="/'.request()->project.'/items/'.$category->id.'">'.$me.$category->name().'</a>'.$suffix;
 
                                         $hasChildren = (count($category->children) > 0);
 

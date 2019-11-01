@@ -1,7 +1,7 @@
 <div class="container">
     @forelse ($item->items as $obj)
         <div class="row mt-5">
-            <div class="card bg-light mx-1">
+            <div class="card mx-1">
                 <div class="card-header" data-toggle="collapses" data-target="#collapseExample{{ $obj->id }}" aria-expanded="false" aria-controls="collapseExample{{ $obj->id }}">
                     {{ $obj->ntl }}
                 </div>
@@ -9,7 +9,7 @@
                     <div class="row mt-5">
                         <div class="col-md-8">
                             <div class="container">
-                                <h4 class="lead">Taxonomy</h4>
+                                <h4 class="lead"><u>Taxonomy</u></h4>
                                 <dl class="row my-3">
                                     <dt class="col-sm-4">Object</dt>
                                     <dd class="col-sm-8">
@@ -26,7 +26,7 @@
                                     </dd>
 
                                     <dt class="col-sm-4">Date</dt>
-                                    <dd class="col-sm-8">1896</dd>
+                                    <dd class="col-sm-8">{{ $obj->date }}</dd>
 
                                     <dt class="col-sm-4">Subject</dt>
                                     <dd class="col-sm-8">
@@ -108,28 +108,28 @@
                                         @endif
 
                                     </dd>
-
-                                    @if(!empty($obj->images[0]->copyright))
-                                        <dt class="col-sm-4">Photograph Copyright</dt>
-                                        <dd class="col-sm-8">{{ $item->images[0]->copyright->name }}</dd>
-                                    @endif
+                                </dl>
+                                <h4 class="mt-5 lead"><u>Photo / Image</u></h4>
+                                <dl class="row my-1">
+                                    <dt class="col-sm-4">Photograph Copyright</dt>
+                                    <dd class="col-sm-8">{{ array_get($item->images,'0.copyright.name') }}</dd>
 
                                     <dt class="col-sm-4">Photographer</dt>
 
                                     <dd class="col-sm-8">
-                                        @foreach ($obj->images[0]->photographers as $photographer)
+                                        @foreach (array_get($item->images,'0.photographers',[]) as $photographer)
                                             <a href="/{{ request()->project }}/browse/photographers/{{ $photographer->id }}">{{ $photographer->name }}</a> @if(!$loop->last) | @endif
                                         @endforeach
                                     </dd>
 
                                     <dt class="col-sm-4">Photograph Date</dt>
-                                    <dd class="col-sm-8">{{ $obj->images[0]->date }}</dd>
+                                    <dd class="col-sm-8">{{ array_get($item->images,'0.date') }}</dd>
 
                                     <dt class="col-sm-4">Negative / Photo. No.</dt>
-                                    <dd class="col-sm-8">{{ $obj->images[0]->negative }}</dd>
+                                    <dd class="col-sm-8">{{ array_get($item->images,'0.negative') }}</dd>
                                 </dl>
 
-                                <h4 class="mt-5 lead" data-toggle="collapses" data-target="#multiCollapseExample2" aria-expanded="true" aria-controls="multiCollapseExample2">Properties</h4>
+                                <h4 class="mt-5 lead" data-toggle="collapses" data-target="#multiCollapseExample2" aria-expanded="true" aria-controls="multiCollapseExample2"><u>Properties</u></h4>
                                 <div class="collapses multi-collapse" id="multiCollapseExample2">
                                     <dl class="row my-1">
                                         @foreach ($obj->properties as $property)
@@ -141,7 +141,9 @@
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <img class="card-img-top img-fluid img-thumbnail" src="http://cja.huji.ac.il/{{ $obj->images[0]->url() }}" alt="Card image cap">
+                            @if (!empty($obj->images[0]))
+                                <img class="card-img-top img-fluid img-thumbnail" src="http://cja.huji.ac.il/{{ $obj->images[0]->url() }}" alt="Card image cap">
+                            @endif
                         </div>
                     </div>
                 </div>
