@@ -23,7 +23,7 @@
                                             </dd>
 
                                             <dt class="col-sm-3">Date</dt>
-                                            <dd class="col-sm-9">1896</dd>
+                                            <dd class="col-sm-9">{{ $item->date }}</dd>
 
                                             <dt class="col-sm-3">Subject</dt>
                                             <dd class="col-sm-9">
@@ -35,6 +35,10 @@
                                             <dt class="col-sm-3">Origin</dt>
                                             <dd class="col-sm-9">
                                                 @foreach ($item->origins as $origin)
+                                                    @foreach ($origin-> getAncestors() as $anc)
+                                                        <a href="/{{ request()->project }}/browse/origins/{{ $anc->id }}">{{ $anc->name }}</a>
+                                                         |
+                                                    @endforeach
                                                     <a href="/{{ request()->project }}/browse/origins/{{ $origin->id }}">{{ $origin->name }}</a> @if(!$loop->last) | @endif
                                                 @endforeach
                                             </dd>
@@ -63,6 +67,10 @@
                                             <dt class="col-sm-3">Location</dt>
                                             <dd class="col-sm-9">
                                                 @foreach ($item->locations as $location)
+                                                    @foreach ($location-> getAncestors() as $anc)
+                                                        <a href="/{{ request()->project }}/browse/origins/{{ $anc->id }}">{{ $anc->name }}</a>
+                                                        |
+                                                    @endforeach
                                                     <a href="/{{ request()->project }}/browse/locations/{{ $location->id }}">{{ $location->name }}</a> @if(!$loop->last) | @endif
                                                 @endforeach
                                             </dd>

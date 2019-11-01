@@ -47,6 +47,8 @@ class Set extends Classifiable
         'ntl',
         'ntl_localname',
 
+        'date',
+
         'remarks',
     ];
 
