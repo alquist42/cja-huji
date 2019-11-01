@@ -13,7 +13,7 @@ use Kalnoy\Nestedset\NodeTrait;
 class Taxonomy extends Model
 {
     use NodeTrait;
-
+    public $timestamps = false;
     /**
      * @var array
      */
