@@ -151,34 +151,34 @@
                             Description
                         </div>
                         <div class="card-body">
-                            {!! $item->description !!}
+                            {!! preg_replace_callback("/\/\/\/ID\/(\d{1,9})\//", function ($matches) { return view('partials.thumb', [ 'id' => $matches[1]])->render(); }, $item->description) !!}
                         </div>
                     </div>
-                    <div class="card mx-1 mb-4">
-                        <div class="card-header">
-                            Child Items
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                            @foreach ($item->children as $subitem)
+{{--                    <div class="card mx-1 mb-4">--}}
+{{--                        <div class="card-header">--}}
+{{--                            Child Items--}}
+{{--                        </div>--}}
+{{--                        <div class="card-body">--}}
+{{--                            <div class="row">--}}
+{{--                            @foreach ($item->children as $subitem)--}}
 
-                                    <div class="col-6 my-2">
-                                        <div class="card">
-                                            <img class="card-img-top image-fluid" src="http://cja.huji.ac.il/{{ $subitem->images[0]->url() }}" alt=" {{ $subitem->name() }}">
-                                            <div class="card-body">
-                                                <h5 class="card-title text-truncate">
-                                                    <a href="/{{ request()->project }}/items/{{ $subitem->id }}">
-                                                        {{ $subitem->name() }}
-                                                    </a>
-                                                </h5>
-                                            </div>
-                                        </div>
-                                    </div>
+{{--                                    <div class="col-6 my-2">--}}
+{{--                                        <div class="card">--}}
+{{--                                            <img class="card-img-top image-fluid" src="http://cja.huji.ac.il/{{ $subitem->images[0]->url() }}" alt=" {{ $subitem->name() }}">--}}
+{{--                                            <div class="card-body">--}}
+{{--                                                <h5 class="card-title text-truncate">--}}
+{{--                                                    <a href="/{{ request()->project }}/items/{{ $subitem->id }}">--}}
+{{--                                                        {{ $subitem->name() }}--}}
+{{--                                                    </a>--}}
+{{--                                                </h5>--}}
+{{--                                            </div>--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
 
-                            @endforeach
-                            </div>
-                        </div>
-                    </div>
+{{--                            @endforeach--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
                     <div class="card mx-1 mb-4">
                         <div class="card-header">
                             Item Tree
