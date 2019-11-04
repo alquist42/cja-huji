@@ -32,7 +32,12 @@
                                                 @endforeach
                                             </dd>
 
-                                           
+                                            <dt class="col-sm-3">Period</dt>
+                                            <dd class="col-sm-9">
+                                                @foreach ($item->periods as $period)
+                                                    <a href="/{{ request()->project }}/browse/periods/{{ $period->id }}">{{ $period->name }}</a> @if(!$loop->last) | @endif
+                                                @endforeach
+                                            </dd>
                                             <dt class="col-sm-3">Origin</dt>
                                             <dd class="col-sm-9">
                                                 @foreach ($item->origins as $origin)
