@@ -63,6 +63,7 @@ class Set extends Classifiable
         'periods',
         'collections',
         'communities',
+        'origin_details',
 
         'items',
         'items.locations',
@@ -75,6 +76,7 @@ class Set extends Classifiable
         'items.periods',
         'items.collections',
         'items.communities',
+        'items.origin_details',
         'items.images',
         'items.images.photographers',
         'items.images.copyright',

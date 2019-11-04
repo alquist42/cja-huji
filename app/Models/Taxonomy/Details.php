@@ -8,21 +8,19 @@ use App\Models\Item;
 use App\Models\Image;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Kalnoy\Nestedset\NodeTrait;
+//use Kalnoy\Nestedset\NodeTrait;
 
-class Taxonomy extends Model
+class Details extends Model
 {
-    use NodeTrait;
+   // use NodeTrait;
     public $timestamps = false;
+    protected $table = 'taxomony_details';
     /**
      * @var array
      */
     protected $fillable = [
         'id',
-        'name',
-      //  'description',
-        'parent_id',
-        'order'
+        'details',
     ];
 
     /**
@@ -41,13 +39,5 @@ class Taxonomy extends Model
     public function items()
     {
         return $this->morphedByMany(Item::class, 'taxonomy', 'taxonomy');
-    }
-
-    /**
-     * @return BelongsToMany
-     */
-    public function images()
-    {
-        return $this->belongsToMany(Image::class);
     }
 }

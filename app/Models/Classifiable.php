@@ -15,6 +15,8 @@ use App\Models\Taxonomy\School;
 use App\Models\Taxonomy\Site;
 use App\Models\Taxonomy\Subject;
 
+use App\Models\Taxonomy\Details;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -29,6 +31,23 @@ class Classifiable extends Model
     {
         return $this->morphToMany(Origin::class, 'entity', 'taxonomy', 'entity_id', 'taxonomy_id')
             ->wherePivot('taxonomy_type', '=', 'origin');
+    }
+
+    /**
+     * @return BelongsToMany
+     */
+    public function origin_details()
+    {
+        return $this->morphMany(Details::class, 'entity', null, 'entity_id')
+            ->where('taxonomy_type', '=', 'origin');
+    }
+
+    public function origin_detail()
+    {
+        $details = $this->origin_details;
+        foreach ($details as $detail){
+            return $detail->details;
+        }
     }
 
     /**
