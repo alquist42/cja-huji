@@ -21,6 +21,23 @@
                                                     <a href="/{{ request()->project }}/browse/objects/{{ $object->id }}">{{ $object->name }}</a> @if(!$loop->last) | @endif
                                                 @endforeach
                                             </dd>
+                                            <dt class="col-sm-3">Maker</dt>
+                                            <dd class="col-sm-9">
+                                                @foreach ($item->makers as $maker)
+                                                    @if($maker->artist->id != -1)
+                                                    <a href="/{{ request()->project }}/browse/artists/{{ $maker->artist->id }}">{{ $maker->artist->name }}</a> @if(!$loop->last), @endif
+                                                    @endif
+                                                @endforeach
+                                                @if($item->makersHasProfession())
+                                                (
+                                                    @foreach ($item->makers as $maker)
+                                                        @if($maker->profession->id != -1)
+                                                            <a href="/{{ request()->project }}/browse/professions/{{ $maker->profession->id }}">{{ $maker->profession->name }}</a> @if(!$loop->last), @endif
+                                                        @endif
+                                                    @endforeach
+                                                 )
+                                                @endif
+                                            </dd>
 
                                             <dt class="col-sm-3">Date</dt>
                                             <dd class="col-sm-9">{{ $item->date }}</dd>

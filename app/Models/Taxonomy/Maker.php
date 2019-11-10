@@ -11,4 +11,14 @@ class Maker extends Taxonomy
      * @var string
      */
     protected $table = 'makers';
+
+    public function artist()
+    {
+        return $this->belongsTo(Artist::class,'maker_name_id');
+    }
+
+    public function profession()
+    {
+        return $this->belongsTo(Profession::class,'maker_profession_id');
+    }
 }

@@ -10,5 +10,10 @@ class Artist extends Taxonomy
      *
      * @var string
      */
-    protected $table = 'makers';
+    protected $table = 'artists';
+
+    public function makers()
+    {
+        return $this->hasMany(Maker::class,'maker_name_id');
+    }
 }

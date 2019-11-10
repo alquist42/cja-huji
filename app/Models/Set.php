@@ -64,6 +64,9 @@ class Set extends Classifiable
         'collections',
         'communities',
         'origin_details',
+        'makers',
+        'makers.artist',
+        'makers.profession',
 
         'items',
         'items.locations',

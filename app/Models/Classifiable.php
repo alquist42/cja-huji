@@ -139,6 +139,23 @@ class Classifiable extends Model
         return $this->morphToMany(Site::class, 'entity', 'taxonomy', 'entity_id', 'taxonomy_id')
             ->wherePivot('taxonomy_type', '=', 'site');
     }
+    /**
+     * @return BelongsToMany
+     */
+    public function makers()
+    {
+        return $this->morphToMany(Maker::class, 'entity', 'taxonomy', 'entity_id', 'taxonomy_id')
+            ->wherePivot('taxonomy_type', '=', 'maker');
+    }
+
+    public function makersHasProfession(){
+        foreach ($this->makers as $maker){
+            if($maker->profession->id != -1){
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * @return BelongsToMany
@@ -163,6 +180,9 @@ class Classifiable extends Model
     {
         return $this->morphToMany(Property::class, 'entity', 'entity_properties')->withPivot('value', 'prop_flags');
     }
+
+
+
 
 //    public function category()
 //    {
