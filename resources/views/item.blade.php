@@ -81,6 +81,13 @@
                                                 @endforeach
                                                     @if($item->collection_detail()) | {{$item->collection_detail()}} @endif
                                             </dd>
+                                            <dt class="col-sm-3">Object Copyright</dt>
+                                            <dd class="col-sm-9">
+                                                @if($item->copyright)
+                                                    {{$item->copyright->name}}
+                                                @endif
+                                            </dd>
+
 
                                             <dt class="col-sm-3">Community</dt>
                                             <dd class="col-sm-9">
