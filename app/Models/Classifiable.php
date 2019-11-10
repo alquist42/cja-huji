@@ -53,6 +53,23 @@ class Classifiable extends Model
     /**
      * @return BelongsToMany
      */
+    public function collection_details()
+    {
+        return $this->morphMany(Details::class, 'entity', null, 'entity_id')
+            ->where('taxonomy_type', '=', 'collection');
+    }
+
+    public function collection_detail()
+    {
+        $details = $this->collection_details;
+        foreach ($details as $detail){
+            return $detail->details;
+        }
+    }
+
+    /**
+     * @return BelongsToMany
+     */
     public function subjects()
     {
         return $this->morphToMany(Subject::class, 'entity', 'taxonomy', 'entity_id', 'taxonomy_id')

@@ -62,7 +62,7 @@
                                                         <a href="/{{ request()->project }}/browse/origins/{{ $anc->id }}">{{ $anc->name }}</a>
                                                          |
                                                     @endforeach
-                                                    <a href="/{{ request()->project }}/browse/origins/{{ $origin->id }}">{{ $origin->name }}</a> @if(!$loop->last) | @endif
+                                                    <a href="/{{ request()->project }}/browse/origins/{{ $origin->id }}">{{ $origin->name }}</a>
                                                 @endforeach
                                                     @if($item->origin_detail()) | {{$item->origin_detail()}} @endif
                                             </dd>
@@ -72,8 +72,14 @@
                                             <dt class="col-sm-3">Collection</dt>
                                             <dd class="col-sm-9">
                                                 @foreach ($item->collections as $collection)
-                                                    <a href="/{{ request()->project }}/browse/collections/{{ $collection->id }}">{{ $collection->name }}</a> @if(!$loop->last) | @endif
+                                                    @foreach ($collection-> getAncestors() as $anc)
+                                                        <a href="/{{ request()->project }}/browse/collections/{{ $anc->id }}">{{ $anc->name }}</a>
+                                                        |
+                                                    @endforeach
+
+                                                    <a href="/{{ request()->project }}/browse/collections/{{ $collection->id }}">{{ $collection->name }}</a>
                                                 @endforeach
+                                                    @if($item->collection_detail()) | {{$item->collection_detail()}} @endif
                                             </dd>
 
                                             <dt class="col-sm-3">Community</dt>
