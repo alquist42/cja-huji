@@ -68,6 +68,7 @@ class Set extends Classifiable
         'makers',
         'makers.artist',
         'makers.profession',
+        'creation_date',
 
         'items',
         'items.locations',
@@ -82,6 +83,11 @@ class Set extends Classifiable
         'items.communities',
         'items.origin_details',
         'items.collection_details',
+        'items.makers',
+        'items.makers.artist',
+        'items.makers.profession',
+        'items.creation_date',
+
         'items.images',
         'items.images.photographer',
         'items.images.copyright',

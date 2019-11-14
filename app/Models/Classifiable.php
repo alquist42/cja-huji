@@ -191,6 +191,14 @@ class Classifiable extends Model
     }
 
     /**
+     * @return HasOne
+     */
+    public function creation_date()
+    {
+        return $this->hasOne(Date::class, 'id', 'date');
+    }
+
+    /**
      * @return BelongsToMany
      */
     public function properties()

@@ -40,7 +40,11 @@
                                             </dd>
 
                                             <dt class="col-sm-3">Date</dt>
-                                            <dd class="col-sm-9">{{ $item->date }}</dd>
+                                            <dd class="col-sm-9">
+                                                @if($item->creation_date)
+                                                    {{$item->creation_date->name}}
+                                                @endif
+                                            </dd>
 
                                             <dt class="col-sm-3">Subject</dt>
                                             <dd class="col-sm-9">
