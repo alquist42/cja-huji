@@ -83,12 +83,12 @@ class Set extends Classifiable
         'items.origin_details',
         'items.collection_details',
         'items.images',
-        'items.images.photographers',
+        'items.images.photographer',
         'items.images.copyright',
 
 
         'images',
-        'images.photographers',
+        'images.photographer',
         'images.copyright',
 
         'children',

@@ -187,7 +187,7 @@ class Classifiable extends Model
      */
     public function copyright()
     {
-        return $this->hasOne(Copyright::class, 'id', 'object_copyright');
+        return $this->hasOne(Copyright::class, 'id', 'copyright_id');
     }
 
     /**

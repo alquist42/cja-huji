@@ -74,10 +74,9 @@ class Image extends Classifiable
     /**
      * @return BelongsToMany
      */
-    public function photographers()
+    public function photographer()
     {
-        return $this->morphToMany(Photographer::class, 'entity', 'taxonomy', 'entity_id', 'taxonomy_id')
-            ->wherePivot('taxonomy_type', '=', 'photographer');
+        return $this->hasOne(Photographer::class, 'id', 'photographer_id');
     }
 
     /**

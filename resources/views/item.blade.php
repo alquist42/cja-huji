@@ -128,11 +128,8 @@
                                             <dd class="col-sm-9">{{ array_get($item->images,'0.copyright.name') }}</dd>
 
                                             <dt class="col-sm-3">Photographer</dt>
-
                                             <dd class="col-sm-9">
-                                                @foreach (array_get($item->images,'0.photographers', []) as $photographer)
-                                                    <a href="/{{ request()->project }}/browse/photographers/{{ $photographer->id }}">{{ $photographer->name }}</a> @if(!$loop->last) | @endif
-                                                @endforeach
+                                                <a href="/{{ request()->project }}/browse/photographers/{{ array_get($item->images,'0.photographer.id') }}"> {{ array_get($item->images,'0.photographer.name') }}</a>
                                             </dd>
 
                                             <dt class="col-sm-3">Date</dt>
