@@ -96,14 +96,10 @@
                                             <dt class="col-sm-3">Community</dt>
                                             <dd class="col-sm-9">
                                                 @foreach ($item->communities as $community)
-                                                    <a href="/{{ request()->project }}/browse/communities/{{ $community->id }}">{{ $community->name }}</a> @if(!$loop->last) | @endif
-                                                @endforeach
-                                            </dd>
-
-                                            <dt class="col-sm-3">School / Style</dt>
-                                            <dd class="col-sm-9">
-                                                @foreach ($item->schools as $school)
-                                                    <a href="/{{ request()->project }}/browse/schools/{{ $school->id }}">{{ $school->name }}</a> @if(!$loop->last) | @endif
+                                                    @foreach ($community-> getAncestors() as $comm)
+                                                        <a href="/{{ request()->project }}/browse/communities/{{ $comm->id }}">{{ $comm->name }}</a> |
+                                                    @endforeach
+                                                        <a href="/{{ request()->project }}/browse/communities/{{ $community->id }}">{{ $community->name }}</a> @if(!$loop->last) <br/> @endif
                                                 @endforeach
                                             </dd>
 
@@ -116,7 +112,16 @@
                                                     @endforeach
                                                     <a href="/{{ request()->project }}/browse/locations/{{ $location->id }}">{{ $location->name }}</a> @if(!$loop->last) | @endif
                                                 @endforeach
+                                                    @if($item->location_detail()) | {{$item->location_detail()}} @endif
                                             </dd>
+
+                                            <dt class="col-sm-3">School / Style</dt>
+                                            <dd class="col-sm-9">
+                                                @foreach ($item->schools as $school)
+                                                    <a href="/{{ request()->project }}/browse/schools/{{ $school->id }}">{{ $school->name }}</a> @if(!$loop->last) | @endif
+                                                @endforeach
+                                            </dd>
+
                                             @if(!empty($item->geo_lat) && !empty($item->geo_lng))
                                             <!--Google map-->
                                                 <div id="map-container-google-9" class="z-depth-1-half map-container-5" style="height: 130px">
