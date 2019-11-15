@@ -17,10 +17,10 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">Category</span>
                     </div>
-                    <select id="categories" name="categories[]" class="form-control" multiple>
-                        @if(!empty($filters['categories']))
-                            @foreach ($filters['categories'] as $community)
-                                <option value="{{ $community->id }}" selected>{{ $community->name }}</option>
+                    <select id="categories" class="form-control" name="categories[]" multiple="multiple">
+                        @if(!empty($categories))
+                            @foreach ($categories as $category)
+                                <option value="{{ $category->slug }}" @if($category->selected) selected @endif>{{ $category->name }}</option>
                             @endforeach
                         @endif
                     </select>
