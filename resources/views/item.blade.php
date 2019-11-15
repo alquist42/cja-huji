@@ -63,10 +63,9 @@
                                             <dd class="col-sm-9">
                                                 @foreach ($item->origins as $origin)
                                                     @foreach ($origin-> getAncestors() as $anc)
-                                                        <a href="/{{ request()->project }}/browse/origins/{{ $anc->id }}">{{ $anc->name }}</a>
-                                                         |
+                                                        <a href="/{{ request()->project }}/browse/origins/{{ $anc->id }}">{{ $anc->name }}</a> |
                                                     @endforeach
-                                                    <a href="/{{ request()->project }}/browse/origins/{{ $origin->id }}">{{ $origin->name }}</a>
+                                                    <a href="/{{ request()->project }}/browse/origins/{{ $origin->id }}">{{ $origin->name }}</a> @if(!$loop->last) <br/> @endif
                                                 @endforeach
                                                     @if($item->origin_detail()) | {{$item->origin_detail()}} @endif
                                             </dd>
@@ -77,11 +76,9 @@
                                             <dd class="col-sm-9">
                                                 @foreach ($item->collections as $collection)
                                                     @foreach ($collection-> getAncestors() as $anc)
-                                                        <a href="/{{ request()->project }}/browse/collections/{{ $anc->id }}">{{ $anc->name }}</a>
-                                                        |
+                                                        <a href="/{{ request()->project }}/browse/collections/{{ $anc->id }}">{{ $anc->name }}</a> |
                                                     @endforeach
-
-                                                    <a href="/{{ request()->project }}/browse/collections/{{ $collection->id }}">{{ $collection->name }}</a>
+                                                    <a href="/{{ request()->project }}/browse/collections/{{ $collection->id }}">{{ $collection->name }}</a> @if(!$loop->last) <br/> @endif
                                                 @endforeach
                                                     @if($item->collection_detail()) | {{$item->collection_detail()}} @endif
                                             </dd>
@@ -99,7 +96,8 @@
                                                     @foreach ($community-> getAncestors() as $comm)
                                                         <a href="/{{ request()->project }}/browse/communities/{{ $comm->id }}">{{ $comm->name }}</a> |
                                                     @endforeach
-                                                        <a href="/{{ request()->project }}/browse/communities/{{ $community->id }}">{{ $community->name }}</a> @if(!$loop->last) <br/> @endif
+                                                        <a href="/{{ request()->project }}/browse/communities/{{ $community->id }}">{{ $community->name }}</a>
+                                                        @if(!$loop->last) <br/> @endif
                                                 @endforeach
                                             </dd>
 
@@ -107,10 +105,10 @@
                                             <dd class="col-sm-9">
                                                 @foreach ($item->locations as $location)
                                                     @foreach ($location-> getAncestors() as $anc)
-                                                        <a href="/{{ request()->project }}/browse/origins/{{ $anc->id }}">{{ $anc->name }}</a>
-                                                        |
+                                                        <a href="/{{ request()->project }}/browse/origins/{{ $anc->id }}">{{ $anc->name }}</a> |
                                                     @endforeach
-                                                    <a href="/{{ request()->project }}/browse/locations/{{ $location->id }}">{{ $location->name }}</a> @if(!$loop->last) | @endif
+                                                    <a href="/{{ request()->project }}/browse/locations/{{ $location->id }}">{{ $location->name }}</a>
+                                                        @if(!$loop->last) <br/> @endif
                                                 @endforeach
                                                     @if($item->location_detail()) | {{$item->location_detail()}} @endif
                                             </dd>
