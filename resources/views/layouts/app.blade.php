@@ -21,7 +21,7 @@
     </script>
 </head>
 <body>
-    <div id="app">
+    <div id="app" data-project="{{ request()->project }}">
 
         @include('partials.header')
 

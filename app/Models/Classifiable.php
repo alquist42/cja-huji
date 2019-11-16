@@ -223,11 +223,17 @@ class Classifiable extends Model
         return $this->morphToMany(Property::class, 'entity', 'entity_properties')->withPivot('value', 'prop_flags');
     }
 
-
-
-
-//    public function category()
-//    {
-//        return $this->morphedByMany(Site::class, 'taxonomy', 'taxonomy');
-//    }
+    /**
+     * Scope a query to only include popular users.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeProject($query)
+    {
+        return $query
+            ->join('projects', 'sets.id', '=', 'projects.taggable_id')
+            ->where('projects.taggable_type', 'set')
+            ->where('projects.tag_slug', app()->make(Tenant::class)->slug());
+    }
 }

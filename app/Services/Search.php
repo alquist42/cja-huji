@@ -14,8 +14,8 @@ use App\Models\Item;
 
 class Search
 {
-    public function find($filters,$search,$categories){
-        $query = Set::select("sets.id","sets.name")->where('sets.publish_state','>',0);
+    public function find($filters, $search, $categories){
+        $query = Set::project()->select("sets.id","sets.name")->where('sets.publish_state','>',0);
 
         foreach ($filters as $type => $values) {
             $query->whereHas($type, function($q) use ($type, $values) {
@@ -54,7 +54,7 @@ class Search
         $query->orderBy('sets.id', 'DESC');
         $query->with('images');
 
-        return $query->paginate(50);
+        return $query;
     }
 
 }

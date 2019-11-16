@@ -4,22 +4,17 @@
     <div class="container">
         <div class="row my-5">
 
-            <div class="col-4">
-                <div class="card">
-                    <div class="card-body">
-                        <a href="/catalogue/items">Main Catalogue</a>
+            @foreach($projects as $project => $name)
+
+                <div class="col-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <a href="/{{ $project  }}/items">{{ $name }}</a>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-
-            <div class="col-4">
-                <div class="card">
-                    <div class="card-body">
-                        <a href="/wpc/items">WPC Catalogue</a>
-                    </div>
-                </div>
-            </div>
+            @endforeach
 
         </div>
     </div>

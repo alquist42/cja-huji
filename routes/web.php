@@ -13,9 +13,13 @@
 Route::get('/admin/{name?}','AdminController@viewLinks')->name('{name?}');
 
 Route::get('/', 'WelcomeController@index');
-Route::get('/{project}', 'HomeController@index')->where('project', 'catalogue|wpc');
-Route::get('/{project}/items', 'CatalogController@index')->where('project', 'catalogue|wpc');
-Route::get('/{project}/items/{item}', 'CatalogController@show')->where('project', 'catalogue|wpc');
+
+Route::group(['middleware' => ['project']], function () {
+    Route::get('/{project}', 'HomeController@index');
+    Route::get('/{project}/items', 'CatalogController@index');
+    Route::get('/{project}/items/{item}', 'CatalogController@show');
+});
+
 
 /* Vue.js SPA */
 Route::get('/{project}/browse/{any?}/{other?}', function ($project) {

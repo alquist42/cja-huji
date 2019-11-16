@@ -4,8 +4,7 @@ Route::post('/auth/token', 'Api\AuthController@getAccessToken');
 Route::post('/auth/reset-password', 'Api\AuthController@passwordResetRequest');
 Route::post('/auth/change-password', 'Api\AuthController@changePassword');
 
-
-Route::group(['namespace' => 'Api'], function() {
+Route::group(['namespace' => 'Api', 'middleware' => ['project']], function() {
     Route::get('/items', 'ItemsController@index');
     Route::get('/items/{item}', 'ItemsController@show');
 

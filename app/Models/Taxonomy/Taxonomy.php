@@ -40,7 +40,8 @@ class Taxonomy extends Model
      */
     public function items()
     {
-        return $this->morphedByMany(Item::class, 'taxonomy', 'taxonomy');
+        return $this->morphedByMany(Item::class, 'taxonomy', 'taxonomy', 'entity_id', 'taxonomy_id')
+            ->wherePivot('entity_type','set');
     }
 
     /**

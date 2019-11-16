@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Tenant;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -39,7 +40,7 @@ class AppServiceProvider extends ServiceProvider
             \App\Console\Commands\fixTree::class
         ]);
 
-
+        $this->app->instance(Tenant::class, new Tenant());
 
         Relation::morphMap([
             'subject' => Subject::class,

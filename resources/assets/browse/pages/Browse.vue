@@ -96,7 +96,7 @@
         this.selected = parseInt(this.$route.params.id)
         this.rendered = false
 
-        const { data } = await axios.get(`/api/taxonomy/${this.type}?as_tree=1`)
+        const { data } = await axios.get(`/api/taxonomy/${this.type}?as_tree=1&project=${window.project}`)
 
         this.treeData = data
 
@@ -147,7 +147,7 @@
         this.items = []
         this.loading = true
 
-        const { data } = await axios.get(`/api/items?${this.type}[]=${this.selected}`)
+        const { data } = await axios.get(`/api/items?${this.type}[]=${this.selected}&project=${window.project}`)
 
         this.items = data.data
         this.loading = false

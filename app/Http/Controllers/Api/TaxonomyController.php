@@ -73,7 +73,6 @@ class TaxonomyController extends Controller
             return response()->json([ 'error' => 400, 'message' => 'Missing query term' ], 400);
         }
 
-
         $data = $model::select("id", "name")
             ->where('name', 'LIKE', "%$search%")
             ->get();

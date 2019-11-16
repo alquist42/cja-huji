@@ -3,6 +3,9 @@ import 'select2';
 import 'bootstrap';
 
 $(document).ready(function () {
+
+    window.project = document.getElementById('app').dataset.project
+
     $('.select2').select2();
     $('.select2-tags').select2({tags: true});
     $('#flash-overlay-modal').modal();
@@ -20,7 +23,8 @@ $(document).ready(function () {
                     data: function (params) {
                         return {
                             term: $.trim(params.term),
-                            type: $this.attr('id')
+                            type: $this.attr('id'),
+                            project: window.project
                         }
                     },
                     delay: 250,

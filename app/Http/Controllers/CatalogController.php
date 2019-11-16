@@ -60,7 +60,9 @@ class CatalogController extends Controller
         })->toArray();
 
       //  $res = $query->get();
-        $items = $this->search->find($filters, $search, $categories)->appends($page);
+        $items = $this->search->find($filters, $search, $categories)
+            ->paginate(50)
+            ->appends($page);
 
         $selected = [];
         foreach ($filters as $type => $values) {

@@ -2,22 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Tag;
 use App\Models\Post;
 use App\Models\Comment;
-use App\Models\Category;
-use Illuminate\Http\Request;
+use App\Models\Tenant;
 
 class WelcomeController extends Controller
 {
     /**
-     * Create a new controller instance.
-     *
-     * @return void
+     * @var Tenant|null
      */
-    public function __construct()
+    protected $tenant = null;
+
+    /**
+     * WelcomeController constructor.
+     * @param Tenant $tenant
+     */
+    public function __construct(Tenant $tenant)
     {
         //$this->middleware('auth');
+        $this->tenant = $tenant;
     }
 
     /**
@@ -27,11 +30,8 @@ class WelcomeController extends Controller
      */
     public function index()
     {
-        $posts      = 0;
-        $comments   = 0;
-        $tags       = 0;
-        $categories = 0;
+        $projects = $this->tenant->projects();
 
-        return view('home', get_defined_vars());
+        return view('home', compact('projects'));
     }
 }
