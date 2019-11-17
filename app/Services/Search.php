@@ -16,12 +16,26 @@ class Search
 {
     public function find($filters, $search, $categories){
         $query = Set::project()->select("sets.id","sets.name")->where('sets.publish_state','>',0);
-
         foreach ($filters as $type => $values) {
-            $query->whereHas($type, function($q) use ($type, $values) {
-                $q->whereIn($type . '.id', $values);
-            });
+            $model = '\\App\\Models\\Taxonomy\\' . ucfirst(str_singular($type));
+            $selected = $model::select("id", "_lft", "_rgt")->find($values);
+             foreach ($selected as $sModel) {
+                 $descendantsFilters[$type][$sModel->id]['_lft'] = $sModel->_lft;
+                 $descendantsFilters[$type][$sModel->id]['_rgt'] = $sModel->_rgt;
+            }
         }
+
+        $query->where(function ($query) use ($filters,$descendantsFilters) {
+            foreach ($filters as $type => $values) {
+                foreach($values as $value){
+                    $query->orWhereHas($type, function($q) use ($type, $value, $descendantsFilters) {
+                        $q->where($type . '.id','=', $value)
+                            ->orWhereBetween($type . '._lft', [$descendantsFilters[$type][$value]['_lft']+1,$descendantsFilters[$type][$value]['_rgt']]);
+                    });
+                }
+            }
+        });
+
 
 
         if (!empty($search)) {
