@@ -16,6 +16,7 @@ class Search
 {
     public function find($filters, $search, $categories){
         $query = Set::project()->select("sets.id","sets.name")->where('sets.publish_state','>',0);
+        $descendantsFilters=[];
         foreach ($filters as $type => $values) {
             $model = '\\App\\Models\\Taxonomy\\' . ucfirst(str_singular($type));
             $selected = $model::select("id", "_lft", "_rgt")->find($values);
@@ -27,15 +28,16 @@ class Search
 
         $query->where(function ($query) use ($filters,$descendantsFilters) {
             foreach ($filters as $type => $values) {
-                foreach($values as $value){
-                    $query->orWhereHas($type, function($q) use ($type, $value, $descendantsFilters) {
-                        $q->where($type . '.id','=', $value)
-                            ->orWhereBetween($type . '._lft', [$descendantsFilters[$type][$value]['_lft']+1,$descendantsFilters[$type][$value]['_rgt']]);
-                    });
-                }
+                $query->WhereHas($type, function($q) use ($type, $values, $descendantsFilters) {
+                    $q->whereIn($type . '.id', $values);
+                    if(!empty($descendantsFilters)){
+                        foreach($values as $value){
+                            $q->orWhereBetween($type . '._lft', [$descendantsFilters[$type][$value]['_lft']+1,$descendantsFilters[$type][$value]['_rgt']]);
+                        }
+                    }
+                });
             }
         });
-
 
 
         if (!empty($search)) {
