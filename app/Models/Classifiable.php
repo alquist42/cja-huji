@@ -236,4 +236,9 @@ class Classifiable extends Model
             ->where('projects.taggable_type', 'set')
             ->where('projects.tag_slug', app()->make(Tenant::class)->slug());
     }
+
+    public function scopePublished($query)
+    {
+        return $query->where('publish_state', '>', 0);
+    }
 }

@@ -15,7 +15,7 @@ use App\Models\Item;
 class Search
 {
     public function find($filters, $search, $categories){
-        $query = Set::project()->select("sets.id","sets.name")->where('sets.publish_state','>',0);
+        $query = Set::project()->published()->select("sets.id","sets.name");
         $descendantsFilters=[];
         foreach ($filters as $type => $values) {
             $model = '\\App\\Models\\Taxonomy\\' . ucfirst(str_singular($type));
