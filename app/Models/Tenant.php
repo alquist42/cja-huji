@@ -15,8 +15,8 @@ class Tenant
         'slovenia' => 'Slovenia Catalogue',
         'mhs'  => 'MHS Catalogue',
         'sch'  => 'SHC Catalogue',
-        'prlst'  => 'PRLST Catalogue',
-        'pln'  => 'PLN Catalogue',
+     //   'prlst'  => 'PRLST Catalogue',
+     //   'pln'  => 'PLN Catalogue',
     ];
 
     protected $map = [
