@@ -3,8 +3,15 @@ import 'select2';
 import 'bootstrap';
 
 $(document).ready(function () {
-
-    window.project = document.getElementById('app').dataset.project
+    window.project = document.getElementById('app').dataset.project;
+    $('#select_categories').click(function(e) {
+        $('#categories').select2('destroy').find('option').prop('selected', 'selected').end().select2();
+        e.preventDefault();
+    });
+    $('#clear_categories').click(function(e) {
+        $('#categories').select2('destroy').find('option').prop('selected', false).end().select2();
+        e.preventDefault();
+    });
 
     $('.select2').select2();
     $('.select2-tags').select2({tags: true});

@@ -25,6 +25,8 @@
                         @endif
                     </select>
                 </div>
+                <button id="select_categories" class="btn">Select all</button>
+                <button id="clear_categories" class="btn">Clear all</button>
             </div>
         </div>
 
@@ -36,18 +38,6 @@
                     </div>
                     <input class="form-control" name="search" id="search" value="{{ request()->get('search') }}" type="text" placeholder="type..."/>
                 </div>
-               <!-- <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">Category</span>
-                    </div>
-                    <select id="categories" class="form-control" name="categories[]" multiple="multiple">
-                        @if(!empty($categories))
-                            @foreach ($categories as $category)
-                                <option value="{{ $category->slug }}" @if($category->selected) selected @endif>{{ $category->name }}</option>
-                            @endforeach
-                        @endif
-                    </select>
-                </div> -->
 
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
