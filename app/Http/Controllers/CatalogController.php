@@ -39,7 +39,7 @@ class CatalogController extends Controller
 
     public function index(Request $request, $project )
     {
-        $categories_data = Category::select("slug", "name")->get();
+        $categories_data = Category::select("slug", "name")->where("in_search","=",1)->get();
 
         $page = $request->get('page');
         $search = $request->get('search');
@@ -51,6 +51,12 @@ class CatalogController extends Controller
                     $category_data->selected = true;
                 }
             }
+        } else {
+            $categories_data = $categories_data->map(function ($category_data) {
+                $category_data->selected = true;
+                return $category_data;
+            });
+
         }
 
         $filters = collect($request->only($this->allowed_filters))->filter(function($value) {

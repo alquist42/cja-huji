@@ -6,12 +6,12 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">Search</span>
                     </div>
-                    <input class="form-control" name="search" id="search" value="{{ request()->get('search') }}" type="text" placeholder="type..."/>
+                    <input class="form-control" name="text" id="text" value="{{ request()->get('text') }}" type="text" placeholder="type..."/>
                 </div>
             </div>
         </div>
 
-        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+        <div class="col-12">
             <div class="form-group">
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
@@ -25,6 +25,29 @@
                         @endif
                     </select>
                 </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+            <div class="form-group">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Name / Title</span>
+                    </div>
+                    <input class="form-control" name="search" id="search" value="{{ request()->get('search') }}" type="text" placeholder="type..."/>
+                </div>
+               <!-- <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Category</span>
+                    </div>
+                    <select id="categories" class="form-control" name="categories[]" multiple="multiple">
+                        @if(!empty($categories))
+                            @foreach ($categories as $category)
+                                <option value="{{ $category->slug }}" @if($category->selected) selected @endif>{{ $category->name }}</option>
+                            @endforeach
+                        @endif
+                    </select>
+                </div> -->
 
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
@@ -46,19 +69,6 @@
                     <select id="communities" name="communities[]" class="form-control" multiple>
                         @if(!empty($filters['communities']))
                             @foreach ($filters['communities'] as $community)
-                                <option value="{{ $community->id }}" selected>{{ $community->name }}</option>
-                            @endforeach
-                        @endif
-                    </select>
-                </div>
-
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">Collection</span>
-                    </div>
-                    <select id="collections" name="collections[]" class="form-control" multiple>
-                        @if(!empty($filters['collections']))
-                            @foreach ($filters['collections'] as $community)
                                 <option value="{{ $community->id }}" selected>{{ $community->name }}</option>
                             @endforeach
                         @endif
@@ -101,6 +111,18 @@
                     <select id="locations" name="locations[]" class="form-control" multiple>
                         @if(!empty($filters['locations']))
                             @foreach ($filters['locations'] as $community)
+                                <option value="{{ $community->id }}" selected>{{ $community->name }}</option>
+                            @endforeach
+                        @endif
+                    </select>
+                </div>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Collection</span>
+                    </div>
+                    <select id="collections" name="collections[]" class="form-control" multiple>
+                        @if(!empty($filters['collections']))
+                            @foreach ($filters['collections'] as $community)
                                 <option value="{{ $community->id }}" selected>{{ $community->name }}</option>
                             @endforeach
                         @endif
