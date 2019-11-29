@@ -43,6 +43,7 @@ class CatalogController extends Controller
 
         $page = $request->get('page');
         $search = $request->get('search');
+        $text = $request->get('text');
         $categories = $request->get('categories');
 
         if(!empty($categories)){
@@ -66,7 +67,7 @@ class CatalogController extends Controller
         })->toArray();
 
       //  $res = $query->get();
-        $items = $this->search->find($filters, $search, $categories)
+        $items = $this->search->find($filters, $search, $text, $categories)
             ->paginate(50)
             ->appends($page);
 
