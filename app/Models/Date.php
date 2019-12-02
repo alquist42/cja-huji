@@ -11,5 +11,5 @@ class Date extends Model
      *
      * @var string
      */
-    protected $table = 'date';
+    protected $table = 'dates';
 }
