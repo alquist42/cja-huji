@@ -80,7 +80,7 @@
                         @endif
                     </select>
                 </div>
-
+                {{--
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
                         <span class="input-group-text">Date</span>
@@ -93,6 +93,7 @@
                         @endif
                     </select>
                 </div>
+                --}}
 
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
