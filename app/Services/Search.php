@@ -10,81 +10,188 @@ namespace App\Services;
 
 use App\Models\Set;
 use App\Models\Item;
+use App\Models\Search as SearchIndex;
 use Illuminate\Support\Facades\DB;
 
 class Search
 {
     public function find($filters, $search, $text, $categories){
-        $query = Set::project()->published()->select("sets.id","sets.name");
+
+     //   $sets = $this->getAll(Set::class, $filters, $search, $text, $categories);
+        $data = $this->getAll(Item::class, $filters, $search, $text, $categories);
+        return $data;
+    }
+
+    public function getAll($model,$filters, $search, $text, $categories){
+        DB::enableQueryLog();
+        $collection = collect([]);
+        $result = null;
+        $total = 0;
+    //    $name = lcfirst ((new \ReflectionClass($model))->getShortName());
+      //  $query = $model::project($name)->published()->select("{$name}s.id","{$name}s.ntl");
 
         if(!empty($text)){
-            $query->join('search', function ($join) {
-                $join->on('search.id', '=', 'sets.id')->where(
-                    'search.type', '=', 'set');
-            });
-            $query->where('search.text', 'LIKE', "%$text%");
-        }
-        $descendantsFilters=[];
-        foreach ($filters as $type => $values) {
-            $model = '\\App\\Models\\Taxonomy\\' . ucfirst(str_singular($type));
-            $selected = $model::select("id", "_lft", "_rgt")->find($values);
-             foreach ($selected as $sModel) {
-                 $descendantsFilters[$type][$sModel->id]['_lft'] = $sModel->_lft;
-                 $descendantsFilters[$type][$sModel->id]['_rgt'] = $sModel->_rgt;
-            }
-        }
+//            $query = DB::select( DB::raw("
+//                SELECT NOW(), search.id, search.type
+//                FROM search
+//                LEFT JOIN `projects` ON `search`.`id` = `projects`.`taggable_id` AND `projects`.`taggable_type` = `search`.`type`
+//                WHERE `projects`.`tag_slug` = 'CJA' AND (MATCH (`text`) AGAINST (\" +Karaite\" IN BOOLEAN MODE) > 0)
+//                  AND (set_id IS NULL OR set_id NOT IN
+//                (
+//                SELECT search.id
+//                FROM `search`
+//                WHERE
+//                 (MATCH (`text`) AGAINST (\" +Karaite\" IN BOOLEAN MODE) > 0)
+//                ))
+//                ORDER BY CASE WHEN set_id IS NULL THEN 0 ELSE 1 END ASC, image DESC, search.id DESC
+//                LIMIT 50;
+//                "))->paginate(50);
 
-        $query->where(function ($query) use ($filters,$descendantsFilters) {
-            foreach ($filters as $type => $values) {
-                $query->WhereHas($type, function($q) use ($type, $values, $descendantsFilters) {
-                    $q->whereIn($type . '.id', $values);
-                    if(!empty($descendantsFilters)){
-                        foreach($values as $value){
-                            $q->orWhereBetween($type . '._lft', [$descendantsFilters[$type][$value]['_lft']+1,$descendantsFilters[$type][$value]['_rgt']]);
-                        }
-                    }
+
+            $result = DB::table('search')
+                ->selectRaw('search.id,search.type,MATCH (`text`) AGAINST (" +'.$text.'") as rel')
+                ->leftJoin('projects', function($join) {
+                    $join->on('search.id', '=', 'projects.taggable_id');
+                    $join->on('projects.taggable_type', '=', 'search.type');
+                })
+                ->whereRaw('MATCH (`text`) AGAINST (" +'.$text.'" IN BOOLEAN MODE) > 0')
+                ->where('projects.tag_slug','=','CJA')
+                ->where('search.publish_state','>',0)
+                ->where(function ($q) use ($text) {
+                    $q->whereNull('set_id')
+                        ->orWhereNotIn("set_id", function($query) use ($text){
+                            $query->select('id')
+                            ->from('search')
+                            ->whereRaw('MATCH (`text`) AGAINST (" +'.$text.'" IN BOOLEAN MODE) > 0')
+                            ->where('search.type','=','set');
+                        });
+                })
+                ->orderBy('set_id')
+                ->orderBy('search.image','DESC')
+                ->orderBy('rel','DESC')
+                ->orderBy('search.id','DESC')
+                ->paginate(50);
+          //  dd(DB::getQueryLog());
+
+            $total = $result->total();
+            $data = $result->toArray()['data'];
+            $setsCount = 0;
+            $itemsCount=0;
+            $setObjects= array_filter($data, function($k) {
+                return $k->type=='set';
+            });
+            $itemObjects= array_filter($data, function($k) {
+                return $k->type=='item';
+            });
+
+
+
+            if(!empty($setObjects)){
+                $setIds = array_map(function ($u) { return $u->id; }, $setObjects);
+             //   dd($setIds);
+                $ids_ordered = implode(',', $setIds);
+                $sets = Set::select("id","ntl")
+                ->whereIn('id',$setIds)
+                ->orderByRaw(DB::raw("FIELD(id, $ids_ordered)"))
+                ->with('images')
+                    ->get();
+             //   dd(DB::getQueryLog());
+                $collection = $sets;
+                $setsCount = count($sets);
+            }
+
+            if(!empty($itemObjects)){
+                $itemIds = array_map(function ($u) { return $u->id; }, $itemObjects);
+                $items = Item::select("id","ntl")
+                    ->whereIn('id',$itemIds)
+                    ->with('images')->get();
+                // TODO find good method to push collection
+                $items->each(function ($item, $key) use ($collection) {
+                    $collection->push($item);
                 });
+                $itemsCount = count($items);
+             //   $collection->concat($items);
+              //  dd($items);
             }
-        });
 
-
-        if (!empty($search)) {
-            $query->where('name', 'LIKE', "%$search%");
+        //    dd(DB::getQueryLog());
         }
+     //   dd($collection);
+     //   $query = $model::project($name)->published()->select("{$name}s.id","{$name}s.ntl");
+//        if($name == 'item'){
+//            $query->whereNotIn("{$name}s.set_id", function($query) use ($text){
+//                $query->select('id')
+//                    ->from('search')
+//                    ->where('search.text', 'LIKE', "%$text%")
+//                    ->where('search.type','=','set');
+//            });
+//        }
 
-        if (!empty($categories)) {
-            $query->where(function ($query) use ($categories) {
-                $query->where('category', array_shift($categories));
-                foreach ($categories as $category){
-                    $query->orWhere('category', $category);
-                }
-            });
-        }
+//        $descendantsFilters=[];
+//        foreach ($filters as $type => $values) {
+//            $model = '\\App\\Models\\Taxonomy\\' . ucfirst(str_singular($type));
+//            $selected = $model::select("id", "_lft", "_rgt")->find($values);
+//             foreach ($selected as $sModel) {
+//                 $descendantsFilters[$type][$sModel->id]['_lft'] = $sModel->_lft;
+//                 $descendantsFilters[$type][$sModel->id]['_rgt'] = $sModel->_rgt;
+//            }
+//        }
+//
+//        $query->where(function ($query) use ($filters,$descendantsFilters) {
+//            foreach ($filters as $type => $values) {
+//                $query->WhereHas($type, function($q) use ($type, $values, $descendantsFilters) {
+//                    $q->whereIn($type . '.id', $values);
+//                    if(!empty($descendantsFilters)){
+//                        foreach($values as $value){
+//                            $q->orWhereBetween($type . '._lft', [$descendantsFilters[$type][$value]['_lft']+1,$descendantsFilters[$type][$value]['_rgt']]);
+//                        }
+//                    }
+//                });
+//            }
+//        });
+
+//
+//        if (!empty($search)) {
+//            $query->where('name', 'LIKE', "%$search%");
+//        }
+//
+//        if (!empty($categories)) {
+//            $query->where(function ($query) use ($categories) {
+//                $query->where('category', array_shift($categories));
+//                foreach ($categories as $category){
+//                    $query->orWhere('category', $category);
+//                }
+//            });
+//        }
 
         /* PRIORITY FOR SETS WITH IMAGES */
 
-        $query->leftJoin('entity_images', function ($join) {
-            $join->on('entity_images.entity_id', '=', 'sets.id')->where(
-                'entity_images.entity_type', '=', 'set');
+        /*$query->leftJoin('entity_images', function ($join) use ($name) {
+            $join->on('entity_images.entity_id', '=', "{$name}s.id")->where(
+                'entity_images.entity_type', '=', $name);
         });
         $query->leftJoin('images', function ($join) {
             $join->on('images.id', '=', 'entity_images.image_id');
         });
         $query->orderByRaw(
             "CASE WHEN (images.medium is null AND images.def is null AND images.batch_url is null) THEN 1 ELSE 2 END DESC"
-        );
+        );*/
 
-
-        $query->orderBy('sets.id', 'DESC');
-        $query->with('images');
-
-        return $query;
+    //    $query->orderBy("{$name}s.id", 'DESC');
+     //   $query->with('images');
+       // ->paginate(50);
+     //   dd(DB::getQueryLog());
+    //    dd($collection);
+        return ['collection' =>  $collection,
+            'pagination' => $result,
+            'setsCount' => $total,
+            'itemsCount' => 0 ];
     }
 
     public function addToIndex($type,$offset){
    //     DB::enableQueryLog();
         $step = 500;
-        DB::statement("SET group_concat_max_len=15000;");
+        DB::statement("SET group_concat_max_len=15000000000;");
         $countData = DB::select( DB::raw("select count(id) as c from {$type}s"));
 
         $count =  $countData[0]->c;
@@ -103,12 +210,12 @@ class Search
             $groupByName = ($type =='set') ? "s.name, " : "";
             // ". $type =='set'? "COALESCE(s.name,'')," : "" . "
             DB::insert("insert into search(
-                     id,type,text,subject,object,maker,period,
+                     id,type,publish_state,text,subject,object,maker,period,
                      origin,historical_origin,school,community,
-                     collection,site,location
+                     collection,site,location,image
                      ) 
-                     SELECT s.id,'{$type}',
-                     CONCAT_WS(' ',{$name} COALESCE(s.ntl,''),COALESCE(s.addenda,''),
+                     SELECT s.id,'{$type}',s.publish_state,
+                     CONCAT_WS(' ',{$name} COALESCE(s.ntl,''),COALESCE(s.addenda,''),COALESCE(s.description,''),
                      COALESCE(GROUP_CONCAT(DISTINCT  sbj.name SEPARATOR ' '),''),
                      COALESCE(GROUP_CONCAT(DISTINCT  obj.name SEPARATOR ' '),''),
                      COALESCE(GROUP_CONCAT(DISTINCT  p.name SEPARATOR ' '),''),
@@ -122,7 +229,8 @@ class Search
                      COALESCE(GROUP_CONCAT(DISTINCT  ors2.name SEPARATOR ' '),''),
                      COALESCE(GROUP_CONCAT(DISTINCT  hors2.name SEPARATOR ' '),''),
                      COALESCE(GROUP_CONCAT(DISTINCT  dates.name SEPARATOR ' '),''),
-                     COALESCE(GROUP_CONCAT(DISTINCT  per.name SEPARATOR ' '),'')
+                     COALESCE(GROUP_CONCAT(DISTINCT  per.name SEPARATOR ' '),''),
+                     COALESCE(GROUP_CONCAT(DISTINCT  ep.value SEPARATOR ' '),'')
                     ) as text,
                     COALESCE(GROUP_CONCAT(DISTINCT  sbj.name SEPARATOR ' '),''),
                     COALESCE(GROUP_CONCAT(DISTINCT  obj.name SEPARATOR ' '),''),
@@ -135,7 +243,8 @@ class Search
                      COALESCE(GROUP_CONCAT(DISTINCT  com.name SEPARATOR ' '),''),
                      COALESCE(GROUP_CONCAT(DISTINCT  col.name SEPARATOR ' '),''),
                      COALESCE(GROUP_CONCAT(DISTINCT  site.name SEPARATOR ' '),''),
-                     COALESCE(GROUP_CONCAT(DISTINCT  l2.name SEPARATOR ' '),'')
+                     COALESCE(GROUP_CONCAT(DISTINCT  l2.name SEPARATOR ' '),''),
+                     (CASE WHEN CONCAT(COALESCE(ii.medium,''), COALESCE(ii.def,''), COALESCE(ii.batch_url,'')) = '' THEN 0 ELSE 1 END)
                     
                     FROM {$type}s s
                     LEFT JOIN taxonomy tsbj ON s.`id` = tsbj.`entity_id` AND tsbj.`entity_type` = '{$type}' AND tsbj.taxonomy_type = 'subject'
@@ -179,11 +288,31 @@ class Search
                     LEFT JOIN taxonomy tl ON s.`id` = tl.`entity_id` AND tl.`entity_type` = '{$type}' AND tl.taxonomy_type = 'location'
                     LEFT JOIN `locations` l on l.`id` = tl.`taxonomy_id`
                     LEFT JOIN `locations` l2 on l._rgt  between l2.`_lft` and l2.`_rgt` 
+                    
+                    LEFT JOIN entity_properties ep ON s.id = ep.entity_id AND ep.`entity_type` = '{$type}'
+                    
+                    LEFT JOIN entity_images ei on ei.entity_id = s.id AND ei.entity_type = '{$type}'
+                    LEFT JOIN images ii on ei.image_id = ii.id
                     WHERE s.id in ({$ids})
-                    GROUP BY s.id, {$groupByName} s.ntl,s.addenda
+                    GROUP BY s.id
                   
                     ");
 
+
+            /*
+             * SET group_concat_max_len=15000;
+update search
+set text =
+CONCAT_WS(' ',COALESCE(text,''),  (select  COALESCE(GROUP_CONCAT(DISTINCT  ep.value SEPARATOR ' '),'')  as value
+from entity_properties ep WHERE ep.entity_id = search.id and ep.entity_type = 'set'))
+where   search.`type` = 'set';
+
+
+
+            + set_id
+            update search set set_id = (select set_id  from items where items.id = search.id) where type='item'
+
+            */
           //  dd(DB::getQueryLog());
             if(($i+$step) <= $count){
                 $incr = $step;
