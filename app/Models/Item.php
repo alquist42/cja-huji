@@ -55,4 +55,11 @@ class Item extends Classifiable
     {
         return $this->belongsTo(Set::class);
     }
+
+    /**
+     * @return string
+     */
+    public function name() {
+        return $this->ntl;
+    }
 }

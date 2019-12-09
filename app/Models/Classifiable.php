@@ -229,12 +229,16 @@ class Classifiable extends Model
      * @param \Illuminate\Database\Eloquent\Builder $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeProject($query)
+    public function scopeProject($query, $model)
     {
         return $query
-            ->join('projects', 'sets.id', '=', 'projects.taggable_id')
-            ->where('projects.taggable_type', 'set')
+            ->join('projects', "{$model}s.id", '=', 'projects.taggable_id')
+            ->where('projects.taggable_type', $model)
             ->where('projects.tag_slug', app()->make(Tenant::class)->slug());
+
+
+
+
     }
 
     public function scopePublished($query)

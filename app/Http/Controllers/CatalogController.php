@@ -8,6 +8,7 @@ use App\Models\Origin;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Services\Search;
+use App\Services\Pagination;
 
 class CatalogController extends Controller
 {
@@ -65,19 +66,29 @@ class CatalogController extends Controller
         })->map(function($value) {
             return is_array($value) ? $value : [$value];
         })->toArray();
+       // dd($page);
 
       //  $res = $query->get();
-        $items = $this->search->find($filters, $search, $text, $categories)
-            ->paginate(50)
-            ->appends($page);
-
+        $data = $this->search->find($filters, $search, $text, $categories);
+        $items = $data['collection'];
+        $pagination =  $data['pagination'];
+           // ->paginate(50);
+          //  ->appends($page);
+   //     $links = Pagination::makeLengthAware($items, 158, 50,$_GET);
         $selected = [];
         foreach ($filters as $type => $values) {
             $model = '\\App\\Models\\Taxonomy\\' . ucfirst(str_singular($type));
             $selected[$type] = $model::select("id", "name")->find($values);
         }
 
-        return view('index', [ "items" => $items , "filters" => $selected, "categories" => $categories_data ]);
+        return view('index', [
+            "items" => $items ,
+            "filters" => $selected,
+            "categories" => $categories_data,/*"links"=>$links ,*/
+            'pagination' => $pagination,
+            'setsCount' => $data['setsCount'],
+            'itemsCount' => $data['itemsCount']
+        ]);
     }
 
     public function show($project, $id)
