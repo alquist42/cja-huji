@@ -30,7 +30,7 @@ class Search
     //    $name = lcfirst ((new \ReflectionClass($model))->getShortName());
       //  $query = $model::project($name)->published()->select("{$name}s.id","{$name}s.ntl");
 
-        if(!empty($text)){
+    //    if(!empty($text)){
 //            $query = DB::select( DB::raw("
 //                SELECT NOW(), search.id, search.type
 //                FROM search
@@ -46,31 +46,66 @@ class Search
 //                ORDER BY CASE WHEN set_id IS NULL THEN 0 ELSE 1 END ASC, image DESC, search.id DESC
 //                LIMIT 50;
 //                "))->paginate(50);
-
-
+//dd($filters);
             $result = DB::table('search')
-                ->selectRaw('search.id,search.type,MATCH (`text`) AGAINST (" +'.$text.'") as rel')
+                ->select('search.id','search.type')
                 ->leftJoin('projects', function($join) {
                     $join->on('search.id', '=', 'projects.taggable_id');
                     $join->on('projects.taggable_type', '=', 'search.type');
                 })
-                ->whereRaw('MATCH (`text`) AGAINST (" +'.$text.'" IN BOOLEAN MODE) > 0')
                 ->where('projects.tag_slug','=','CJA')
                 ->where('search.publish_state','>',0)
-                ->where(function ($q) use ($text) {
-                    $q->whereNull('set_id')
-                        ->orWhereNotIn("set_id", function($query) use ($text){
-                            $query->select('id')
-                            ->from('search')
-                            ->whereRaw('MATCH (`text`) AGAINST (" +'.$text.'" IN BOOLEAN MODE) > 0')
-                            ->where('search.type','=','set');
+                ->when(!empty($text), function ($q) use ($text) {
+                    return $q->selectRaw('MATCH (`text`) AGAINST (" +'.$text.'") as rel')
+                        ->whereRaw('MATCH (`text`) AGAINST (" +'.$text.'" IN BOOLEAN MODE) > 0')
+                        ->where(function ($q) use ($text) {
+                            $q->whereNull('set_id')
+                                ->orWhereNotIn("set_id", function($query) use ($text){
+                                    $query->select('id')
+                                        ->from('search')
+                                        ->whereRaw('MATCH (`text`) AGAINST (" +'.$text.'" IN BOOLEAN MODE) > 0')
+                                        ->where('search.type','=','set');
+                                });
                         });
                 })
+                ->when(!empty($filters), function($q) use ($filters){
+                    $q->where(function ($query) use ($filters) {
+                        foreach ($filters as $type => $values) {
+                            $field=str_singular($type);
+                            // TODO move from here
+                            $model = '\\App\\Models\\Taxonomy\\' . ucfirst($field);
+                            $selected = $model::select("name")->find($values);
+                            $names = "";
+                            foreach ($selected as $name) {
+                                $names .=" " . $name->name;
+                            }
+                             $query->whereRaw('MATCH ('.$field.') AGAINST ("'.$names.'" IN BOOLEAN MODE) > 0')
+                                ->where(function ($q) use ($names,$field) {
+                                    $q->whereNull('set_id')
+                                        ->orWhereNotIn("set_id", function($query) use ($names,$field){
+                                            $query->select('id')
+                                                ->from('search')
+                                                ->whereRaw('MATCH ('.$field.') AGAINST ("'.$names.'" IN BOOLEAN MODE) > 0')
+                                                ->where('search.type','=','set');
+                                        });
+                                });
+                        }
+                    });
+                })
+                // TMP NOT SHOW ALL
+                ->when(empty($filters) && empty($text), function($q) {
+                    $q->where('search.id','=',0);
+                })
+
                 ->orderBy('set_id')
                 ->orderBy('search.image','DESC')
-                ->orderBy('rel','DESC')
+                ->when(!empty($text), function($q) {
+                    $q->orderBy('rel','DESC');
+                })
+
                 ->orderBy('search.id','DESC')
                 ->paginate(50);
+
           //  dd(DB::getQueryLog());
 
             $total = $result->total();
@@ -115,7 +150,7 @@ class Search
             }
 
         //    dd(DB::getQueryLog());
-        }
+    //    }
      //   dd($collection);
      //   $query = $model::project($name)->published()->select("{$name}s.id","{$name}s.ntl");
 //        if($name == 'item'){
