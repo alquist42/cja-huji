@@ -22,6 +22,52 @@ class Search
         return $data;
     }
 
+    public function findByTaxonomy($filters){
+        $query = Set::project('set')->published()->select("sets.id","sets.name");
+        $descendantsFilters=[];
+        foreach ($filters as $type => $values) {
+            $model = '\\App\\Models\\Taxonomy\\' . ucfirst(str_singular($type));
+            $selected = $model::select("id", "_lft", "_rgt")->find($values);
+            foreach ($selected as $sModel) {
+                $descendantsFilters[$type][$sModel->id]['_lft'] = $sModel->_lft;
+                $descendantsFilters[$type][$sModel->id]['_rgt'] = $sModel->_rgt;
+            }
+        }
+
+        $query->where(function ($query) use ($filters,$descendantsFilters) {
+            foreach ($filters as $type => $values) {
+                $query->WhereHas($type, function($q) use ($type, $values, $descendantsFilters) {
+                    $q->whereIn($type . '.id', $values);
+                    if(!empty($descendantsFilters)){
+                        foreach($values as $value){
+                            $q->orWhereBetween($type . '._lft', [$descendantsFilters[$type][$value]['_lft']+1,$descendantsFilters[$type][$value]['_rgt']]);
+                        }
+                    }
+                });
+            }
+        });
+
+
+        /* PRIORITY FOR SETS WITH IMAGES */
+
+        $query->leftJoin('entity_images', function ($join) {
+            $join->on('entity_images.entity_id', '=', 'sets.id')->where(
+                'entity_images.entity_type', '=', 'set');
+        });
+        $query->leftJoin('images', function ($join) {
+            $join->on('images.id', '=', 'entity_images.image_id');
+        });
+        $query->orderByRaw(
+            "CASE WHEN (images.medium is null AND images.def is null AND images.batch_url is null) THEN 1 ELSE 2 END DESC"
+        );
+
+
+        $query->orderBy('sets.id', 'DESC');
+        $query->with('images');
+
+        return $query;
+    }
+
     public function getAll($model,$filters, $search, $text, $categories){
         DB::enableQueryLog();
         $collection = collect([]);

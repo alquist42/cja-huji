@@ -44,7 +44,7 @@ class Taxonomy extends Model
         return $this->morphToMany(Item::class, 'taxonomy', 'taxonomy', 'taxonomy_id', 'entity_id')
             ->wherePivot('entity_type','item')
             ->published()
-            ->project();
+            ->project('item');
     }
 
     /**
@@ -55,7 +55,7 @@ class Taxonomy extends Model
         return $this->morphToMany(Set::class, 'taxonomy', 'taxonomy', 'taxonomy_id', 'entity_id')
             ->wherePivot('entity_type','set')
             ->published()
-            ->project();
+            ->project('set');
 
     }
 
