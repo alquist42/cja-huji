@@ -46,10 +46,10 @@ class ItemsController extends Controller
             return is_array($value) ? $value : [$value];
         })->toArray();
 
-        $items = $this->search->find($filters, null, null, null)
-            ->with('images')
-            ->paginate(20)
-            ->appends($page);
+        $items = $this->search->findByTaxonomy($filters)
+         //   ->with('images')
+            ->paginate(20);
+         //   ->appends($page);
 
         return response()->json($items);
     }
