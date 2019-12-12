@@ -8,6 +8,10 @@ use Illuminate\Support\Facades\View;
 
 class AdminController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     public function viewLinks($name) {
         if (empty($name)) {
             $name = 'index';

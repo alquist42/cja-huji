@@ -9,6 +9,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
+    const ROLE_ADMIN = 1;
+    const ROLE_MANAGER = 2;
+    const ROLE_USER = 3;
     use Notifiable;
 
     /**
@@ -60,5 +63,15 @@ class User extends Authenticatable
     public function scopeAdmin($query)
     {
         return $query->where('is_admin', true);
+    }
+
+    public function isAdmin()
+    {
+        return $this->role === self::ROLE_ADMIN;
+    }
+
+    public function hasAccount()
+    {
+        return $this->role > 0;
     }
 }

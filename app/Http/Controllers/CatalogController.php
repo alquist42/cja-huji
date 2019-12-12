@@ -9,6 +9,7 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Services\Search;
 use App\Services\Pagination;
+use Illuminate\Support\Facades\Gate;
 
 class CatalogController extends Controller
 {
@@ -67,7 +68,11 @@ class CatalogController extends Controller
             return is_array($value) ? $value : [$value];
         })->toArray();
        // dd($page);
-
+        if (Gate::allows('has-account')) {
+        //    dd('yes');
+        } else {
+         //   dd('no');
+        }
       //  $res = $query->get();
         $data = $this->search->find($filters, $search, $text, $categories);
         $items = $data['collection'];

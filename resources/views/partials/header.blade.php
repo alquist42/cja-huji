@@ -38,6 +38,15 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/catalogue/items">Main</a>
                     </li>
+                    {{-- needs design
+                    @if (Auth::guest())
+                        <a href="{{ route('login') }}">Login</a>
+                        <a href="{{ route('register') }}">Register</a>
+                    @else
+                        {{ Auth::user()->name }}
+                        <a href="{{ route('logout') }}">Logout</a>
+                    @endif
+                    --}}
                     @if (!empty(request()->project))
                         <li class="nav-item">
                             <a class="nav-link" href="/{{ request()->project }}/items">Search</a>
