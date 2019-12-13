@@ -216,6 +216,14 @@ class Classifiable extends Model
     }
 
     /**
+     * @return HasOne
+     */
+    public function category_object()
+    {
+        return $this->hasOne(Category::class, 'slug', 'category');
+    }
+
+    /**
      * @return BelongsToMany
      */
     public function properties()

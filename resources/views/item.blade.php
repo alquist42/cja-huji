@@ -13,6 +13,12 @@
                             <div class="row mt-2">
                                 <div class="col-md-6">
                                     <div class="container">
+                                        <dl class="row my-1">
+                                            <dt class="col-sm-3">Category</dt>
+                                            <dd class="col-sm-9">
+                                                {{ $item->category_object->name}}
+                                            </dd>
+                                            </dl>
                                         <h4 class="lead"><u>Taxonomy</u></h4>
                                         <dl class="row my-1">
                                             <dt class="col-sm-3">Object</dt>
