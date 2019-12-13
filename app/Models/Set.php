@@ -127,4 +127,8 @@ class Set extends Classifiable
     public function leaf() {
         return Set::ancestorsAndSelf($this->id)->merge($this->descendants)->toTree();
     }
+
+    public function url(){
+        return  request()->project . "/items/" . $this->id ;
+    }
 }

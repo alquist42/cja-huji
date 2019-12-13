@@ -62,4 +62,8 @@ class Item extends Classifiable
     public function name() {
         return $this->ntl;
     }
+
+    public function url(){
+        return  request()->project . "/images/" . $this->id ;
+    }
 }
