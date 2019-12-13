@@ -10,6 +10,7 @@ namespace App\Services;
 
 use App\Models\Set;
 use App\Models\Item;
+use App\Models\Tenant;
 use App\Models\Search as SearchIndex;
 use Illuminate\Support\Facades\DB;
 
@@ -69,7 +70,9 @@ class Search
     }
 
     public function getAll($model,$filters, $search, $text, $categories){
+      //  dd($categories);
         DB::enableQueryLog();
+        $project = app()->make(Tenant::class)->slug();
         $collection = collect([]);
         $result = null;
         $total = 0;
@@ -95,11 +98,16 @@ class Search
 //dd($filters);
             $result = DB::table('search')
                 ->select('search.id','search.type')
-                ->leftJoin('projects', function($join) {
-                    $join->on('search.id', '=', 'projects.taggable_id');
-                    $join->on('projects.taggable_type', '=', 'search.type');
+//                ->leftJoin('projects', function($join) {
+//                    $join->on('search.id', '=', 'projects.taggable_id');
+//                    $join->on('projects.taggable_type', '=', 'search.type');
+//                })
+//                ->where('projects.tag_slug',app()->make(Tenant::class)->slug()) //
+                ->when($project != 'CJA', function ($q) use ($project) {
+                    $q->where('projects', 'LIKE', "%".$project."%");
                 })
-                ->where('projects.tag_slug','=','CJA')
+
+
                 ->where('search.publish_state','>',0)
                 ->when(!empty($text), function ($q) use ($text) {
                     return $q->selectRaw('MATCH (`text`) AGAINST (" +'.$text.'") as rel')
@@ -139,12 +147,36 @@ class Search
                     });
                 })
                 // TMP NOT SHOW ALL
-                ->when(empty($filters) && empty($text), function($q) {
+                ->when(empty($filters) && empty($text) && empty($search) && empty($categories), function($q) {
                     $q->where('search.id','=',0);
+                })
+                ->when(!empty($categories), function($q) use ($categories){
+                    $q->where(function ($query) use ($categories) {
+                        $query->where('category', array_shift($categories));
+                        foreach ($categories as $category){
+                            $query->orWhere('category', $category);
+                        }
+                    });
+                })
+                ->when(!empty($search), function($q) use ($search){
+                    return $q->selectRaw('MATCH (`title`) AGAINST (" +'.$search.'") as rel2')
+                        ->whereRaw('MATCH (`title`) AGAINST (" +'.$search.'" IN BOOLEAN MODE) > 0')
+                        ->where(function ($q) use ($search) {
+                            $q->whereNull('set_id')
+                                ->orWhereNotIn("set_id", function($query) use ($search){
+                                    $query->select('id')
+                                        ->from('search')
+                                        ->whereRaw('MATCH (`title`) AGAINST (" +'.$search.'" IN BOOLEAN MODE) > 0')
+                                        ->where('search.type','=','set');
+                                });
+                        });
                 })
 
                 ->orderBy('set_id')
                 ->orderBy('search.image','DESC')
+                ->when(!empty($search), function($q) {
+                    $q->orderBy('rel2','DESC');
+                })
                 ->when(!empty($text), function($q) {
                     $q->orderBy('rel','DESC');
                 })
@@ -171,7 +203,7 @@ class Search
                 $setIds = array_map(function ($u) { return $u->id; }, $setObjects);
              //   dd($setIds);
                 $ids_ordered = implode(',', $setIds);
-                $sets = Set::select("id","ntl")
+                $sets = Set::select("id","name")
                 ->whereIn('id',$setIds)
                 ->orderByRaw(DB::raw("FIELD(id, $ids_ordered)"))
                 ->with('images')
@@ -379,8 +411,15 @@ class Search
                   
                     ");
 
-
+// TODO : add category, projects, title fields
+        // TODO:   add id to text (include id in fulltext search)
             /*
+             * update search
+set projects =
+ (select  COALESCE(GROUP_CONCAT(DISTINCT  p.tag_slug SEPARATOR ' '),'')  as value
+from projects p WHERE p.taggable_id = search.id and p.taggable_type = 'item')
+where   search.`type` = 'item';
+
              * SET group_concat_max_len=15000;
 update search
 set text =
