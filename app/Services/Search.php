@@ -152,9 +152,29 @@ class Search
                 })
                 ->when(!empty($categories), function($q) use ($categories){
                     $q->where(function ($query) use ($categories) {
-                        $query->where('category', array_shift($categories));
+                        $firstCategory = array_shift($categories);
+                        $query->where('category',$firstCategory)
+                        ->where(function ($q) use ($firstCategory) {
+                            $q->whereNull('set_id')
+                                ->orWhereNotIn("set_id", function($query) use ($firstCategory){
+                                    $query->select('id')
+                                        ->from('search')
+                                        ->where('category', $firstCategory);
+                                });
+                        });
                         foreach ($categories as $category){
-                            $query->orWhere('category', $category);
+                            $query->orWhere('category', $category)
+                            ->where(function ($q) use ($category) {
+                                $q->whereNull('set_id')
+                                    ->orWhereNotIn("set_id", function($query) use ($category){
+                                        $query->select('id')
+                                            ->from('search')
+                                            ->where('category', $category);
+                                    });
+                            });
+
+
+
                         }
                     });
                 })
