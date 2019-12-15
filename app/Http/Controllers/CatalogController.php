@@ -26,7 +26,7 @@ class CatalogController extends Controller
         'congregations',
         'historical_origins',
         'locations',
-        'makers',
+        'artists',
         'professions',
         'objects',
         'periods',
