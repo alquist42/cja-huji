@@ -70,57 +70,21 @@ class Search
     }
 
     public function getAll($model,$filters, $search, $text, $categories){
-      //  dd($categories);
+    //    dd($filters);
         DB::enableQueryLog();
         $project = app()->make(Tenant::class)->slug();
         $collection = collect([]);
         $result = null;
         $total = 0;
-    //    $name = lcfirst ((new \ReflectionClass($model))->getShortName());
-      //  $query = $model::project($name)->published()->select("{$name}s.id","{$name}s.ntl");
-
-    //    if(!empty($text)){
-//            $query = DB::select( DB::raw("
-//                SELECT NOW(), search.id, search.type
-//                FROM search
-//                LEFT JOIN `projects` ON `search`.`id` = `projects`.`taggable_id` AND `projects`.`taggable_type` = `search`.`type`
-//                WHERE `projects`.`tag_slug` = 'CJA' AND (MATCH (`text`) AGAINST (\" +Karaite\" IN BOOLEAN MODE) > 0)
-//                  AND (set_id IS NULL OR set_id NOT IN
-//                (
-//                SELECT search.id
-//                FROM `search`
-//                WHERE
-//                 (MATCH (`text`) AGAINST (\" +Karaite\" IN BOOLEAN MODE) > 0)
-//                ))
-//                ORDER BY CASE WHEN set_id IS NULL THEN 0 ELSE 1 END ASC, image DESC, search.id DESC
-//                LIMIT 50;
-//                "))->paginate(50);
-//dd($filters);
             $result = DB::table('search')
                 ->select('search.id','search.type')
-//                ->leftJoin('projects', function($join) {
-//                    $join->on('search.id', '=', 'projects.taggable_id');
-//                    $join->on('projects.taggable_type', '=', 'search.type');
-//                })
-//                ->where('projects.tag_slug',app()->make(Tenant::class)->slug()) //
+                ->where('search.publish_state','>',0)
                 ->when($project != 'CJA', function ($q) use ($project) {
                     $q->where('projects', 'LIKE', "%".$project."%");
                 })
-
-
-                ->where('search.publish_state','>',0)
                 ->when(!empty($text), function ($q) use ($text) {
-                    return $q->selectRaw('MATCH (`text`) AGAINST (" +'.$text.'") as rel')
-                        ->whereRaw('MATCH (`text`) AGAINST (" +'.$text.'" IN BOOLEAN MODE) > 0')
-                        ->where(function ($q) use ($text) {
-                            $q->whereNull('set_id')
-                                ->orWhereNotIn("set_id", function($query) use ($text){
-                                    $query->select('id')
-                                        ->from('search')
-                                        ->whereRaw('MATCH (`text`) AGAINST (" +'.$text.'" IN BOOLEAN MODE) > 0')
-                                        ->where('search.type','=','set');
-                                });
-                        });
+                    $q->selectRaw('MATCH (`text`) AGAINST (" +'.$text.'") as rel')
+                        ->whereRaw('MATCH (`text`) AGAINST (" +'.$text.'" IN BOOLEAN MODE) > 0');
                 })
                 ->when(!empty($filters), function($q) use ($filters){
                     $q->where(function ($query) use ($filters) {
@@ -133,65 +97,71 @@ class Search
                             foreach ($selected as $name) {
                                 $names .=" " . $name->name;
                             }
-                             $query->whereRaw('MATCH ('.$field.') AGAINST ("'.$names.'" IN BOOLEAN MODE) > 0')
-                                ->where(function ($q) use ($names,$field) {
-                                    $q->whereNull('set_id')
-                                        ->orWhereNotIn("set_id", function($query) use ($names,$field){
-                                            $query->select('id')
-                                                ->from('search')
-                                                ->whereRaw('MATCH ('.$field.') AGAINST ("'.$names.'" IN BOOLEAN MODE) > 0')
-                                                ->where('search.type','=','set');
-                                        });
-                                });
+                             $query->whereRaw('MATCH ('.$field.') AGAINST ("'.$names.'" IN BOOLEAN MODE) > 0');
                         }
                     });
-                })
-                // TMP NOT SHOW ALL
-                ->when(empty($filters) && empty($text) && empty($search) && empty($categories), function($q) {
-                    $q->where('search.id','=',0);
                 })
                 ->when(!empty($categories), function($q) use ($categories){
                     $q->where(function ($query) use ($categories) {
                         $firstCategory = array_shift($categories);
-                        $query->where('category',$firstCategory)
-                        ->where(function ($q) use ($firstCategory) {
-                            $q->whereNull('set_id')
-                                ->orWhereNotIn("set_id", function($query) use ($firstCategory){
-                                    $query->select('id')
-                                        ->from('search')
-                                        ->where('category', $firstCategory);
-                                });
-                        });
+                        $query->where('category',$firstCategory);
                         foreach ($categories as $category){
-                            $query->orWhere('category', $category)
-                            ->where(function ($q) use ($category) {
-                                $q->whereNull('set_id')
-                                    ->orWhereNotIn("set_id", function($query) use ($category){
-                                        $query->select('id')
-                                            ->from('search')
-                                            ->where('category', $category);
-                                    });
-                            });
-
-
-
+                            $query->orWhere('category', $category);
                         }
                     });
                 })
                 ->when(!empty($search), function($q) use ($search){
-                    return $q->selectRaw('MATCH (`title`) AGAINST (" +'.$search.'") as rel2')
-                        ->whereRaw('MATCH (`title`) AGAINST (" +'.$search.'" IN BOOLEAN MODE) > 0')
-                        ->where(function ($q) use ($search) {
-                            $q->whereNull('set_id')
-                                ->orWhereNotIn("set_id", function($query) use ($search){
-                                    $query->select('id')
-                                        ->from('search')
-                                        ->whereRaw('MATCH (`title`) AGAINST (" +'.$search.'" IN BOOLEAN MODE) > 0')
-                                        ->where('search.type','=','set');
+                    $q->selectRaw('MATCH (`title`) AGAINST (" +'.$search.'") as rel2')
+                        ->whereRaw('MATCH (`title`) AGAINST (" +'.$search.'" IN BOOLEAN MODE) > 0');
+                })
+
+                /*----- REMOVE IMAGES FOR FOUNDED SETS -------*/
+                ->where(function ($q) use ($text,$filters,$categories,$search) {
+                    $q->whereNull('set_id')
+                        ->orWhereNotIn("set_id", function($query) use ($text,$filters,$categories,$search){
+                            $query->select('id')
+                                ->from('search')
+                                ->where('search.type','=','set')
+                                ->when(!empty($text), function ($q) use ($text) {
+                                    $q->whereRaw('MATCH (`text`) AGAINST (" +'.$text.'" IN BOOLEAN MODE) > 0');
+                                })
+                                ->when(!empty($filters), function($q) use ($filters){
+                                   $q->where(function ($query) use ($filters) {
+                                       foreach ($filters as $type => $values) {
+                                           $field=str_singular($type);
+                                           // TODO move from here
+                                           $model = '\\App\\Models\\Taxonomy\\' . ucfirst($field);
+                                           $selected = $model::select("name")->find($values);
+                                           $names = "";
+                                           foreach ($selected as $name) {
+                                               $names .=" " . $name->name;
+                                           }
+                                           $query->whereRaw('MATCH ('.$field.') AGAINST ("'.$names.'" IN BOOLEAN MODE) > 0');
+                                       }
+                                   });
+                                })
+                                ->when(!empty($categories), function($q) use ($categories){
+                                    $q->where(function ($query) use ($categories) {
+                                        $firstCategory = array_shift($categories);
+                                        $query->where('category',$firstCategory);
+
+                                        foreach ($categories as $category){
+                                            $query->orWhere('category', $category);
+                                        }
+                                    });
+                                })
+                                ->when(!empty($search), function($q) use ($search){
+                                    $q->whereRaw('MATCH (`title`) AGAINST (" +'.$search.'" IN BOOLEAN MODE) > 0');
                                 });
+
                         });
                 })
 
+
+                // TMP NOT SHOW ALL
+                ->when(empty($filters) && empty($text) && empty($search) && empty($categories), function($q) {
+                    $q->where('search.id','=',0);
+                })
                 ->orderBy('set_id')
                 ->orderBy('search.image','DESC')
                 ->when(!empty($search), function($q) {
@@ -204,7 +174,7 @@ class Search
                 ->orderBy('search.id','DESC')
                 ->paginate(50);
 
-          //  dd(DB::getQueryLog());
+        //    dd(DB::getQueryLog());
 
             $total = $result->total();
             $data = $result->toArray()['data'];
@@ -433,6 +403,7 @@ class Search
 
 // TODO : add category, projects, title fields
         // TODO:   add id to text (include id in fulltext search)
+            // TODO: renae maker to artist and remove profession and unknown value
             /*
              * update search
 set projects =
