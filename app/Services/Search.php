@@ -16,13 +16,6 @@ use Illuminate\Support\Facades\DB;
 
 class Search
 {
-    public function find($filters, $search, $text, $categories){
-
-     //   $sets = $this->getAll(Set::class, $filters, $search, $text, $categories);
-        $data = $this->getAll(Item::class, $filters, $search, $text, $categories);
-        return $data;
-    }
-
     public function findByTaxonomy($filters){
         $query = Set::project('set')->published()->select("sets.id","sets.name");
         $descendantsFilters=[];
@@ -69,8 +62,7 @@ class Search
         return $query;
     }
 
-    public function getAll($model,$filters, $search, $text, $categories){
-    //    dd($filters);
+    public function find($filters, $search, $text, $categories){
         DB::enableQueryLog();
         $project = app()->make(Tenant::class)->slug();
         $collection = collect([]);
@@ -91,10 +83,10 @@ class Search
                         foreach ($filters as $type => $values) {
                             $field=str_singular($type);
                             // TODO move from here
-                            $model = '\\App\\Models\\Taxonomy\\' . ucfirst($field);
-                            $selected = $model::select("name")->find($values);
+                         //   $model = '\\App\\Models\\Taxonomy\\' . ucfirst($field);
+                         //   $selected = $model::select("name")->find($values);
                             $names = "";
-                            foreach ($selected as $name) {
+                            foreach ($filters[$type] as $name) {
                                 $names .=" " . $name->name;
                             }
                              $query->whereRaw('MATCH ('.$field.') AGAINST ("'.$names.'" IN BOOLEAN MODE) > 0');
@@ -130,10 +122,10 @@ class Search
                                        foreach ($filters as $type => $values) {
                                            $field=str_singular($type);
                                            // TODO move from here
-                                           $model = '\\App\\Models\\Taxonomy\\' . ucfirst($field);
-                                           $selected = $model::select("name")->find($values);
+                                       //    $model = '\\App\\Models\\Taxonomy\\' . ucfirst($field);
+                                         //  $selected = $model::select("name")->find($values);
                                            $names = "";
-                                           foreach ($selected as $name) {
+                                           foreach ($filters[$type] as $name) {
                                                $names .=" " . $name->name;
                                            }
                                            $query->whereRaw('MATCH ('.$field.') AGAINST ("'.$names.'" IN BOOLEAN MODE) > 0');

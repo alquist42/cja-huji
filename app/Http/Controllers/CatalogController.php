@@ -73,18 +73,19 @@ class CatalogController extends Controller
         } else {
          //   dd('no');
         }
-      //  $res = $query->get();
-        $data = $this->search->find($filters, $search, $text, $categories);
-        $items = $data['collection'];
-        $pagination =  $data['pagination'];
-           // ->paginate(50);
-          //  ->appends($page);
-   //     $links = Pagination::makeLengthAware($items, 158, 50,$_GET);
+
         $selected = [];
         foreach ($filters as $type => $values) {
             $model = '\\App\\Models\\Taxonomy\\' . ucfirst(str_singular($type));
             $selected[$type] = $model::select("id", "name")->find($values);
         }
+        $data = $this->search->find($selected, $search, $text, $categories);
+        $items = $data['collection'];
+        $pagination =  $data['pagination'];
+           // ->paginate(50);
+          //  ->appends($page);
+   //     $links = Pagination::makeLengthAware($items, 158, 50,$_GET);
+
 
         return view('index', [
             "items" => $items ,
