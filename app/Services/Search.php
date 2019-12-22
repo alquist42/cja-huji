@@ -68,7 +68,7 @@ class Search
                 });
             })
             ->paginate(20);
-        dd(DB::getQueryLog());
+
         $total = $result->total();
         $data = $result->toArray()['data'];
         $setObjects= array_filter($data, function($v) {
