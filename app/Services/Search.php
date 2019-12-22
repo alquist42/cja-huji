@@ -32,7 +32,7 @@ class Search
                 $taxonomyIds = array_map(function ($u) {return $u['id'];}, $descendants->toArray());
             }
         }
-       // dd(DB::getQueryLog());
+        dd(DB::getQueryLog());
 
         $result = DB::table('taxonomy')
             ->select('sets.id as set','items.id as item')
