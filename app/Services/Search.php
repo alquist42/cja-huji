@@ -17,49 +17,107 @@ use Illuminate\Support\Facades\DB;
 class Search
 {
     public function findByTaxonomy($filters){
-        $query = Set::project('set')->published()->select("sets.id","sets.name");
-        $descendantsFilters=[];
+        DB::enableQueryLog();
+        $project = app()->make(Tenant::class)->slug();
+        $collection = collect([]);
         foreach ($filters as $type => $values) {
             $model = '\\App\\Models\\Taxonomy\\' . ucfirst(str_singular($type));
             $selected = $model::select("id", "_lft", "_rgt")->find($values);
             foreach ($selected as $sModel) {
-                $descendantsFilters[$type][$sModel->id]['_lft'] = $sModel->_lft;
-                $descendantsFilters[$type][$sModel->id]['_rgt'] = $sModel->_rgt;
+                $descendants = $model::select("id","name")->
+                where(function ($query) use ($sModel) {
+                    $query->where('_lft', '>=', $sModel->_lft);
+                    $query->where('_lft', '<=', $sModel->_rgt);
+                })->get();
+                $taxonomyIds = array_map(function ($u) {return $u['id'];}, $descendants->toArray());
             }
         }
+       // dd(DB::getQueryLog());
 
-        $query->where(function ($query) use ($filters,$descendantsFilters) {
-            foreach ($filters as $type => $values) {
-                $query->WhereHas($type, function($q) use ($type, $values, $descendantsFilters) {
-                    $q->whereIn($type . '.id', $values);
-                    if(!empty($descendantsFilters)){
-                        foreach($values as $value){
-                            $q->orWhereBetween($type . '._lft', [$descendantsFilters[$type][$value]['_lft']+1,$descendantsFilters[$type][$value]['_rgt']]);
-                        }
-                    }
+        $result = DB::table('taxonomy')
+            ->select('sets.id as set','items.id as item')
+            ->leftJoin('sets', function ($join) {
+                $join->on('sets.id', '=', 'taxonomy.entity_id')->
+                where('taxonomy.entity_type', '=', 'set')->
+                where('sets.publish_state', '>', 0);
+            })
+            ->leftJoin('items', function ($join) {
+                $join->on('items.id', '=', 'taxonomy.entity_id')->
+                where('taxonomy.entity_type', '=', 'item')->
+                where('items.publish_state', '>', 0);
+            })
+            ->where('taxonomy.taxonomy_type', '=', str_singular($type))
+            ->whereIn('taxonomy.taxonomy_id', $taxonomyIds)
+            ->when($project != 'CJA', function ($q) use ($project) {
+                $q->where(function ($query) use ($project) {
+                    $query->whereExists(function ($query) use ($project) {
+                        $query->select(DB::raw(1))
+                            ->from('projects')
+                            ->whereRaw('projects.taggable_id = sets.id')
+                            ->where('projects.taggable_type', 'set')
+                            ->where('projects.tag_slug', $project);
+                    })
+                        ->orWhereExists(function ($query) use ($project) {
+                            $query->select(DB::raw(1))
+                                ->from('projects')
+                                ->whereRaw('projects.taggable_id = items.id')
+                                ->where('projects.taggable_type', 'item')
+                                ->where('projects.tag_slug', $project);
+                        });
+
                 });
-            }
+            })
+            ->paginate(20);
+
+        $total = $result->total();
+        $data = $result->toArray()['data'];
+        $setObjects= array_filter($data, function($v) {
+            return !empty($v->set);
+        });
+        $itemObjects= array_filter($data, function($v) {
+            return !empty($v->item);
         });
 
+
+        if(!empty($setObjects)){
+            $setIds = array_map(function ($u) { return $u->set; }, $setObjects);
+
+            $ids_ordered = implode(',', $setIds);
+            $sets = Set::select("id","name")
+                ->whereIn('id',$setIds)
+                ->orderByRaw(DB::raw("FIELD(id, $ids_ordered)"))
+                ->with('images')
+                ->get();
+            $collection = $sets;
+        }
+
+        if(!empty($itemObjects)){
+            $itemIds = array_map(function ($u) { return $u->item; }, $itemObjects);
+            $items = Item::select("id","ntl")
+                ->whereIn('id',$itemIds)
+                ->with('images')->get();
+            // TODO find good method to push collection
+            $items->each(function ($item, $key) use ($collection) {
+                $collection->push($item);
+            });
+        }
+        return ['collection' =>  $collection,
+            'pagination' => $result,
+            'setsCount' => $total,
+            'itemsCount' => 0 ];
 
         /* PRIORITY FOR SETS WITH IMAGES */
 
-        $query->leftJoin('entity_images', function ($join) {
-            $join->on('entity_images.entity_id', '=', 'sets.id')->where(
-                'entity_images.entity_type', '=', 'set');
-        });
-        $query->leftJoin('images', function ($join) {
-            $join->on('images.id', '=', 'entity_images.image_id');
-        });
-        $query->orderByRaw(
-            "CASE WHEN (images.medium is null AND images.def is null AND images.batch_url is null) THEN 1 ELSE 2 END DESC"
-        );
-
-
-        $query->orderBy('sets.id', 'DESC');
-        $query->with('images');
-
-        return $query;
+        /*   $query->leftJoin('entity_images', function ($join) {
+               $join->on('entity_images.entity_id', '=', 'sets.id')->where(
+                   'entity_images.entity_type', '=', 'set');
+           });
+           $query->leftJoin('images', function ($join) {
+               $join->on('images.id', '=', 'entity_images.image_id');
+           });
+           $query->orderByRaw(
+               "CASE WHEN (images.medium is null AND images.def is null AND images.batch_url is null) THEN 1 ELSE 2 END DESC"
+           );*/
     }
 
     public function find($filters, $search, $text, $categories){
@@ -283,6 +341,25 @@ class Search
             'itemsCount' => 0 ];
     }
 
+    public function findMissedParents($elements,$model)
+    {
+        $elements_array = array_column($elements->toArray(),'parent_id', 'id');
+        $missed = [];
+        foreach($elements_array as $k=>$v){
+            if(!array_key_exists($v,$elements_array) && !in_array($v,$missed) && !is_null($v)){
+                $missed[]= $v;
+            }
+        }
+        if(empty($missed)){
+            return $elements;
+        }
+
+            $missedElements = $model::whereIn('id',$missed)->orderBy('id')->get();
+            $elements = $elements->merge($missedElements);
+            return self::findMissedParents($elements,$model);
+
+    }
+
     public function addToIndex($type,$offset){
    //     DB::enableQueryLog();
         $step = 500;
@@ -426,5 +503,6 @@ where   search.`type` = 'set';
         }
 
     }
+
 
 }

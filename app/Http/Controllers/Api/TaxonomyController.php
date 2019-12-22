@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use DB;
+use App\Services\Search;
 class TaxonomyController extends Controller
 {
 
@@ -16,6 +17,10 @@ class TaxonomyController extends Controller
     protected $model = null;
     protected $nameSpace = '\\App\\Models\\Taxonomy\\';
 
+    public function __construct(Search $search)
+    {
+        $this->search = $search;
+    }
     /**
      * @param $type
      * @return \Illuminate\Http\JsonResponse
@@ -29,31 +34,33 @@ class TaxonomyController extends Controller
             return response()->json([ 'error' => 400, 'message' => 'Missing or unsupported type' ], 400);
         }
         if(request()->get('as_tree')){
-            $sets = $model::where('id', '!=', '-1')
-                ->whereHas('sets', function($q) {
-                    $q->join('projects', 'sets.id', '=', 'projects.taggable_id');
+            $elements = $model::where('id', '!=', '-1')
+                ->where(function ($q)  {
+                    $q->whereHas('sets', function($q) {
+                        $q->join('projects', 'sets.id', '=', 'projects.taggable_id');
+                    });
+                    $q->orWhereHas('items', function($q) {
+                        $q->join('projects', 'items.id', '=', 'projects.taggable_id');
+                    });
                 })
+                ->orderBy('id')
                 ->get();
 
-            $found_sets = array_column($sets->toArray(),'parent_id', 'id');
-            $missed = [];
-            foreach($found_sets as $k=>$v){
-                if(!isset($found_sets[$v]) && !in_array($v,$missed)){
-                    $missed[]= $v;
-                }
-            }
-            if(!empty($missed)){
-                $missedSets = $model::whereIn('id',$missed)->get();
-            }
-            $sets = $sets->merge($missedSets)->sortBy('id');
-            $sets = $sets->toTree();
+
+            $elements = $this->search->findMissedParents($elements,$model);
+         //   dd($elements);
+
+          // dd($elements->toArray());
+            $elements = $elements->toTree()->toArray();
+        //    dd($elements);
 
         } else {
-            $sets =  $model::paginate();
+            $elements =  $model::paginate();
         }
 
-    //    dd(DB::getQueryLog());
-        return response()->json($sets);
+
+      //  dd(DB::getQueryLog());
+        return response()->json($elements);
     }
 
     /**

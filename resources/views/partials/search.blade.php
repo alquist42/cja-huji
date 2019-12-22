@@ -143,7 +143,7 @@
                     <select id="artists" name="artists[]" class="form-control" multiple>
                         @if(!empty($filters['artists']))
                             @foreach ($filters['artists'] as $community)
-                                <option value="{{ $community->id }}" selected>{{ $community->name }}</option>
+                                <option value="{{ $community->name }}" selected>{{ $community->name }}</option>
                             @endforeach
                         @endif
                     </select>

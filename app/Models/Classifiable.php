@@ -240,7 +240,7 @@ class Classifiable extends Model
     public function scopeProject($query, $model)
     {
         return $query
-            ->join('projects', "{$model}s.id", '=', 'projects.taggable_id')
+            ->leftJoin('projects', "{$model}s.id", '=', 'projects.taggable_id')
             ->where('projects.taggable_type', $model)
             ->where('projects.tag_slug', app()->make(Tenant::class)->slug());
 

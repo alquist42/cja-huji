@@ -46,12 +46,22 @@ class ItemsController extends Controller
             return is_array($value) ? $value : [$value];
         })->toArray();
 
-        $items = $this->search->findByTaxonomy($filters)
-         //   ->with('images')
-            ->paginate(20);
-         //   ->appends($page);
 
-        return response()->json($items);
+        $data = $this->search->findByTaxonomy($filters);
+        $items = $data['collection'];
+        $pagination =  $data['pagination'];
+
+        return response()->json(['data'=>$items]);
+
+
+
+//        return view('index', [
+//            "items" => $items ,
+//            'pagination' => $pagination,
+//            'setsCount' => $data['setsCount'],
+//            'itemsCount' => $data['itemsCount']
+//        ]);
+
     }
 
     public function show(Set $item)

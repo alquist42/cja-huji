@@ -41,23 +41,26 @@ class CatalogController extends Controller
 
     public function index(Request $request, $project )
     {
-        $categories_data = Category::select("slug", "name")->where("in_search","=",1)->get();
+        $all_categories = Category::select("slug", "name")->where("in_search","=",1)->get();
 
         $page = $request->get('page');
         $search = $request->get('search');
         $text = $request->get('text');
         $categories = $request->get('categories');
 
+        if(count($all_categories) == count($categories)){
+            $categories = null;
+        }
         if(!empty($categories)){
-            foreach ($categories_data as $category_data){
-                if(in_array($category_data->slug, $categories)){
-                    $category_data->selected = true;
+            foreach ($all_categories as $category){
+                if(in_array($category->slug, $categories)){
+                    $category->selected = true;
                 }
             }
         } else {
-            $categories_data = $categories_data->map(function ($category_data) {
-                $category_data->selected = true;
-                return $category_data;
+            $all_categories = $all_categories->map(function ($category) {
+                $category->selected = true;
+                return $category;
             });
 
         }
@@ -90,7 +93,7 @@ class CatalogController extends Controller
         return view('index', [
             "items" => $items ,
             "filters" => $selected,
-            "categories" => $categories_data,/*"links"=>$links ,*/
+            "categories" => $all_categories,/*"links"=>$links ,*/
             'pagination' => $pagination,
             'setsCount' => $data['setsCount'],
             'itemsCount' => $data['itemsCount']
