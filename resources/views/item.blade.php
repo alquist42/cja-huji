@@ -111,7 +111,7 @@
                                             <dd class="col-sm-9">
                                                 @foreach ($item->locations as $location)
                                                     @foreach ($location-> getAncestors() as $anc)
-                                                        <a href="/{{ request()->project }}/browse/origins/{{ $anc->id }}">{{ $anc->name }}</a> |
+                                                        <a href="/{{ request()->project }}/browse/locations/{{ $anc->id }}">{{ $anc->name }}</a> |
                                                     @endforeach
                                                     <a href="/{{ request()->project }}/browse/locations/{{ $location->id }}">{{ $location->name }}</a>
                                                         @if(!$loop->last) <br/> @endif
