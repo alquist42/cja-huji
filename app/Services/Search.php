@@ -244,6 +244,7 @@ class Search
              //   dd($setIds);
                 $ids_ordered = implode(',', $setIds);
                 $sets = Set::select("id","name")
+                ->with('collections')
                 ->whereIn('id',$setIds)
                 ->orderByRaw(DB::raw("FIELD(id, $ids_ordered)"))
                 ->with('images')
@@ -257,6 +258,7 @@ class Search
                 $itemIds = array_map(function ($u) { return $u->id; }, $itemObjects);
                 $items = Item::select("id","ntl")
                     ->whereIn('id',$itemIds)
+                    ->with('collections')
                     ->with('images')->get();
                 // TODO find good method to push collection
                 $items->each(function ($item, $key) use ($collection) {
@@ -471,6 +473,7 @@ class Search
                     ");
 
 // TODO : add category, projects, title fields
+            // TODO add collection details to collection and may be other details
         // TODO:   add id to text (include id in fulltext search)
             // TODO: renae maker to artist and remove profession and unknown value
             /*

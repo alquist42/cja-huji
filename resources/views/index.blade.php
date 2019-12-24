@@ -28,8 +28,10 @@
                                 <div class="card-body">
                                     <h5 class="card-title {{--text-truncate--}}">
                                         <a href="/{{ $item->url() }}">
-                                            {{ $item->name() }}
+                                            {{ $item->name() }}<br/>
                                          </a>
+                                        @foreach ($item->collections as $collection){{$collection->name}}@endforeach
+                                        @if($item->collection_detail()), {{$item->collection_detail()}} @endif
                                         (ID:{{ $item->id }})
                                     </h5>
                                 </div>
