@@ -48,12 +48,16 @@ class TaxonomyController extends Controller
 
 
             $elements = $this->search->findMissedParents($elements,$model);
-            $elements = $elements->toTree()->sortBy('id')->values()->toArray();
+            $elements = $elements->sortBy('name')->values()->toTree()->toArray();
+
+//            ini_set('xdebug.var_display_max_depth', 90);
+//            ini_set('xdebug.var_display_max_children', 2545);
+//            ini_set('xdebug.var_display_max_data', 10424);
          //   dd($elements);
         } else {
             $elements =  $model::paginate();
         }
-        
+
       //  dd(DB::getQueryLog());
         return response()->json($elements);
     }
