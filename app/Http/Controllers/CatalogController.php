@@ -49,7 +49,7 @@ class CatalogController extends Controller
         $categories = $request->get('categories');
 
         if(count($all_categories) == count($categories)){
-            $categories = null;
+       //     $categories = null;
         }
         if(!empty($categories)){
             foreach ($all_categories as $category){

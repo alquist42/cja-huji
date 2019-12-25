@@ -17,7 +17,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">Category</span>
                     </div>
-                    <select id="categories" class="form-control" name="categories[]" multiple="multiple">
+                    <select id="categories" class="form-control" name="categories[]" multiple="multiple" required>
                         @if(!empty($categories))
                             @foreach ($categories as $category)
                                 <option value="{{ $category->slug }}" @if($category->selected) selected @endif>{{ $category->name }}</option>
