@@ -43,22 +43,17 @@ class TaxonomyController extends Controller
                         $q->join('projects', 'items.id', '=', 'projects.taggable_id');
                     });
                 })
-                ->orderBy('id')
+            //    ->orderBy('id')
                 ->get();
 
 
             $elements = $this->search->findMissedParents($elements,$model);
+            $elements = $elements->toTree()->sortBy('id')->values()->toArray();
          //   dd($elements);
-
-          // dd($elements->toArray());
-            $elements = $elements->toTree()->toArray();
-        //    dd($elements);
-
         } else {
             $elements =  $model::paginate();
         }
-
-
+        
       //  dd(DB::getQueryLog());
         return response()->json($elements);
     }
