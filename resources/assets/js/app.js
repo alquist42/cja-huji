@@ -16,7 +16,10 @@ $(document).ready(function () {
     $('.select2').select2();
     $('.select2-tags').select2({tags: true});
     $('#flash-overlay-modal').modal();
-    $('#categories').select2();
+    $('#categories').select2({
+        allowClear: true,
+        placeholder: "Select a category"
+    });
     $('#origins, #names, #collections, #communities, #schools, #objects, #locations, #subjects, #artists, #dates')
         .each(function () {
             var $this = $(this);

@@ -1,19 +1,21 @@
 <form id="search-form" class="card px-3 py-3 mb-4 mt-4">
     <div class="row">
-        <div class="col-12">
+        <div class=" col-12">
             <div class="form-group">
-                <div class="input-group mb-3">
+                <div class="input-group">
                     <div class="input-group-prepend">
                         <span class="input-group-text">Search</span>
                     </div>
                     <input class="form-control" name="text" id="text" value="{{ request()->get('text') }}" type="text" placeholder="type..."/>
                 </div>
+
             </div>
         </div>
-
-        <div class="col-12">
+        </div>
+    <div class="row">
+        <div class="col-xl-10 col-lg-10 col-md-10 col-sm-12">
             <div class="form-group">
-                <div class="input-group mb-3">
+                <div class="input-group">
                     <div class="input-group-prepend">
                         <span class="input-group-text">Category</span>
                     </div>
@@ -24,11 +26,23 @@
                             @endforeach
                         @endif
                     </select>
+
                 </div>
-                <button id="select_categories" class="btn">Select all</button>
-                <button id="clear_categories" class="btn">Clear all</button>
             </div>
         </div>
+        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12">
+            <div class="input-group">
+                <button id="select_categories" class="btn">Select all</button>
+                <button id="clear_categories" class="btn">Clear</button>
+            </div>
+        </div>
+</div>
+    <div class="row">
+        {{--<div class="col-12">
+            <div class="form-group">
+
+            </div>
+        </div>--}}
 
         <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
             <div class="form-group">
