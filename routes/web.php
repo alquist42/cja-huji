@@ -35,6 +35,7 @@ Route::group(['middleware' => ['project']], function () {
     Route::get('/{project}', 'HomeController@index');
     Route::get('/{project}/items', 'CatalogController@index');
     Route::get('/{project}/items/{item}', 'CatalogController@show');
+    Route::get('/{project}/images/{item}', 'CatalogController@showItem');
 });
 
 

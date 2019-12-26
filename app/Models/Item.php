@@ -48,6 +48,33 @@ class Item extends Classifiable
         'remarks',
     ];
 
+    public static $relationships = [
+        'locations',
+        'origins',
+        'schools',
+        'properties',
+        'objects',
+        'subjects',
+        'historic_origins',
+        'periods',
+        'collections',
+        'communities',
+        'origin_details',
+        'collection_details',
+        'makers',
+        'makers.artist',
+        'makers.profession',
+        'creation_date',
+
+        'images',
+        'images.photographer',
+        'images.copyright',
+
+        'set',
+        'set.items',
+        'set.items.images'
+    ];
+
     /**
      * @return BelongsTo
      */

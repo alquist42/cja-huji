@@ -1,9 +1,14 @@
 import $ from 'jquery';
 import 'select2';
 import 'bootstrap';
+import Viewer from 'viewerjs';
+
 
 $(document).ready(function () {
     window.project = document.getElementById('app').dataset.project;
+
+    const gallery = new Viewer(document.querySelector('.images-gallery'), {});
+
     $('#select_categories').click(function(e) {
         $('#categories').find('option').prop('selected', 'selected');
         $('#categories').trigger("change");

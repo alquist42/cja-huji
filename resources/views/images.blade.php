@@ -3,7 +3,7 @@
         <div class="row mt-5">
             <div class="card mx-1">
                 <div class="card-header" data-toggle="collapses" data-target="#collapseExample{{ $obj->id }}" aria-expanded="false" aria-controls="collapseExample{{ $obj->id }}">
-                    {{ $obj->ntl }}
+                    <a href="/{{ $obj->url() }}">{{ $obj->ntl }}</a>
                 </div>
                 <div class="container collapses" id="collapseExample{{ $obj->id }}">
                     <div class="row mt-5">
@@ -109,25 +109,6 @@
 
                                     </dd>
                                 </dl>
-                                <h4 class="mt-5 lead"><u>Photo / Image</u></h4>
-                                <dl class="row my-1">
-                                    <dt class="col-sm-4">Photograph Copyright</dt>
-                                    <dd class="col-sm-8">{{ array_get($item->images,'0.copyright.name') }}</dd>
-
-                                    <dt class="col-sm-4">Photographer</dt>
-
-                                    <dd class="col-sm-8">
-                                        @foreach (array_get($item->images,'0.photographers',[]) as $photographer)
-                                            <a href="/{{ request()->project }}/browse/photographers/{{ $photographer->id }}">{{ $photographer->name }}</a> @if(!$loop->last) | @endif
-                                        @endforeach
-                                    </dd>
-
-                                    <dt class="col-sm-4">Photograph Date</dt>
-                                    <dd class="col-sm-8">{{ array_get($item->images,'0.date') }}</dd>
-
-                                    <dt class="col-sm-4">Negative / Photo. No.</dt>
-                                    <dd class="col-sm-8">{{ array_get($item->images,'0.negative') }}</dd>
-                                </dl>
 
                                 <h4 class="mt-5 lead" data-toggle="collapses" data-target="#multiCollapseExample2" aria-expanded="true" aria-controls="multiCollapseExample2"><u>Properties</u></h4>
                                 <div class="collapses multi-collapse" id="multiCollapseExample2">
@@ -142,8 +123,28 @@
                         </div>
                         <div class="col-md-4">
                             @if (!empty($obj->images[0]))
-                                <img class="card-img-top img-fluid img-thumbnail" src="http://cja.huji.ac.il/{{ $obj->images[0]->url() }}" alt="Card image cap">
+                                <a href="/{{ $obj->url() }}">
+                                    <img class="card-img-top img-fluid img-thumbnail preview" src="http://cja.huji.ac.il/{{ $obj->images[0]->url() }}" alt="Card image cap">
+                                </a>
                             @endif
+                            <dl class="row my-1">
+                                <dt class="col-sm-4">Photograph Copyright</dt>
+                                <dd class="col-sm-8">{{ array_get($item->images,'0.copyright.name') }}</dd>
+
+                                <dt class="col-sm-4">Photographer</dt>
+
+                                <dd class="col-sm-8">
+                                    @foreach (array_get($item->images,'0.photographers',[]) as $photographer)
+                                        <a href="/{{ request()->project }}/browse/photographers/{{ $photographer->id }}">{{ $photographer->name }}</a> @if(!$loop->last) | @endif
+                                    @endforeach
+                                </dd>
+
+                                <dt class="col-sm-4">Photograph Date</dt>
+                                <dd class="col-sm-8">{{ array_get($item->images,'0.date') }}</dd>
+
+                                <dt class="col-sm-4">Negative / Photo. No.</dt>
+                                <dd class="col-sm-8">{{ array_get($item->images,'0.negative') }}</dd>
+                            </dl>
                         </div>
                     </div>
                 </div>

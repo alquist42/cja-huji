@@ -107,4 +107,12 @@ class CatalogController extends Controller
 
         return view('item', compact('item'));
     }
+
+    public function showItem($project, $id)
+    {
+        $item = Item::findOrFail($id);
+        $item->load(Item::$relationships);
+
+        return view('img', compact('item'));
+    }
 }
