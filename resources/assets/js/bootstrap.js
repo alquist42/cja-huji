@@ -1,6 +1,5 @@
 
 window._ = require('lodash');
-window.Viewer = require('viewerjs');
 
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support

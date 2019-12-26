@@ -1,26 +1,39 @@
 <template>
   <div class="container-fluid">
     <div class="row mt-5">
-      <div class="taxonomy-container col-md-4 sticky" ref="taxonomy">
-        <div class="card">
+      <div class="col-md-4">
+        <div class="taxonomy-container sticky" ref="taxonomy">
 
-          <div class="card-body" v-if="!rendered">
-            <div class="d-flex align-items-center">
-              <h5 class="card-title">Loading...</h5>
-              <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div>
+          <vue-bootstrap-typeahead
+                  v-if="rendered"
+                  v-model="query"
+                  :data="queryItems"
+                  size="lg"
+                  :serializer="s => s.name"
+                  placeholder="Quick search..."
+                  @hit="loadSearch"
+                  class="mb-3"
+          />
+          <div class="card">
+
+            <div class="card-body" v-if="!rendered">
+              <div class="d-flex align-items-center">
+                <h5 class="card-title">Loading...</h5>
+                <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div>
+              </div>
             </div>
-          </div>
 
-          <div class="card-body" v-else>
-            <b-tree-view
-                    :data="treeData"
-                    :key="`tree-${treeData.length}`"
-                    ref="tree"
-                    :contextMenu="false"
-                    :showIcons="false"
-                    :contextMenuItems="[]"
-                    :renameNodeOnDblClick="false"
-                    @nodeSelect="nodeSelect"></b-tree-view>
+            <div class="card-body" v-else>
+              <b-tree-view
+                      :data="treeData"
+                      :key="`tree-${treeData.length}`"
+                      ref="tree"
+                      :contextMenu="false"
+                      :showIcons="false"
+                      :contextMenuItems="[]"
+                      :renameNodeOnDblClick="false"
+                      @nodeSelect="nodeSelect"></b-tree-view>
+            </div>
           </div>
         </div>
       </div>
@@ -67,11 +80,35 @@
   import { bTreeView } from 'bootstrap-vue-treeview'
   import axios from 'axios'
   import Pagination from '../components/Pagination'
+  import VueBootstrapTypeahead from 'vue-bootstrap-typeahead'
+
+  function debounce(func, wait, immediate) {
+    let timeout
+
+    return function executedFunction() {
+      const context = this;
+      const args = arguments
+
+      const later = function() {
+        timeout = null
+        if (!immediate) func.apply(context, args)
+      };
+
+      const callNow = immediate && !timeout
+
+      clearTimeout(timeout)
+
+      timeout = setTimeout(later, wait)
+
+      if (callNow) func.apply(context, args)
+    }
+  }
 
   export default {
     components: {
       bTreeView,
-      Pagination
+      Pagination,
+      VueBootstrapTypeahead
     },
 
     data() {
@@ -81,7 +118,8 @@
         loading: false,
         rendered: false,
         meta: {},
-        page: 1
+        query: '',
+        queryItems: []
       }
     },
     watch: {
@@ -94,9 +132,16 @@
       '$route.params.id': async function (val) {
         this.selected = val
         await this.loadItems()
-      }
+      },
+      query: debounce(function(query) { this.autocomplete(query) }, 300)
     },
     methods: {
+      async loadSearch(selected) {
+        await this.$router.push({ name: 'browse-id', params: { id: selected.id }})
+        this.query = ''
+        this.select()
+      },
+
       async initialize() {
         console.log('init')
         this.type = this.$route.params.type
@@ -127,12 +172,16 @@
         let node = this.$refs.tree.getNodeByKey(this.selected)
         node.select()
 
-        this.$refs.taxonomy.scrollTop = node.$el.offsetTop
+        let offset = node.$el.offsetTop
 
         while (!roots.includes(node._uid)) {
           node = node.$parent
           node.expand()
+          // FIXME: here offset is still 0 (nextTick)
+          offset += node.$el.offsetTop
         }
+
+        this.$refs.taxonomy.scrollTop = offset
       },
 
       async nodeSelect(node, isSelected) {
@@ -163,6 +212,11 @@
         this.items = data.data
         this.meta = data.meta
         this.loading = false
+      },
+
+      async autocomplete(query) {
+        const { data } = await axios.get(`/api/autocomplete/?type=${this.type}&project=${window.project}&term=${query}`)
+        this.queryItems = data || []
       },
 
       scrollTo() {
