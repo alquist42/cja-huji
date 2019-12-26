@@ -5,11 +5,13 @@ import 'bootstrap';
 $(document).ready(function () {
     window.project = document.getElementById('app').dataset.project;
     $('#select_categories').click(function(e) {
-        $('#categories').select2('destroy').find('option').prop('selected', 'selected').end().select2();
+        $('#categories').find('option').prop('selected', 'selected');
+        $('#categories').trigger("change");
         e.preventDefault();
     });
     $('#clear_categories').click(function(e) {
-        $('#categories').select2('destroy').find('option').prop('selected', false).end().select2();
+        $('#categories').find('option').prop('selected', false);
+        $('#categories').trigger("change");
         e.preventDefault();
     });
 

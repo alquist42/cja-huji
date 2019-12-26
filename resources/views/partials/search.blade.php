@@ -13,7 +13,7 @@
         </div>
         </div>
     <div class="row">
-        <div class="col-xl-10 col-lg-10 col-md-10 col-sm-12">
+        <div class="col-xl-11 col-lg-11 col-md-11 col-sm-12">
             <div class="form-group">
                 <div class="input-group">
                     <div class="input-group-prepend">
@@ -30,10 +30,10 @@
                 </div>
             </div>
         </div>
-        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12">
+        <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12">
             <div class="input-group">
                 <button id="select_categories" class="btn">Select all</button>
-                <button id="clear_categories" class="btn">Clear</button>
+               {{-- <button id="clear_categories" class="btn">Clear</button>--}}
             </div>
         </div>
 </div>
