@@ -51,7 +51,10 @@ class ItemsController extends Controller
         $items = $data['collection'];
         $pagination =  $data['pagination'];
 
-        return response()->json(['data'=>$items]);
+        return response()->json([
+            'data'=> $items,
+            'meta' => $pagination
+        ]);
 
 
 

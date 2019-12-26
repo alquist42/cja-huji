@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid">
     <div class="row mt-5">
-      <div class="taxonomy-container col-md-4">
+      <div class="taxonomy-container col-md-4 sticky" ref="taxonomy">
         <div class="card">
 
           <div class="card-body" v-if="!rendered">
@@ -26,13 +26,14 @@
       </div>
       <div class="col-md-8">
         <div class="card">
-
           <div class="card-body" v-if="loading">
             <div class="d-flex align-items-center">
               <h5 class="card-title">Loading...</h5>
               <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div>
             </div>
           </div>
+
+          <Pagination class="mt-3" :meta="meta" @paginate="loadItems"/>
 
           <div class="card-body" v-if="items.length">
             <div class="row">
@@ -51,6 +52,8 @@
             </div>
           </div>
 
+          <Pagination :meta="meta" @paginate="loadItems"/>
+
           <div class="card-body" v-if="!items.length && !loading">
             <h5 class="card-title">No item found</h5>
           </div>
@@ -63,10 +66,12 @@
 <script>
   import { bTreeView } from 'bootstrap-vue-treeview'
   import axios from 'axios'
+  import Pagination from '../components/Pagination'
 
   export default {
     components: {
-      bTreeView
+      bTreeView,
+      Pagination
     },
 
     data() {
@@ -74,7 +79,9 @@
         treeData: [],
         items: [],
         loading: false,
-        rendered: false
+        rendered: false,
+        meta: {},
+        page: 1
       }
     },
     watch: {
@@ -101,7 +108,6 @@
         this.treeData = data
 
 
-
         this.$nextTick(() => {
           this.rendered = true
 
@@ -121,6 +127,8 @@
         let node = this.$refs.tree.getNodeByKey(this.selected)
         node.select()
 
+        this.$refs.taxonomy.scrollTop = node.$el.offsetTop
+
         while (!roots.includes(node._uid)) {
           node = node.$parent
           node.expand()
@@ -139,17 +147,21 @@
 
       },
 
-      async loadItems() {
+      async loadItems(page = 1) {
         if (!this.selected) {
           return
         }
 
+        window.scrollTo(0, 0)
+
         this.items = []
+        this.meta = {}
         this.loading = true
 
-        const { data } = await axios.get(`/api/items?${this.type}[]=${this.selected}&project=${window.project}`)
+        const { data } = await axios.get(`/api/items?${this.type}[]=${this.selected}&project=${window.project}&page=${page}`)
 
         this.items = data.data
+        this.meta = data.meta
         this.loading = false
       },
 
@@ -177,5 +189,16 @@
   .taxonomy-container {
     max-height: 700px;
     overflow-y: scroll;
+  }
+
+  .sticky {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+  }
+  .sticky:before,
+  .sticky:after {
+    content: '';
+    display: table;
   }
 </style>
