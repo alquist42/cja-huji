@@ -37,15 +37,15 @@ class ImagesController extends Controller
         $dirname = dirname($file_loc);
         if (!is_dir($dirname))
         {
-            mkdir($dirname, 0777, true);
+         //   mkdir($dirname, 0777, true);
 
             if (!@mkdir($dirname, 0777, true)) {
                 $error = error_get_last();
-                echo $error['message'];
+                dd($error['message']);
             }
-
+            dd('1');
         }
-
+        dd('2');
         $file_handler=fopen($file_loc,'w');
 
         if(fwrite($file_handler,$img_file)==false){
