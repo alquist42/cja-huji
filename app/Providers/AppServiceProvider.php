@@ -13,7 +13,7 @@ use App\Models\Taxonomy\Congregation;
 use App\Models\Taxonomy\HistoricOrigin;
 use App\Models\Taxonomy\Location;
 use App\Models\Taxonomy\Maker;
-use App\Models\Taxonomy\Object;
+use App\Models\Taxonomy\Object as TaxonomyObject;
 use App\Models\Taxonomy\Origin;
 use App\Models\Taxonomy\Period;
 use App\Models\Taxonomy\School;
@@ -48,7 +48,7 @@ class AppServiceProvider extends ServiceProvider
             'community' => Community::class,
             'historical_origin' => HistoricOrigin::class,
             'location' => Location::class,
-            'object' => Object::class,
+            'object' => TaxonomyObject::class,
             'origin' => Origin::class,
             'period' => Period::class,
             'school' => School::class,
