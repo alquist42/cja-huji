@@ -25,6 +25,7 @@
 
                             <div class="card">
                                 <img class="card-img-top image-fluid" src="http://cja.huji.ac.il/{{ $item->images[0]->url() }}" alt=" {{ $item->name() }}">
+                              {{--  <img class="card-img-top image-fluid" src="/images/{{ $item->images[0]->id }}" alt=" {{ $item->name() }}">--}}
                                 <div class="card-body">
                                     <h5 class="card-title {{--text-truncate--}}">
                                         <a href="/{{ $item->url() }}">

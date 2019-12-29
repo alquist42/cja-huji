@@ -12,8 +12,8 @@
 */
 Route::get('/admin/{name?}','AdminController@viewLinks')->name('{name?}');
 
-Route::get('/', 'WelcomeController@index');
-
+ Route::get('/', 'WelcomeController@index');
+Route::get('/images/{image}', 'ImagesController@index');
 
 // Authentication Routes...
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');

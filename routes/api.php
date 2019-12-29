@@ -8,8 +8,8 @@ Route::group(['namespace' => 'Api', 'middleware' => ['project']], function() {
     Route::get('/items', 'ItemsController@index');
     Route::get('/items/{item}', 'ItemsController@show');
 
-    Route::get('/images', 'ImagesController@index');
-    Route::get('/images/{image}', 'ImagesController@show');
+ //   Route::get('/images', 'ImagesController@index');
+  //  Route::get('/images/{image}', 'ImagesController@show');
 
     Route::get('/taxonomy/{type}', 'TaxonomyController@index');
     Route::get('/taxonomy/{type}/{id}', 'TaxonomyController@show');
