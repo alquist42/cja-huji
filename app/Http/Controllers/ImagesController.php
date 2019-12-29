@@ -16,11 +16,12 @@ class ImagesController extends Controller
         $url = $image->url();
 
         if(!file_exists($url)){
-            $this->saveImage($url);
+        //    $this->saveImage($url); YOU may save it to test the speed
+            $url='http://cja.huji.ac.il/' . $url;
         }
-        
 
-        $img = \Image::make($image->url());
+
+        $img = \Image::make($url);
         $img->resize(500, null, function ($constraint) {
             $constraint->aspectRatio();
         });
@@ -38,8 +39,6 @@ class ImagesController extends Controller
         $dirname = dirname($file_loc);
         if (!is_dir($dirname))
         {
-         //   mkdir($dirname, 0777, true);
-
             if (!@mkdir($dirname, 0777, true)) {
                 $error = error_get_last();
                 dd($error['message']);
