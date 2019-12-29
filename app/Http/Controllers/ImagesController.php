@@ -33,11 +33,17 @@ class ImagesController extends Controller
        // dd($img_file);
         $img_file=file_get_contents($img_file);
         $file_loc=$_SERVER['DOCUMENT_ROOT'].'/'.$url;
-        dd($file_loc);
+
         $dirname = dirname($file_loc);
         if (!is_dir($dirname))
         {
             mkdir($dirname, 0777, true);
+
+            if (!@mkdir($dirname, 0777, true)) {
+                $error = error_get_last();
+                echo $error['message'];
+            }
+
         }
 
         $file_handler=fopen($file_loc,'w');
