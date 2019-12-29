@@ -10,7 +10,7 @@ use App\Models\Taxonomy\Congregation;
 use App\Models\Taxonomy\HistoricOrigin;
 use App\Models\Taxonomy\Location;
 use App\Models\Taxonomy\Maker;
-use App\Models\Taxonomy\Object;
+// use App\Models\Taxonomy\Object;
 use App\Models\Taxonomy\Origin;
 use App\Models\Taxonomy\Period;
 use App\Models\Taxonomy\School;

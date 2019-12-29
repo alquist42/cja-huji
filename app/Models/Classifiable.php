@@ -8,7 +8,7 @@ use App\Models\Taxonomy\Congregation;
 use App\Models\Taxonomy\HistoricOrigin;
 use App\Models\Taxonomy\Location;
 use App\Models\Taxonomy\Maker;
-use App\Models\Taxonomy\Object;
+use App\Models\Taxonomy\Object  as TaxonomyObject;
 use App\Models\Taxonomy\Origin;
 use App\Models\Taxonomy\Period;
 use App\Models\Taxonomy\School;
@@ -98,7 +98,7 @@ class Classifiable extends Model
      */
     public function objects()
     {
-        return $this->morphToMany(Object::class, 'entity', 'taxonomy', 'entity_id', 'taxonomy_id')
+        return $this->morphToMany(TaxonomyObject::class, 'entity', 'taxonomy', 'entity_id', 'taxonomy_id')
             ->wherePivot('taxonomy_type', '=', 'object');
     }
 
