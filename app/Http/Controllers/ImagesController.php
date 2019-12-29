@@ -18,6 +18,7 @@ class ImagesController extends Controller
         if(!file_exists($url)){
             $this->saveImage($url);
         }
+        
 
         $img = \Image::make($image->url());
         $img->resize(500, null, function ($constraint) {
@@ -43,9 +44,8 @@ class ImagesController extends Controller
                 $error = error_get_last();
                 dd($error['message']);
             }
-            dd('1');
         }
-        dd('2');
+
         $file_handler=fopen($file_loc,'w');
 
         if(fwrite($file_handler,$img_file)==false){
