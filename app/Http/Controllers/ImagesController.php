@@ -30,13 +30,13 @@ class ImagesController extends Controller
 
     public function saveImage($url){
         $img_file='http://cja.huji.ac.il/' . $url;
-       // dd($img_file);
+        dd($img_file);
         $img_file=file_get_contents($img_file);
         $file_loc=$_SERVER['DOCUMENT_ROOT'].'/'.$url;
         $dirname = dirname($file_loc);
         if (!is_dir($dirname))
         {
-            mkdir($dirname, 0755, true);
+            mkdir($dirname, 0777, true);
         }
 
         $file_handler=fopen($file_loc,'w');
