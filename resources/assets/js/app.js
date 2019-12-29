@@ -5,7 +5,10 @@ import 'bootstrap';
 $(document).ready(function () {
     window.project = document.getElementById('app').dataset.project;
 
-    const gallery = new window.Viewer(document.querySelector('.images-gallery'), {});
+    const images = document.querySelector('.images-gallery')
+    if (images) {
+        new window.Viewer(images, {});
+    }
 
     $('#select_categories').click(function(e) {
         $('#categories').find('option').prop('selected', 'selected');
