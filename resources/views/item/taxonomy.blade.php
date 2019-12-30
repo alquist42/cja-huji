@@ -5,7 +5,7 @@
             <a href="/{{ request()->project }}/browse/objects/{{ $object->id }}">{{ $object->name }}</a> @if(!$loop->last) | @endif
         @endforeach
     </dd>
-    <dt class="col-sm-3">Maker</dt>
+    <dt class="col-sm-3">Artist/ Maker</dt>
     <dd class="col-sm-9">
         @foreach ($item->makers as $maker)
             @if($maker->artist->id != -1)
