@@ -127,7 +127,11 @@ class Search
         $result = null;
         $total = 0;
         if(!empty($text)){
-            $text = "+" . implode(' +', explode(" ",$text));
+            $text = explode(" ",$text);
+            $text = implode(array_map(function ($u) { if(strlen($u)>3) {return " +" . $u;} return " ".$u;}, $text));
+
+
+        //    $text = "+" . implode(' +', explode(" ",$text));
         }
             $result = DB::table('search')
                 ->select('search.id','search.type')
