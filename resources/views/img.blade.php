@@ -116,7 +116,7 @@
                 @forelse ($item->set->items as $sibling)
                     <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 mb-4">
                             <div class="card">
-                                <img class="card-img-top image-fluid" src="http://cja.huji.ac.il/{{ $sibling->images()->first()->url() }}" alt=" {{ $sibling->name() }}">
+                                <img class="card-img-top image-fluid" src="{{ $sibling->image_url() }}-original.png" alt=" {{ $sibling->name() }}">
                                 <div class="middle">
                                     <div><a href="/{{ request()->project }}/images/{{ $sibling->id }}">{{ $sibling->name() }} (id: {{ $sibling->id }})</a></div>
                                 </div>

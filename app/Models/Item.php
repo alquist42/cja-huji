@@ -93,4 +93,8 @@ class Item extends Classifiable
     public function url(){
         return  request()->project . "/images/" . $this->id ;
     }
+
+    public function image_url(){
+        return  "/images/i-" . $this->id ;
+    }
 }

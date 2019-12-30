@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Item;
+use App\Models\Set;
 use App\Models\Image as ImageModel;
 
 class ImagesController extends Controller
@@ -13,11 +14,21 @@ class ImagesController extends Controller
     const MEDIUM_WIDTH = 500;
     const THUMB_WIDTH = 600;
 
-    public function view($id,$size)
+    public function view($type,$id,$size)
     {
+        switch ($type){
+            case 's':
+                $modelClass = '\\App\\Models\\Set';
+                break;
+            case 'i':
+                $modelClass = '\\App\\Models\\Item';
+                break;
+        }
+        $model = $modelClass::where('id',$id)->with('images')->with('collections')->first();
+        $url = $model->images()->first()->url();
 
-        $image = ImageModel::find($id);
-        $url = $image->url();
+      //  $image = ImageModel::find($id);
+    //    $url = $image->url();
 
         if(!file_exists($url)){
             $this->saveImage($url); //YOU may save it to test the speed
