@@ -245,6 +245,7 @@ class Search
                 $ids_ordered = implode(',', $setIds);
                 $sets = Set::select("id","name")
                 ->with('collections')
+                ->with('collection_details')
                 ->whereIn('id',$setIds)
                 ->orderByRaw(DB::raw("FIELD(id, $ids_ordered)"))
                 ->with('images')
@@ -259,6 +260,7 @@ class Search
                 $items = Item::select("id","ntl")
                     ->whereIn('id',$itemIds)
                     ->with('collections')
+                    ->with('collection_details')
                     ->with('images')->get();
                 // TODO find good method to push collection
                 $items->each(function ($item, $key) use ($collection) {
