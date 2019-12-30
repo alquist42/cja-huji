@@ -126,6 +126,9 @@ class Search
         $collection = collect([]);
         $result = null;
         $total = 0;
+        if(!empty($text)){
+            $text = "+" . implode(' +', explode(" ",$text));
+        }
             $result = DB::table('search')
                 ->select('search.id','search.type')
                 ->where('search.publish_state','>',0)
@@ -133,8 +136,8 @@ class Search
                     $q->where('projects', 'LIKE', "%".$project."%");
                 })
                 ->when(!empty($text), function ($q) use ($text) {
-                    $q->selectRaw('MATCH (`text`) AGAINST (" +'.$text.'") as rel')
-                        ->whereRaw('MATCH (`text`) AGAINST (" +'.$text.'" IN BOOLEAN MODE) > 0');
+                    $q->selectRaw('MATCH (`text`) AGAINST ("'.$text.'") as rel')
+                        ->whereRaw('MATCH (`text`) AGAINST ("'.$text.'" IN BOOLEAN MODE) > 0');
                 })
                 ->when(!empty($filters), function($q) use ($filters){
                     $q->where(function ($query) use ($filters) {
@@ -173,7 +176,7 @@ class Search
                                 ->from('search')
                                 ->where('search.type','=','set')
                                 ->when(!empty($text), function ($q) use ($text) {
-                                    $q->whereRaw('MATCH (`text`) AGAINST (" +'.$text.'" IN BOOLEAN MODE) > 0');
+                                    $q->whereRaw('MATCH (`text`) AGAINST ("'.$text.'" IN BOOLEAN MODE) > 0');
                                 })
                                 ->when(!empty($filters), function($q) use ($filters){
                                    $q->where(function ($query) use ($filters) {
