@@ -24,8 +24,8 @@
                     <div class="col-xl-3 col-lg-3 col-md-4 col-sm-12 col-12 mb-4">
 
                             <div class="card">
-                                <img class="card-img-top image-fluid" src="http://cja.huji.ac.il/{{ $item->images[0]->url() }}" alt=" {{ $item->name() }}">
-                              {{--  <img class="card-img-top image-fluid" src="/images/{{ $item->images[0]->id }}" alt=" {{ $item->name() }}">--}}
+                              {{--  <img class="card-img-top image-fluid" src="http://cja.huji.ac.il/{{ $item->images[0]->url() }}" alt=" {{ $item->name() }}">--}}
+                                <img class="card-img-top image-fluid" src="/images/{{ $item->images[0]->id }}-small.png" alt=" {{ $item->name() }}">
                                 <div class="card-body">
                                     <h5 class="card-title {{--text-truncate--}}">
                                         <a href="/{{ $item->url() }}">

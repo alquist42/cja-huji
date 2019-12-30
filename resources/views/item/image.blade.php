@@ -3,7 +3,7 @@
         @forelse ($item->images as $image)
             <div class="carousel-item  @if($image->id === $item->images[0]->id) {{ 'active' }} @endif">
                 {{--<img class="d-block w-100 preview" src="http://cja.huji.ac.il/{{ $image->url() }}" alt="First slide">--}}
-                <img class="d-block w-100 preview" src="/images/{{ $item->images[0]->id }}" alt="First slide">
+                <img class="d-block w-100 preview" src="/images/{{ $item->images[0]->id }}-medium.png" alt="First slide">
 
             </div>
         @empty

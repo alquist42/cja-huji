@@ -9,24 +9,49 @@ use App\Models\Image as ImageModel;
 
 class ImagesController extends Controller
 {
-    public function index($id)
+    const SMALL_WIDTH = 300;
+    const MEDIUM_WIDTH = 500;
+    const THUMB_WIDTH = 600;
+
+    public function view($id,$size)
     {
 
         $image = ImageModel::find($id);
         $url = $image->url();
 
         if(!file_exists($url)){
-        //    $this->saveImage($url); YOU may save it to test the speed
+            $this->saveImage($url); //YOU may save it to test the speed
             $url='http://cja.huji.ac.il/' . $url;
         }
 
-
         $img = \Image::make($url);
-        $img->resize(500, null, function ($constraint) {
+
+        switch ($size){
+            case 'small':
+                $width = self::SMALL_WIDTH;
+                break;
+            default:
+                $width = self::MEDIUM_WIDTH;
+                break;
+        }
+
+        if($size != 'original'){
+            $img->resize($width, null, function ($constraint) {
+                $constraint->aspectRatio();
+            });
+        }
+
+        $wm = \Image::make('cr_wm.png');
+
+        $ratio = round($img->width() / $wm->width());
+        $wm->resize(($wm->width() * $ratio / 3), null, function ($constraint) {
             $constraint->aspectRatio();
         });
+      //  dd($ratio);
+        if($size !='small'){
+            $img->insert($wm,'top-left',0,0);
+        }
 
-        $img->insert('cr_wm.png','top-left',0,0);
         return $img->response('jpg');
     }
 
