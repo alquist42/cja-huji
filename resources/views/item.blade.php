@@ -7,7 +7,12 @@
                 <div class="col-md-8">
                     <div class="card mb-4">
                         <div class="card-header">
-                            {{ $item->name() }}
+                            Obj. ID: {{ $item->id }} {{ $item->name() }}
+                            @if($item->object_detail()) ,{{$item->object_detail()}} @endif
+                            @foreach ($item->origins as $origin)
+                                ,{{ $origin->name }}
+                            @endforeach
+                            @if($item->origin_detail()) | {{$item->origin_detail()}} @endif
                         </div>
                         <div class="card-body">
                             <div class="container">
@@ -20,14 +25,18 @@
 
                                     <div class="col-md-6">
                                         <div class="container">
-
                                             <dl class="row">
                                                 <dt class="col-sm-3 lead">Category</dt>
                                                 <dd class="col-sm-9 lead">
                                                     {{ $item->category_object->name}}
                                                 </dd>
                                             </dl>
-
+                                            <dl class="row">
+                                                <dt class="col-sm-3">Name/Title</dt>
+                                                <dd class="col-sm-9">
+                                                    {{ $item->name()}}
+                                                </dd>
+                                            </dl>
                                             @include('item.taxonomy')
 
                                         </div>
