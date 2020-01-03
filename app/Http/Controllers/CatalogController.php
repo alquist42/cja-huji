@@ -48,9 +48,7 @@ class CatalogController extends Controller
         $text = $request->get('text');
         $categories = $request->get('categories');
 
-        if(count($all_categories) == count($categories)){
-       //     $categories = null;
-        }
+
         if(!empty($categories)){
             foreach ($all_categories as $category){
                 if(in_array($category->slug, $categories)){
@@ -81,6 +79,9 @@ class CatalogController extends Controller
         foreach ($filters as $type => $values) {
             $model = '\\App\\Models\\Taxonomy\\' . ucfirst(str_singular($type));
             $selected[$type] = $model::select("id", "name")->find($values);
+        }
+        if(count($all_categories) == count($categories)){
+                 $categories = null;
         }
         $data = $this->search->find($selected, $search, $text, $categories);
         $items = $data['collection'];
