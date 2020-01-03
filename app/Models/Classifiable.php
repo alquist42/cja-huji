@@ -36,57 +36,6 @@ class Classifiable extends Model
     /**
      * @return BelongsToMany
      */
-    public function location_details()
-    {
-        return $this->morphMany(Details::class, 'entity', null, 'entity_id')
-            ->where('taxonomy_type', '=', 'location');
-    }
-
-    public function location_detail()
-    {
-        $details = $this->location_details;
-        foreach ($details as $detail){
-            return $detail->details;
-        }
-    }
-
-    /**
-     * @return BelongsToMany
-     */
-    public function origin_details()
-    {
-        return $this->morphMany(Details::class, 'entity', null, 'entity_id')
-            ->where('taxonomy_type', '=', 'origin');
-    }
-
-    public function origin_detail()
-    {
-        $details = $this->origin_details;
-        foreach ($details as $detail){
-            return $detail->details;
-        }
-    }
-
-    /**
-     * @return BelongsToMany
-     */
-    public function collection_details()
-    {
-        return $this->morphMany(Details::class, 'entity', null, 'entity_id')
-            ->where('taxonomy_type', '=', 'collection');
-    }
-
-    public function collection_detail()
-    {
-        $details = $this->collection_details;
-        foreach ($details as $detail){
-            return $detail->details;
-        }
-    }
-
-    /**
-     * @return BelongsToMany
-     */
     public function subjects()
     {
         return $this->morphToMany(Subject::class, 'entity', 'taxonomy', 'entity_id', 'taxonomy_id')
@@ -229,6 +178,160 @@ class Classifiable extends Model
     public function properties()
     {
         return $this->morphToMany(Property::class, 'entity', 'entity_properties')->withPivot('value', 'prop_flags');
+    }
+
+    /* DETAILS */
+    /**
+     * @return BelongsToMany
+     */
+    public function location_details()
+    {
+        return $this->morphMany(Details::class, 'entity', null, 'entity_id')
+            ->where('taxonomy_type', '=', 'location');
+    }
+
+    public function location_detail()
+    {
+        $details = $this->location_details;
+        foreach ($details as $detail){
+            return $detail->details;
+        }
+    }
+
+    /**
+     * @return BelongsToMany
+     */
+    public function origin_details()
+    {
+        return $this->morphMany(Details::class, 'entity', null, 'entity_id')
+            ->where('taxonomy_type', '=', 'origin');
+    }
+
+    public function origin_detail()
+    {
+        $details = $this->origin_details;
+        foreach ($details as $detail){
+            return $detail->details;
+        }
+    }
+
+    /**
+     * @return BelongsToMany
+     */
+    public function object_details()
+    {
+        return $this->morphMany(Details::class, 'entity', null, 'entity_id')
+            ->where('taxonomy_type', '=', 'object');
+    }
+
+    public function object_detail()
+    {
+        $details = $this->object_details;
+        foreach ($details as $detail){
+            return $detail->details;
+        }
+    }
+
+    /**
+     * @return BelongsToMany
+     */
+    public function collection_details()
+    {
+        return $this->morphMany(Details::class, 'entity', null, 'entity_id')
+            ->where('taxonomy_type', '=', 'collection');
+    }
+
+    public function collection_detail()
+    {
+        $details = $this->collection_details;
+        foreach ($details as $detail){
+            return $detail->details;
+        }
+    }
+
+    /**
+     * @return BelongsToMany
+     */
+    public function community_details()
+    {
+        return $this->morphMany(Details::class, 'entity', null, 'entity_id')
+            ->where('taxonomy_type', '=', 'community');
+    }
+
+    public function community_detail()
+    {
+        $details = $this->community_details;
+        foreach ($details as $detail){
+            return $detail->details;
+        }
+    }
+
+    /**
+     * @return BelongsToMany
+     */
+    public function maker_details()
+    {
+        return $this->morphMany(Details::class, 'entity', null, 'entity_id')
+            ->where('taxonomy_type', '=', 'maker');
+    }
+
+    public function maker_detail()
+    {
+        $details = $this->maker_details;
+        foreach ($details as $detail){
+            return $detail->details;
+        }
+    }
+
+    /**
+     * @return BelongsToMany
+     */
+    public function period_details()
+    {
+        return $this->morphMany(Details::class, 'entity', null, 'entity_id')
+            ->where('taxonomy_type', '=', 'period');
+    }
+
+    public function period_detail()
+    {
+        $details = $this->period_details;
+        foreach ($details as $detail){
+            return $detail->details;
+        }
+    }
+
+    /**
+     * @return BelongsToMany
+     */
+    public function school_details()
+    {
+        return $this->morphMany(Details::class, 'entity', null, 'entity_id')
+            ->where('taxonomy_type', '=', 'school');
+    }
+
+    public function school_detail()
+    {
+        $details = $this->school_details;
+        foreach ($details as $detail){
+            return $detail->details;
+        }
+    }
+
+    /**
+     * @return BelongsToMany
+     */
+    public function subject_details()
+    {
+        return $this->morphMany(Details::class, 'entity', null, 'entity_id')
+            ->where('taxonomy_type', '=', 'subject');
+    }
+
+    public function subject_detail()
+    {
+        $details = $this->subject_details;
+        foreach ($details as $detail){
+            return $detail->details;
+        }
     }
 
     /**
