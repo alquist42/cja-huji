@@ -29,6 +29,7 @@ class ImagesController extends Controller
 
       //  $image = ImageModel::find($id);
     //    $url = $image->url();
+        $url = str_replace(" ","%20",$url);
 
         if(!file_exists($url)){
             $this->saveImage($url); //YOU may save it to test the speed
