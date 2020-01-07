@@ -11,11 +11,11 @@
                     {{ $pagination->appends(request()->query())->links('partials.pagination') }}
                 </div>
             @endif
-            @if ($items instanceof \Illuminate\Pagination\LengthAwarePaginator)
+           {{-- @if ($items instanceof \Illuminate\Pagination\LengthAwarePaginator)
                 <div class="my-5 pagination-wrapper">
                     {{ $items->appends(request()->query())->links('partials.pagination') }}
                 </div>
-            @endif
+            @endif--}}
             <div class="my-5">{{$setsCount}} items found</div>
 
             <div class="row">
@@ -49,9 +49,14 @@
                     </div>
                 @endforelse
             </div>
-            @if ($items instanceof \Illuminate\Pagination\LengthAwarePaginator)
+            {{--@if ($items instanceof \Illuminate\Pagination\LengthAwarePaginator)
                 <div class="mt-3 mb-5 pagination-wrapper">
                     {{ $items->appends(request()->query())->links('partials.pagination') }}
+                </div>
+            @endif--}}
+            @if ($pagination instanceof \Illuminate\Pagination\LengthAwarePaginator)
+                <div class="my-5 pagination-wrapper">
+                    {{ $pagination->appends(request()->query())->links('partials.pagination') }}
                 </div>
             @endif
         </div>
