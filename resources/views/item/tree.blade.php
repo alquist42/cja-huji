@@ -9,7 +9,7 @@
             $traverse = function ($categories, $prefix = '<li>', $suffix = '</li>') use (&$traverse, $item) {
                 foreach ($categories as $category) {
                     $me = $category->id === $item->id ? '[ME] ' : '';
-                    echo $prefix.'<a href="/'.request()->project.'/items/'.$category->id.'">'.$me.$category->name().'</a>'.$suffix;
+                    echo $prefix.'<a href="/'.request()->project.'/items/'.$category->id.'">'.$me.$category->name_in_tree().'</a>'.$suffix;
 
                     $hasChildren = (count($category->children) > 0);
 

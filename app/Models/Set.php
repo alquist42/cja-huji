@@ -121,11 +121,30 @@ class Set extends Classifiable
      * @return string
      */
     public function name() {
+        return $this->name ? $this->name : $this->ntl;
+    }
+
+    public function ntl() {
         return $this->ntl ? $this->ntl : $this->name;
     }
 
+    public function name_in_tree() {
+        $name =  $this->name ? $this->name : $this->ntl;
+        $names = explode(" - ",$name);
+        return end($names);
+    }
+
     public function leaf() {
-        return Set::ancestorsAndSelf($this->id)->merge($this->descendants)->toTree();
+        $ancestors = Set::ancestorsAndSelf($this->id);
+        foreach ($ancestors as $anc){
+            if(empty($anc->parent_id)){
+                $descendants = $anc->descendantsOf($anc->id);
+                break;
+            }
+        }
+        return $ancestors->merge($descendants)->toTree();
+       // return Set::ancestorsAndSelf($this->id)->merge($this->descendants)->toTree();
+
     }
 
     public function url(){

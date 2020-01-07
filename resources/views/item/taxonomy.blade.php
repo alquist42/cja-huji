@@ -1,5 +1,5 @@
 <dl class="row my-1">
-    @if(count($item->objects) > 0)
+    @if ((count($item->objects) > 0) || $item->object_detail())
     <dt class="col-sm-3">Object</dt>
     <dd class="col-sm-9">
         @foreach ($item->objects as $object)
@@ -9,7 +9,7 @@
     </dd>
     @endif
 
-    @if(count($item->makers) > 0)
+    @if((count($item->makers) > 0) || $item->maker_detail())
     <dt class="col-sm-3">Artist/ Maker</dt>
     <dd class="col-sm-9">
         @foreach ($item->makers as $maker)
@@ -38,7 +38,7 @@
     </dd>
     @endif
 
-    @if(count($item->subjects) > 0)
+    @if ((count($item->subjects) > 0) || $item->subject_detail())
     <dt class="col-sm-3"> Subject</dt>
     <dd class="col-sm-9">
         @foreach ($item->subjects as $subject)
@@ -48,7 +48,7 @@
     </dd>
     @endif
 
-    @if(count($item->periods) > 0)
+    @if ((count($item->periods) > 0) || $item->period_detail())
     <dt class="col-sm-3">Period</dt>
     <dd class="col-sm-9">
         @foreach ($item->periods as $period)
@@ -58,7 +58,7 @@
     </dd>
     @endif
 
-    @if(count($item->origins) > 0)
+    @if ((count($item->origins) > 0) || $item->origin_detail())
     <dt class="col-sm-3">Origin</dt>
     <dd class="col-sm-9">
         @foreach ($item->origins as $origin)
@@ -68,19 +68,6 @@
             <a href="/{{ request()->project }}/browse/origins/{{ $origin->id }}">{{ $origin->name }}</a> @if(!$loop->last) <br/> @endif
         @endforeach
         @if($item->origin_detail()) | {{$item->origin_detail()}} @endif
-    </dd>
-    @endif
-
-    @if(count($item->collections) > 0)
-    <dt class="col-sm-3">Collection</dt>
-    <dd class="col-sm-9">
-        @foreach ($item->collections as $collection)
-            @foreach ($collection-> getAncestors() as $anc)
-                <a href="/{{ request()->project }}/browse/collections/{{ $anc->id }}">{{ $anc->name }}</a> |
-            @endforeach
-            <a href="/{{ request()->project }}/browse/collections/{{ $collection->id }}">{{ $collection->name }}</a> @if(!$loop->last) <br/> @endif
-        @endforeach
-        @if($item->collection_detail()) | {{$item->collection_detail()}} @endif
     </dd>
     @endif
 
@@ -106,6 +93,19 @@
         @if($item->community_detail()) | {{$item->community_detail()}} @endif
     </dd>
     @endif
+
+        @if (count($item->collections) > 0 || $item->collection_detail())
+            <dt class="col-sm-3">Collection</dt>
+            <dd class="col-sm-9">
+                @foreach ($item->collections as $collection)
+                    @foreach ($collection-> getAncestors() as $anc)
+                        <a href="/{{ request()->project }}/browse/collections/{{ $anc->id }}">{{ $anc->name }}</a> |
+                    @endforeach
+                    <a href="/{{ request()->project }}/browse/collections/{{ $collection->id }}">{{ $collection->name }}</a> @if(!$loop->last) <br/> @endif
+                @endforeach
+                @if($item->collection_detail()) | {{$item->collection_detail()}} @endif
+            </dd>
+        @endif
 
     @if(count($item->locations) > 0)
     <dt class="col-sm-3">Location</dt>
