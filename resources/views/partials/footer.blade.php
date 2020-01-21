@@ -25,20 +25,20 @@
                     <div class="col-md-3 mb-md-0 mb-3">
 
                         <!-- Links -->
-                        <h5 class="text-uppercase">Links</h5>
+                        <h5 class="text-uppercase">Categories</h5>
 
                         <ul class="list-unstyled">
                             <li>
-                                <a href="#!">Link 1</a>
+                                <a href="#!">The Bezalel Narkiss Index of Jewish Art</a>
                             </li>
                             <li>
-                                <a href="#!">Link 2</a>
+                                <a href="#!">Historic Synagogues of Europe</a>
                             </li>
                             <li>
-                                <a href="#!">Link 3</a>
+                                <a href="#!">A Catalogue of Wall Paintings in Central and East European Synagogues</a>
                             </li>
                             <li>
-                                <a href="#!">Link 4</a>
+                                <a href="#!">Ursula and Kurt Schubert Archives</a>
                             </li>
                         </ul>
 
@@ -49,20 +49,20 @@
                     <div class="col-md-3 mb-md-0 mb-3">
 
                         <!-- Links -->
-                        <h5 class="text-uppercase">Links</h5>
+                        <h5 class="text-uppercase">Chapters</h5>
 
                         <ul class="list-unstyled">
                             <li>
-                                <a href="#!">Link 1</a>
+                                <a href="#">Home</a>
                             </li>
                             <li>
-                                <a href="#!">Link 2</a>
+                                <a href="#">Activities</a>
                             </li>
                             <li>
-                                <a href="#!">Link 3</a>
+                                <a href="#">Publications</a>
                             </li>
                             <li>
-                                <a href="#!">Link 4</a>
+                                <a href="#">About</a>
                             </li>
                         </ul>
 
@@ -76,8 +76,8 @@
             <!-- Footer Links -->
 
             <!-- Copyright -->
-            <div class="footer-copyright text-center py-3">© 2018 Copyright:
-                <a href="https://mdbootstrap.com/education/bootstrap/">Art</a>
+            <div class="footer-copyright text-center py-3">© {{ date('Y') }} The Center for Jewish Art.
+                <a href="{{ url('copyrights') }}">Copyrights</a>
             </div>
             <!-- Copyright -->
 

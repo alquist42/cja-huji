@@ -1,0 +1,94 @@
+.banner {
+  position: relative;
+  transition: all 0.4s;
+
+  .banner-link {
+    padding: 20px;
+
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+
+    transition: all 0.4s;
+
+    .banner-title {
+      font-weight: bold;
+      color: white;
+    }
+
+    p {
+      transition: all 0.4s;
+      color: white;
+      text-transform: uppercase;
+      opacity: 0;
+    }
+  }
+
+  &:hover {
+    background-position: 45% 100%;
+
+    .banner-link {
+      padding-bottom: 20px;
+
+      p {
+        opacity: 1;
+      }
+    }
+  }
+}
+
+.bni-banner {
+  height: 350px;
+  background: url('http://cja.huji.ac.il/home/pics/T_Raban.jpg') 50% 100%;
+}
+
+.narkiss-price-banner {
+  height: 600px;
+  background: url('http://cja.huji.ac.il/home/pics/home/Prass_Narkiss_heb-2019.jpg') 50% 100%;
+
+  .banner-link {
+    height: 80px;
+  }
+
+  &:hover {
+    background-position: 10% 100%;
+
+    .banner-link {
+      height: 40%;
+    }
+  }
+}
+
+.publications-banner {
+  height: 650px;
+  background: url('http://cja.huji.ac.il/home/pics/home/volhynia.jpg') 90% 40%;
+
+  .banner-link {
+    height: 80px;
+  }
+
+  &:hover {
+    background-position: 20% 40%;
+
+    .banner-link {
+      height: 40%;
+    }
+  }
+}
+
+.about-banner {
+  height: 300px;
+  background: url('http://cja.huji.ac.il/home/pics/home/Mordechai_Narkiss.jpg') 90% 70%;
+
+  .banner-link {
+    height: 80px;
+  }
+
+  &:hover {
+    background-position: 0 70%;
+
+    .banner-link {
+      height: 40%;
+    }
+  }
+}

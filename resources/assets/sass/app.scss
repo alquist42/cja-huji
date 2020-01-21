@@ -1,18 +1,85 @@
-
-// Fonts
+//// FONTS
 @import url(https://fonts.googleapis.com/css?family=Raleway:300,400,600);
 
-// Variables
-@import "variables";
-
+//// PACKAGES
 // Bootstrap
 @import "~bootstrap/scss/bootstrap";
-
 // select2
 @import "~select2/dist/css/select2";
 
+//// VARIABLES
+@import "variables";
+
+@import 'banner';
+
+html, body, h1, h2, h3, h4, h5, h6 {
+    font-family: $font-family-sans-serif;
+}
+
+.background-bezalel {
+    background-color: $bezalel-narkiss;
+}
+
+.background-narkiss-price {
+    background-color: $narkiss-prize;
+}
+
+.background-publications {
+    background-color: $publications
+}
+
+.background-mhs {
+    background-color: $division-of-the-index
+}
+
+.background-media {
+    background-color: $media-block
+}
+
+.background-about {
+    background-color: $about-block
+}
+
+.carousel-header {
+    padding: 20px;
+    height: 100%;
+    h3 {
+        color: white;
+        font-weight: bold;
+    }
+}
+
+.caption-head {
+    position: absolute;
+    right: 0;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    padding: 20px;
+    color: #fff;
+
+    h4 {
+        font-weight: bold;
+    }
+}
+
+.link-reset {
+    color: white;
+    &:hover {
+        color: white;
+        text-decoration: unset;
+        cursor: pointer;
+    }
+}
+
 .form-search {
     margin-bottom: 15px;
+}
+
+@for $i from 100 through 1000 {
+    .height-#{$i} {
+        height: $i * 1px;
+    }
 }
 
 .main-title, .main-subtitle {
@@ -29,6 +96,10 @@
 .main-subtitle {
     font-size: 15px;
     letter-spacing: 1.7px;
+}
+
+.p-20 {
+    padding: 20px;
 }
 
 .card-img-top {
