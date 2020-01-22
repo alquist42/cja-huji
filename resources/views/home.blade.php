@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container py-5">
+    <div class="container-fluid py-5">
         <div class="row">
             <div class="col-md-8">
                 <div class="col-12 mb-5">
@@ -29,7 +29,7 @@
                             <div class="carousel-item active height-500">
                                 <img class="d-block img-fluid" src="{{ asset($prefix_url . 'pics/mhs.jpg') }}">
                                 <div class="caption-head background-mhs d-none d-md-block">
-                                    <a class="link-reset" href="{{ url('art/historic-synagogues-of-europe') }}">
+                                    <a class="link-reset" href="{{ url('mhc') }}">
                                         <h4>Historic Synagogues of Europe</h4>
                                     </a>
                                 </div>
@@ -61,7 +61,7 @@
                     </div>
                 </div>
                 <div class="col-12">
-                    <div class="w-100 p-20 background-media shadow mb-4">
+                    <div class="w-100 p-20 background-media rounded shadow mb-4">
                         <h3 class="font-weight-bold text-white">Media</h3>
                     </div>
                 </div>
