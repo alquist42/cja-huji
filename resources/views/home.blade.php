@@ -27,7 +27,7 @@
                                 </a>
                             </div>
                             <div class="carousel-item active height-500">
-                                <img class="d-block img-fluid" src="{{ asset($prefix_url . 'pics/mhs.jpg') }}">
+                                <img class="d-block img-fluid w-100" src="{{ asset($prefix_url . 'pics/mhs.jpg') }}">
                                 <div class="caption-head background-mhs d-none d-md-block">
                                     <a class="link-reset" href="{{ url('mhc') }}">
                                         <h4>Historic Synagogues of Europe</h4>
@@ -42,7 +42,7 @@
                                 </div>
                             </div>
                             <div class="carousel-item height-500">
-                                <img class="d-block w-100 mt-3" src="{{ asset($prefix_url . 'pics/Schubert.jpg') }}">
+                                <img class="d-block w-100" src="{{ asset($prefix_url . 'pics/Schubert.jpg') }}">
                                 <div class="caption-head background-mhs d-none d-md-block">
                                     <h4>Ursula and Kurt Schubert Archive</h4>
                                 </div>
@@ -121,7 +121,7 @@
                     </div>
                 </div>
                 <div class="col-12">
-                    <div class="w-100 p-20 background-media shadow mb-4">
+                    <div class="w-100 p-20 background-media shadow rounded mb-4">
                         <h3 class="font-weight-bold text-white">News from Jewish Heritage Europe</h3>
                     </div>
                 </div>
@@ -145,11 +145,11 @@
 
 
         <div class="row ">
-            @foreach($projects as $project => $name)
+            @foreach($projects as $slug => $project)
                 <div class="col-4 mb-3">
                     <div class="card">
                         <div class="card-body">
-                            <a href="/{{ $project  }}/items">{{ $name }}</a>
+                            <a href="{{ url($slug . ($project['sub_project'] ? '' : '/items')) }}">{{ $project['title'] }}</a>
                         </div>
                     </div>
                 </div>

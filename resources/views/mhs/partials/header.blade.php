@@ -2,18 +2,17 @@
     <div class="container px-3 my-2">
         <div class="row">
             <div class="float-left">
-                <a target="_blank" href="/huji/eng/index_e.htm">
-                    <img src="http://cja.huji.ac.il/home/pics/HUJI_Logo-2.png" alt="The Hebrew University of Jerusalem"
-                         height="70px"/>
+                <a target="_blank" href="http://www.foundationforjewishheritage.com">
+                    <img src="http://cja.huji.ac.il/mhs/pics/Foundation_For_Jewish_Heritage.png" alt="Foundation for Jewish Heritage" height="70px"/>
                 </a>
             </div>
             <div class="mx-auto py-2 text-center" width="500">
-                <h3 class="main-title">The Center for Jewish Art</h3>
-                <h5 class="main-subtitle text-muted">The Hebrew University of Jerusalem ({{ request()->project }})</h5>
+                <h1 class="main-title">Historic Synagogues of Europe</h1>
+                <h2 class="main-subtitle text-muted">The Hebrew University of Jerusalem ({{ request()->project }})</h2>
             </div>
             <div class="float-right">
-                <a href="/">
-                    <img src="http://cja.huji.ac.il/home/pics/cja-lion-new.png" alt="The Hebrew University of Jerusalem"
+                <a href="{{ url('/') }}">
+                    <img src="http://cja.huji.ac.il/mhs/pics/cja_hu.png"
                          height="70px"/>
                 </a>
             </div>
@@ -39,35 +38,14 @@
             </button>
             <div class="collapse navbar-collapse" id="main-menu">
                 <ul class="navbar-nav mr-auto">
-                    @foreach ($menu['general'] as $index => $item)
-                        <li class="nav-item {{ $item['url'] === 'catalogue' ? 'dropdown' : '' }}">
-                            <a class="nav-link
-                            {{ isset($item['disabled']) ? 'disabled' : '' }}
-                            {{ $item['url'] === 'catalogue' ? 'dropdown-toggle' : '' }}"
-                               @if ($item['url'] === 'catalogue')
-                               id="navbarDropdownMenuLink{{ $index }}" role="button" data-toggle="dropdown"
-                               aria-haspopup="true" aria-expanded="false"
-                               @endif
-                               href="{{ url($item['url']) }}">
+                    @foreach ($menu['mhs'] as $index => $item)
+                        <li class="nav-item">
+                            <a class="nav-link {{ isset($item['disabled']) ? 'disabled' : '' }}"
+                               href="{{ url('mhs' . $item['url']) }}">
                                 {{ $item['title'] }}
                             </a>
-                            @if ($item['url'] === 'catalogue')
-                                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink{{ $index }}">
-                                    @foreach ($projects as $slug => $project)
-                                        <a class="dropdown-item"
-                                           href="{{ url($slug . ($project['sub_project'] ? '' : '/items')) }}">{{ $project['title'] }}</a>
-                                    @endforeach
-                                </div>
-                            @endisset
                         </li>
                     @endforeach
-                    @if (!empty(request()->project))
-                        @foreach($menu['in_project'] as $item)
-                        <li class="nav-item">
-                            <a class="nav-link" href="/{{ request()->project . $item['url'] }}">{{ $item['title'] }}</a>
-                        </li>
-                        @endforeach
-                    @endif
                 </ul>
                 <ul class="navbar-nav">
                     @if (Auth::check())

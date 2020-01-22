@@ -6,27 +6,8 @@ return [
 			'title' => 'Home'
 		],
 		[
-			'url' => '/art',
-			'title' => 'Index of Jewish Art',
-			'children' => [
-				[
-					'url' => '/bezalel-narkiss-index-of-jewish-art',
-					'title' => 'The Bezalel Narkiss Index of Jewish Art',
-				],
-				[
-					'url' => '/historic-synagogues-of-europe',
-					'title' => 'Historic Synagogues of Europe',
-				],
-				[
-					'url' => '/catalogue-of-wall-paintings',
-					'title' => 'A Catalogue of Wall Paintings in Central and East European Synagogues',
-				],
-				[
-					'url' => '/ursula-and-kurt-schubert-archives',
-					'title' => 'Ursula and Kurt Schubert Archives',
-				],
-
-			]
+			'url' => 'catalogue',
+			'title' => 'Index of Jewish Art'
 		],
 		[
 			'url' => '/activities',
@@ -43,5 +24,52 @@ return [
 			'title' => 'About',
 			'disabled' => true
 		],
+	],
+	'in_project' => [
+		[
+			'url' => '/items',
+			'title' => 'Search'
+		],
+		[
+			'url' => '/browse/origins',
+			'title' => 'Browse'
+		],
+	],
+	'mhs' => [
+		[
+			'url' => '/',
+			'title' => 'Home'
+		],
+		[
+			'url' => '/approach',
+			'title' => 'Approach'
+		],
+		[
+			'url' => '/search',
+			'title' => 'Synagogue Search',
+			'disabled' => true
+		],
+		[
+			'url' => '/map',
+			'title' => 'Map',
+			'disabled' => true,
+		],
+		[
+			'url' => '/suggest',
+			'title' => 'Suggest a New Building',
+			'disabled' => true,
+		],
+		[
+			'url' => '/acknowledgments',
+			'title' => 'Acknowledgments'
+		],
+		[
+			'url' => '/links',
+			'title' => 'Links'
+		],
+		[
+			'url' => '/contact',
+			'title' => 'Contact'
+		]
 	]
 ];

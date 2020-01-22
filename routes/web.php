@@ -33,6 +33,14 @@ Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail'
 Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm');
 Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 
+
+// MHS
+Route::group(['prefix' => 'mhs'], function () {
+	Route::get('/', 'MHSController@index');
+	Route::get('/{page}', 'MHSController@index');
+});
+
+// Other catalogs
 Route::group(['middleware' => ['project']], function () {
     Route::get('/{project}', 'HomeController@index');
     Route::get('/{project}/items', 'CatalogController@index');

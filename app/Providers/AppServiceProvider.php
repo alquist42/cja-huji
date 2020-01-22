@@ -44,8 +44,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->instance(Tenant::class, new Tenant());
 
 //		View::share('menu', config('menu.general'));
-		View::share('projects', (new Tenant)->projects());
-		View::share('prefix_url', 'http://cja.huji.ac.il/home/');
+		View::share([
+			'projects' => $this->app->make(Tenant::class)->projects(),
+			'prefix_url' => 'http://cja.huji.ac.il/home/',
+			'menu' => config('menu')
+		]);
 
         Relation::morphMap([
             'subject' => Subject::class,

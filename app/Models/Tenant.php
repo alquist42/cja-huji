@@ -6,15 +6,29 @@ namespace App\Models;
 
 class Tenant
 {
-
-    public $project = '';
+	public $project = '';
 
     protected $projects = [
-        'catalogue' => 'Main Catalogue',
-        'wpc' => 'WPC Catalogue',
-        'slovenia' => 'Slovenia Catalogue',
-        'mhs'  => 'MHS Catalogue',
-        'sch'  => 'SHC Catalogue',
+        'catalogue' => [
+        	'title' => 'Main Catalogue',
+			'sub_project' => false,
+		],
+        'wpc' => [
+        	'title' => 'WPC Catalogue',
+			'sub_project' => false,
+		],
+        'slovenia' => [
+        	'title' => 'Slovenia Catalogue',
+			'sub_project' => false,
+		],
+        'mhs'  => [
+        	'title' => 'MHS Catalogue',
+			'sub_project' => true,
+		],
+        'sch'  => [
+        	'title' => 'SHC Catalogue',
+			'sub_project' => false,
+		],
      //   'prlst'  => 'PRLST Catalogue',
      //   'pln'  => 'PLN Catalogue',
     ];
@@ -30,13 +44,13 @@ class Tenant
 
         $this->project = $project;
 
-        if (in_array($project, array_keys($this->map))) {
+        if (isset($this->map[$project])) {
             $this->project = $this->map[$project];
         }
     }
 
     public function validate($project) {
-        return in_array($project, array_keys($this->projects));
+        return isset($this->projects[$project]);
     }
 
     public function projects() {
