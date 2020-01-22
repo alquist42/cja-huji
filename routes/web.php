@@ -35,10 +35,7 @@ Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 
 
 // MHS
-Route::group(['prefix' => 'mhs'], function () {
-	Route::get('/', 'MHSController@index');
-	Route::get('/{page}', 'MHSController@index');
-});
+Route::get('/mhs/{page?}', 'MHSController@index');
 
 // Other catalogs
 Route::group(['middleware' => ['project']], function () {
