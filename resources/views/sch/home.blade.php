@@ -13,7 +13,7 @@
 
                             </div>
                             <div class="card-footer">
-                                <a href="/catalogue/items?text={{ $category['search'] }}"
+                                <a href="/sch/items?text={{ $category['search'] }}"
                                    class="btn btn-primary">Browse</a>
                             </div>
                         </div>
