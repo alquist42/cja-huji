@@ -32,6 +32,8 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/browse.js') }}"></script>
+    <script src="{{ asset('js/app.js') }}"></script>
+
 </body>
 
 </html>

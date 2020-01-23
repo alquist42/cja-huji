@@ -8,7 +8,7 @@
             </div>
             <div class="mx-auto py-2 text-center" width="500">
                 <h1 class="main-title">Historic Synagogues of Europe</h1>
-                <h2 class="main-subtitle text-muted">The Hebrew University of Jerusalem ({{ request()->project }})</h2>
+                <h2 class="main-subtitle text-muted">The Hebrew University of Jerusalem</h2>
             </div>
             <div class="float-right">
                 <a href="{{ url('/') }}">

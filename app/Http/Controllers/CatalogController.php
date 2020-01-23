@@ -39,7 +39,7 @@ class CatalogController extends Controller
         $this->search = $search;
     }
 
-    public function index(Request $request, $project )
+    public function index(Request $request, $project)
     {
         $all_categories = Category::select("slug", "name")->where("in_search","=",1)->get();
 
@@ -80,8 +80,8 @@ class CatalogController extends Controller
             $model = '\\App\\Models\\Taxonomy\\' . ucfirst(str_singular($type));
             $selected[$type] = $model::select("id", "name")->find($values);
         }
-        if(count($all_categories) == count($categories)){
-                 $categories = null;
+        if(is_array($categories) && count($all_categories) == count($categories)){
+			 $categories = null;
         }
         $data = $this->search->find($selected, $search, $text, $categories);
         $items = $data['collection'];

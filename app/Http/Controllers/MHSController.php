@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class MHSController extends Controller
 {
@@ -11,10 +11,15 @@ class MHSController extends Controller
 	 *
 	 * @param $page
 	 *
-	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+	 * @return mixed
 	 */
 	public function index($page = null)
 	{
-		return $page && view()->exists("mhs.$page") ? view("mhs.$page") : view('mhs.home');
+		if (!$page) return view('mhs.home');
+		else if (view()->exists("mhs.$page")) {
+			$header['title'] = Str::title($page);
+			return view("mhs.$page", compact('header'));
+		}
+		else return abort(404);
 	}
 }

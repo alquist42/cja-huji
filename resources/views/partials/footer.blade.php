@@ -13,8 +13,7 @@
                     <div class="col-md-6 mt-md-0 mt-3">
 
                         <!-- Content -->
-                        <h5 class="text-uppercase">Footer Content</h5>
-                        <p>Here you can use rows and columns to organize your footer content.</p>
+                        <h5 class="text-uppercase">The Center for Jewish Art of The Hebrew University of Jerusalem</h5>
 
                     </div>
                     <!-- Grid column -->
@@ -25,21 +24,14 @@
                     <div class="col-md-3 mb-md-0 mb-3">
 
                         <!-- Links -->
-                        <h5 class="text-uppercase">Categories</h5>
+                        <h5 class="text-uppercase">Projects</h5>
 
                         <ul class="list-unstyled">
-                            <li>
-                                <a href="#!">The Bezalel Narkiss Index of Jewish Art</a>
-                            </li>
-                            <li>
-                                <a href="#!">Historic Synagogues of Europe</a>
-                            </li>
-                            <li>
-                                <a href="#!">A Catalogue of Wall Paintings in Central and East European Synagogues</a>
-                            </li>
-                            <li>
-                                <a href="#!">Ursula and Kurt Schubert Archives</a>
-                            </li>
+                            @foreach ($projects as $slug => $project)
+                                <li>
+                                    <a href="{{ url($project['sub_project'] ? $slug : ($slug . '/items')) }}">{{ $project['title'] }}</a>
+                                </li>
+                            @endforeach
                         </ul>
 
                     </div>
@@ -49,7 +41,7 @@
                     <div class="col-md-3 mb-md-0 mb-3">
 
                         <!-- Links -->
-                        <h5 class="text-uppercase">Chapters</h5>
+                        <h5 class="text-uppercase">Pages</h5>
 
                         <ul class="list-unstyled">
                             <li>
@@ -76,7 +68,7 @@
             <!-- Footer Links -->
 
             <!-- Copyright -->
-            <div class="footer-copyright text-center py-3">© {{ date('Y') }} The Center for Jewish Art.
+            <div class="footer-copyright text-center py-3">© {{ date('Y') }}. The Center for Jewish Art.
                 <a href="{{ url('copyrights') }}">Copyrights</a>
             </div>
             <!-- Copyright -->

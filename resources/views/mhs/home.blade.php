@@ -1,7 +1,6 @@
 @extends('mhs.layouts.app')
 
 @section('content')
-    <div class="container-fluid">
         <div class="row my-5">
             <div class="col-lg-6">
                 The Jewish presence in Europe goes back over 2,500 years and this is reflected in a rich and remarkable
@@ -57,9 +56,8 @@
                     and teaching of Jewish visual heritage all over the world.
                 </p>
             </div>
-            <div class="col-lg-6">
+            <div class="col-lg-6 text-center">
              <img class="img-fluid shadow" src="http://cja.huji.ac.il/images_db/nli_pics/HUB_155000/000/CJA_155159/deliverable/A173063.jpg">
             </div>
         </div>
-    </div>
 @endsection

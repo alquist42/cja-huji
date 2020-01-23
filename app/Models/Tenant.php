@@ -11,23 +11,28 @@ class Tenant
     protected $projects = [
         'catalogue' => [
         	'title' => 'Main Catalogue',
-			'sub_project' => false,
+//			'slug' => 'the-bezalel-narkiss-index-of-jewish-art',
+			'sub_project' => true,
 		],
         'wpc' => [
         	'title' => 'WPC Catalogue',
-			'sub_project' => false,
+//			'slug' => 'a-catalogue-of-wall-paintings-in-central-and-east-european-synagogues',
+			'sub_project' => true,
 		],
         'slovenia' => [
         	'title' => 'Slovenia Catalogue',
+//			'slug' => 'slovenia-catalog',
 			'sub_project' => false,
 		],
         'mhs'  => [
         	'title' => 'MHS Catalogue',
+//			'slug '=> 'historic-synagogues-of-europe',
 			'sub_project' => true,
 		],
         'sch'  => [
-        	'title' => 'SHC Catalogue',
-			'sub_project' => false,
+        	'title' => 'SCH Catalogue',
+//			'slug' => 'ursula-and-kurt-schubert-archives',
+			'sub_project' => true,
 		],
      //   'prlst'  => 'PRLST Catalogue',
      //   'pln'  => 'PLN Catalogue',

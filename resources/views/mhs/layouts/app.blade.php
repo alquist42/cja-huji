@@ -26,7 +26,9 @@
 
 @include('mhs.partials.header')
 <main id="app" data-project="{{ request()->project }}">
-    @yield('content')
+    <div class="container-fluid">
+        @yield('content')
+    </div>
 </main>
 @include('partials.footer')
 

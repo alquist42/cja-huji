@@ -9,7 +9,7 @@
             </div>
             <div class="mx-auto py-2 text-center" width="500">
                 <h3 class="main-title">The Center for Jewish Art</h3>
-                <h5 class="main-subtitle text-muted">The Hebrew University of Jerusalem ({{ request()->project }})</h5>
+                <h5 class="main-subtitle text-muted">The Hebrew University of Jerusalem @if(request()->project) ({{ request()->project }})@endif</h5>
             </div>
             <div class="float-right">
                 <a href="/">
@@ -48,14 +48,14 @@
                                id="navbarDropdownMenuLink{{ $index }}" role="button" data-toggle="dropdown"
                                aria-haspopup="true" aria-expanded="false"
                                @endif
-                               href="{{ url($item['url']) }}">
+                               href="{{ url($item['url'] === 'catalogue' ? '#' : $item['url']) }}">
                                 {{ $item['title'] }}
                             </a>
                             @if ($item['url'] === 'catalogue')
                                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink{{ $index }}">
                                     @foreach ($projects as $slug => $project)
                                         <a class="dropdown-item"
-                                           href="{{ url($slug . ($project['sub_project'] ? '' : '/items')) }}">{{ $project['title'] }}</a>
+                                           href="{{ url($project['sub_project'] ? $slug : ($slug . '/items')) }}">{{ $project['title'] }}</a>
                                     @endforeach
                                 </div>
                             @endisset

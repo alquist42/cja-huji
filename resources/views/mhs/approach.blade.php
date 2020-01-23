@@ -1,7 +1,6 @@
 @extends('mhs.layouts.app')
 
 @section('content')
-    <div class="container-fluid">
         <div class="row my-5">
             <div class="col-lg-6">
                 <div>
@@ -195,10 +194,9 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-6">
+            <div class="col-lg-6 text-center">
                 <img class="img-fluid shadow"
                      src="http://cja.huji.ac.il/mhs/pics/approach.jpg">
             </div>
         </div>
-    </div>
 @endsection

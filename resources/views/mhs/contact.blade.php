@@ -1,7 +1,6 @@
 @extends('mhs.layouts.app')
 
 @section('content')
-    <div class="container-fluid">
         <div class="row my-5">
             <div class="col-lg-5">
                 <p>
@@ -21,11 +20,10 @@
                 e: <a href="mailto:cja@mail.huji.ac.il">cja@mail.huji.ac.il</a><br>
                 w: <a target="_blank" href="http://cja.huji.ac.il/">http://cja.huji.ac.il</a><br>
             </div>
-            <div class="col-lg-7">
+            <div class="col-lg-7 text-center">
                 <img class="img-fluid shadow"
                      src="http://cja.huji.ac.il/mhs/pics/contact.jpg">
             </div>
         </div>
-    </div>
 @endsection
 

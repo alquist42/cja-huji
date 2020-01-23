@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Post;
-use App\Models\Comment;
 use App\Models\Tenant;
 
 class WelcomeController extends Controller
@@ -26,12 +24,10 @@ class WelcomeController extends Controller
     /**
      * Show the application dashboard.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index()
     {
-        $projects = $this->tenant->projects();
-
-        return view('home', compact('projects'));
+        return view('home');
     }
 }
