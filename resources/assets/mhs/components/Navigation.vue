@@ -63,14 +63,7 @@
           ratings: [],
           conditions: []
         },
-        options: {
-          location: [],
-          community: [],
-          subject: [],
-          material: [],
-          rating: [],
-          condition: []
-        }
+        options: {}
       }
     },
     created() {
