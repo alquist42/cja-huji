@@ -10,34 +10,23 @@
 //// VARIABLES
 @import "variables";
 
+//// MEDIA
+@import 'media';
+
+//// PARTIALS
 @import 'banner';
+@import 'browse_block';
+@import 'background';
+
+/// PAGES
+@import 'welcome';
+@import 'about';
+@import 'catalogue';
+@import 'wpc';
+@import 'mhs';
 
 html, body, h1, h2, h3, h4, h5, h6 {
     font-family: $font-family-sans-serif;
-}
-
-.background-bezalel {
-    background-color: $bezalel-narkiss;
-}
-
-.background-narkiss-price {
-    background-color: $narkiss-prize;
-}
-
-.background-publications {
-    background-color: $publications
-}
-
-.background-mhs {
-    background-color: $division-of-the-index
-}
-
-.background-media {
-    background-color: $media-block
-}
-
-.background-about {
-    background-color: $about-block
 }
 
 .carousel-header {
@@ -63,6 +52,21 @@ html, body, h1, h2, h3, h4, h5, h6 {
     }
 }
 
+.carousel-inner .carousel-item-right.active,
+.carousel-inner .carousel-item-next {
+    transform: translateX(33.33%);
+}
+
+.carousel-inner .carousel-item-left.active,
+.carousel-inner .carousel-item-prev {
+    transform: translateX(-33.33%)
+}
+
+.carousel-inner .carousel-item-right,
+.carousel-inner .carousel-item-left{
+    transform: translateX(0);
+}
+
 .link-reset {
     color: white;
     &:hover {
@@ -76,9 +80,9 @@ html, body, h1, h2, h3, h4, h5, h6 {
     margin-bottom: 15px;
 }
 
-@for $i from 100 through 1000 {
-    .height-#{$i} {
-        height: $i * 1px;
+@for $i from 1 through 10 {
+    .height-#{$i * 100} {
+        height: $i * 100 * 1px;
     }
 }
 

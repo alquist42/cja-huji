@@ -25,14 +25,14 @@
 <body>
 
 @include('mhs.partials.header')
-<main id="app" data-project="{{ request()->project }}">
-    <div class="container-fluid">
+<main>
+    <div id="app" class="container">
         @yield('content')
     </div>
 </main>
 @include('partials.footer')
 
 <!-- Scripts -->
-<script src="{{ asset('js/app.js') }}"></script>
+<script src="{{ asset('js/mhs.js') }}"></script>
 </body>
 </html>

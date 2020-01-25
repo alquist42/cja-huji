@@ -9,7 +9,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>The Bezalel Narkiss Index of Jewish Art</title>
+    <title>{{ isset($header['title']) ? "{$header['title']} | The Center of Jewish Art" : 'The Center of Jewish Art' }}</title>
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
@@ -24,8 +24,8 @@
 
     @include('partials.header')
 
-    <div id="app" class="leading-normal tracking-normal gradient" data-project="{{ request()->project }}">
-        <router-view></router-view>
+    <div id="app" class="leading-normal tracking-normal gradient" data-url="{{ request()->project }}" data-project="{{ $project }}">
+        <router-view daad="dawda"></router-view>
     </div>
 
     @include('partials.footer')

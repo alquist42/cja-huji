@@ -46,7 +46,6 @@ class AppServiceProvider extends ServiceProvider
 //		View::share('menu', config('menu.general'));
 		View::share([
 			'projects' => $this->app->make(Tenant::class)->projects(),
-			'prefix_url' => 'http://cja.huji.ac.il/home/',
 			'menu' => config('menu')
 		]);
 

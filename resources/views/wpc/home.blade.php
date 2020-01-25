@@ -1,58 +1,52 @@
 @extends('layouts.app')
 
 @section('content')
-    <h1 class="text-center my-5">A Catalogue of Wall Paintings in Central and East European Synagogues</h1>
-    <div class="py-5 row">
-        <div class="col-lg-8">
+    <h1 class="text-center my-5">{{ $header['h1'] }}</h1>
+    <div class="row">
+        <div class="col-md-8">
             <div class="row">
                 <div class="col-md-4 mb-4">
-                    <div class="card text-center">
-                        <div class="card-body" style="min-height: 150px">
-                            <h5 class="card-title">All The Catalogue</h5>
+                    <a href="/wpc/items"
+                       class="link-reset">
+                        <div class="wpc-block rounded shadow background-1">
+                            <h2 class="wpc-title">All the Catalogue</h2>
+                            <div class="wpc-image"
+                                 style="background-image: url('http://cja.huji.ac.il/wpc/pics/all.jpg')"></div>
                         </div>
-                        <div class="card-footer">
-                            <a href="/wpc/items" class="btn btn-primary">Browse</a>
-                        </div>
-                    </div>
+                    </a>
                 </div>
-                @foreach($countries as $country)
+                @foreach($countries as $index => $country)
                     <div class="col-md-4 mb-4">
-                        <div class="card text-center">
-                            <div class="card-body" style="min-height: 150px">
-                                <h5 class="card-title">{{ $country->name }}</h5>
-
+                        <a href="{{ url("{$header['prefix']}/items?locations[]={$country->id}") }}"
+                           class="link-reset">
+                            <div class="wpc-block rounded shadow {{ "background-" . ($index+2) }}">
+                                <h2 class="wpc-title">{{ $country->name }}</h2>
+                                <div class="wpc-image"
+                                     style="background-image: url('{{"http://cja.huji.ac.il/wpc/pics/$country->image"}}')"></div>
                             </div>
-                            <div class="card-footer">
-                                <a href="/wpc/items?locations[]={{ $country->id }}"
-                                   class="btn btn-primary">Browse</a>
-                            </div>
-                        </div>
+                        </a>
                     </div>
                 @endforeach
             </div>
         </div>
-        <div class="col-lg-4">
-            <div class="col">
-                <div class="card text-center" style="background-color:#FFF8DF">
-                    <div class="card-header">
-                        <h5>Boris Khaimovich<br>
-                            <em>
-                                <h6>Catalogue of Wall Paintings in Central and East European Synagogues</h6>
-                            </em>
+        <div class="col-md-4">
+            <div class="row mb-5">
+                <div class="col">
+                    <div class="background-quote p-5 shadow rounded text-center">
+                        <h5 class="mb-4">Boris Khaimovich<br></h5>
+                        <h6><em>Catalogue of Wall Paintings in Central and East European Synagogues</em>
                             edited by Vladimir Levin
-                        </h5>
-                    </div>
-                    <div class="card-body">
-                        The <em>Catalogue</em> represents one of the modules comprising the Bezalel Narkiss
-                        Index of
-                        Jewish Art. It includes murals created within the framework of traditional Jewish folk
-                        culture
-                        (while omitting decorative paintings belonging to historicist building design).
-                    </div>
-                    <div class="card-footer">
-                        <button type="button" class="btn btn-link" data-toggle="modal" data-target="#modal">
+                        </h6>
+                        <p>
+                            The <em>Catalogue</em> represents one of the modules comprising the Bezalel Narkiss
+                            Index of
+                            Jewish Art. It includes murals created within the framework of traditional Jewish folk
+                            culture
+                            (while omitting decorative paintings belonging to historicist building design).
+                        </p>
+                        <a href="#" class="btn btn-link" data-toggle="modal" data-target="#modal">
                             Read more
-                        </button>
+                        </a>
 
                         <!-- Modal -->
                         <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modal"
@@ -123,21 +117,45 @@
                     </div>
                 </div>
             </div>
-            <div class="col mt-5">
-                <div class="card text-center">
-                    <div class="card-header">
-                        Browse By
-                    </div>
-                    <div class="card-body">
-                        <div class="btn-group-vertical w-100">
-                            <a href="{{ url('/wpc/browse/subject') }}" class="btn btn-secondary">Iconographical Subject</a>
-                            <a href="{{ url('/wpc/browse/origin') }}" class="btn btn-secondary">Origin</a>
-                            <a href="{{ url('/wpc/browse/artist') }}" class="btn btn-secondary">Artist</a>
-                            <a href="{{ url('/wpc/browse/collection') }}" class="btn btn-secondary">Collection</a>
+            <div class="row justify-content-center">
+                <div class="col-lg-6 mb-4 align-center">
+                    <a class="link-reset" href="{{ url($header['prefix'] . '/browse/subject') }}">
+                        <div class="browse-block medium shadow subject">
+                            <span class="label">Browse by:</span>
+                            <span class="value text-center">Iconographical Subject</span>
                         </div>
-                        <a href="{{ url('/wpc/browse/collection') }}" class="btn btn-secondary w-100 mt-3">Map</a>
-
-                    </div>
+                    </a>
+                </div>
+                <div class="col-lg-6 mb-4">
+                    <a class="link-reset" href="{{ url($header['prefix'] . '/browse/origin') }}">
+                        <div class="browse-block medium shadow origin">
+                            <span class="label">Browse by:</span>
+                            <span class="value text-center">Origin</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-6 mb-4">
+                    <a class="link-reset" href="{{ url($header['prefix'] . '/browse/origin') }}">
+                        <div class="browse-block medium shadow artist">
+                            <span class="label">Browse by:</span>
+                            <span class="value text-center">Artist</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-6 mb-4">
+                    <a class="link-reset" href="{{ url($header['prefix'] . '/browse/collection') }}">
+                        <div class="browse-block medium shadow collection">
+                            <span class="label">Browse by:</span>
+                            <span class="value text-center">Collection</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-6 mb-4">
+                    <a class="link-reset" href="#">
+                        <div class="browse-block medium shadow map">
+                            <span class="value text-center">Map</span>
+                        </div>
+                    </a>
                 </div>
             </div>
         </div>

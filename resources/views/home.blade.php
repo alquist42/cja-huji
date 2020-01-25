@@ -5,7 +5,7 @@
         <div class="col-md-8">
             <div class="col-12 mb-5">
                 <div class="banner bni-banner rounded shadow">
-                    <a href="{{ url('catalogue') }}"
+                    <a href="{{ url($projects['cja']['url']) }}"
                        class="banner-link background-bezalel link-reset">
                         <h3 class="banner-title">The Bezalel Narkiss Index of Jewish Art</h3>
                         <p class="banner-description">Read more</p>
@@ -13,52 +13,50 @@
                 </div>
             </div>
             <div class="col-12 mb-5">
-                <div id="carouselExampleIndicators" class="carousel slide shadow" data-ride="false">
-                    <ol class="carousel-indicators">
-                        <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-                        <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-                        <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
-                    </ol>
-                    <div class="carousel-inner">
-                        <div class="carousel-header background-mhs">
-                            <h3>Divisions of the Index of Jewish Art</h3>
-                        </div>
-                        <div class="carousel-item active height-500">
-                            <img class="d-block img-fluid w-100" src="{{ asset($prefix_url . 'pics/mhs.jpg') }}">
-                            <div class="caption-head background-mhs d-none d-md-block">
-                                <a class="link-reset" href="{{ url('mhs') }}">
-                                    <h4>Historic Synagogues of Europe</h4>
-                                </a>
+                <div class="w-100 p-20 background-2 shadow rounded mb-4">
+                    <h3 class="text-white">Divisions of the Index of Jewish Art</h3>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <a href="{{ url($projects['mhs']['url']) }}"
+                           class="link-reset">
+                            <div class="welcome-divisions rounded shadow background-8">
+                                <h4 class="welcome-title">{{ $projects['mhs']['title'] }}</h4>
+                                <div class="welcome-image"
+                                     style="background-image: url('{{"http://cja.huji.ac.il/home/pics/mhs.jpg"}}')"></div>
                             </div>
-                        </div>
-                        <div class="carousel-item height-500">
-                            <img class="d-block w-100" src="{{ asset($prefix_url . 'pics/wpc.jpg') }}">
-                            <div class="caption-head background-mhs d-none d-md-block">
-                                <a class="link-reset" href="{{ url('wpc') }}">
-                                    <h4>A Catalogue of Wall Paintings in Central and East European Synagogues</h4>
-                                    <p>Boris Khaimovich <br> Edited by Vladimir Levin</p>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="carousel-item height-500">
-                            <img class="d-block w-100" src="{{ asset($prefix_url . 'pics/Schubert.jpg') }}">
-                            <div class="caption-head background-mhs d-none d-md-block">
-                                <a class="link-reset" href="{{ url('sch') }}">
-                                    <h4>Ursula and Kurt Schubert Archive</h4>
-                                </a>
-                            </div>
-                        </div>
+                        </a>
                     </div>
-                    <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button"
-                       data-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="sr-only">Previous</span>
-                    </a>
-                    <a class="carousel-control-next" href="#carouselExampleIndicators" role="button"
-                       data-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="sr-only">Next</span>
-                    </a>
+                    <div class="col-md-6 mb-4">
+                        <a href="{{ url($projects['wpc']['url']) }}"
+                           class="link-reset">
+                            <div class="welcome-divisions rounded shadow background-3">
+                                <h4 class="welcome-title">{{ $projects['wpc']['title'] }}</h4>
+                                <div class="welcome-image"
+                                     style="background-image: url('{{"http://cja.huji.ac.il/home/pics/wpc.jpg"}}')"></div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <a href="{{ url($projects['sch']['url']) }}"
+                           class="link-reset">
+                            <div class="welcome-divisions rounded shadow background-4">
+                                <h4 class="welcome-title">{{ $projects['sch']['title'] }}</h4>
+                                <div class="welcome-image"
+                                     style="background-image: url('{{"http://cja.huji.ac.il/home/pics/Schubert.jpg"}}')"></div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <a href="{{ url($projects['slovenia']['url']) }}"
+                           class="link-reset">
+                            <div class="welcome-divisions rounded shadow background-5">
+                                <h4 class="welcome-title">{{ $projects['slovenia']['title'] }}</h4>
+                                <div class="welcome-image"
+                                     style="background-image: url('{{"http://cja.huji.ac.il/slovenia/pics/Maribor-Keystone.jpg"}}')"></div>
+                            </div>
+                        </a>
+                    </div>
                 </div>
             </div>
             <div class="col-12">
@@ -143,16 +141,5 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row ">
-        @foreach($projects as $slug => $project)
-            <div class="col-4 mb-3">
-                <div class="card">
-                    <div class="card-body">
-                        <a href="{{ url($slug . ($project['sub_project'] ? '' : '/items')) }}">{{ $project['title'] }}</a>
-                    </div>
-                </div>
-            </div>
-        @endforeach
     </div>
 @endsection

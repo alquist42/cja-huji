@@ -6,33 +6,23 @@ return [
 			'title' => 'Home'
 		],
 		[
-			'url' => 'catalogue',
+			'url' => 'projects',
 			'title' => 'Index of Jewish Art'
 		],
 		[
-			'url' => '/activities',
+			'url' => 'activities',
 			'title' => 'Activities',
-			'disabled' => true
+			'only_index_page' => true
 		],
 		[
-			'url' => '/publications',
+			'url' => 'publications',
 			'title' => 'Publications',
-			'disabled' => true
+			'only_index_page' => true,
 		],
 		[
-			'url' => '/about',
+			'url' => 'about',
 			'title' => 'About',
-			'disabled' => true
-		],
-	],
-	'in_project' => [
-		[
-			'url' => '/items',
-			'title' => 'Search'
-		],
-		[
-			'url' => '/browse/origins',
-			'title' => 'Browse'
+			'only_index_page' => true,
 		],
 	],
 	'mhs' => [
@@ -52,7 +42,6 @@ return [
 		[
 			'url' => '/map',
 			'title' => 'Map',
-			'disabled' => true,
 		],
 		[
 			'url' => '/suggest',

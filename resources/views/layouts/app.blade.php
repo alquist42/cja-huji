@@ -16,16 +16,11 @@
 
 {{--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.5.0/viewer.min.css" integrity="sha256-MpORFsKmYYmQvFqOG/2AbIcy09vQBwjfZDKM+Ri/m0Y=" crossorigin="anonymous" />--}}
 {{--    <script src="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.5.0/viewer.min.js" integrity="sha256-mLJW+YLWH/4ebMAdPKIX1aTCIE0m2nInDT1NxX8TCBM=" crossorigin="anonymous"></script>--}}
-
-<!-- Scripts -->
-    <script>
-
-    </script>
 </head>
 <body>
 @include('partials.header')
 <main>
-    <div id="app" data-project="{{ request()->project }}">
+    <div id="app">
         <div class="container-fluid">
             @include('flash::message')
             @yield('content')
@@ -35,6 +30,7 @@
 @include('partials.footer')
 
 <!-- Scripts -->
+@yield('after_scripts')
 <script src="{{ asset('js/app.js') }}"></script>
 </body>
 </html>

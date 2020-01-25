@@ -3,41 +3,46 @@
 @section('content')
     <h1 class="text-center my-5">{{ $header['h1'] }}</h1>
     <div class="row">
-        <div class="col-lg-8">
-            <div class="row">
-                @foreach($categories as $category)
-                    <div class="col-md-4 mb-4">
-                        <div class="card text-center">
-                            <div class="card-body" style="min-height: 150px">
-                                <h5 class="card-title">{{ $category['title'] }}</h5>
-
-                            </div>
-                            <div class="card-footer">
-                                <a href="/sch/items?text={{ $category['search'] }}"
-                                   class="btn btn-primary">Browse</a>
-                            </div>
+        <div class="col-md-8">
+            <div class="row justify-content-center">
+                <div class="col-md-3 mb-4">
+                    <a href="/sch/items"
+                       class="link-reset">
+                        <div class="wpc-block rounded shadow background-1">
+                            <h2 class="wpc-title">All the Archives</h2>
+                            <div class="wpc-image"
+                                 style="background-image: url('http://cja.huji.ac.il/sch/pics/Schubert.jpg')"></div>
                         </div>
+                    </a>
+                </div>
+                @foreach($categories as $index => $category)
+                    <div class="col-md-3 mb-4">
+                        <a href="{{ url("{$header['prefix']}/items?text={$category['search']}") }}"
+                           class="link-reset">
+                            <div class="wpc-block rounded shadow {{ "background-" . ($index+2) }}">
+                                <h2 class="wpc-title">{{ $category['title'] }}</h2>
+                                <div class="wpc-image"
+                                     style="background-image: url('{{"http://cja.huji.ac.il/sch/pics/{$category['image']}"}}')"></div>
+                            </div>
+                        </a>
                     </div>
                 @endforeach
             </div>
         </div>
-        <div class="col-lg-4">
-            <div class="col">
-                <div class="card text-center" style="background-color:#FFF8DF">
-                    <div class="card-body">
-                        <p>The Kurt and Ursula Schubert Archive is one of the sections comprising
-                            the Bezalel Narkiss Index of Jewish Art.
-                            <br>
+        <div class="col-md-4">
+            <div class="row mb-5">
+                <div class="col">
+                    <div class="background-quote p-5 shadow rounded text-center">
+                        <p>The Kurt and Ursula Schubert Archive is one of the sections comprising the Bezalel Narkiss
+                            Index of Jewish Art.<br>
                             The late Profs. Kurt and Dr. Ursula Schubert from Vienna University, established an
-                            extensive collection of photographs of Hebrew illuminated manuscripts... During the
-                            1980s and 1990s, their collection grew into an impressive archive which became the
-                            Schuberts’ major research tool.
+                            extensive collection of photographs of Hebrew illuminated manuscripts... During the 1980s
+                            and 1990s, their collection grew into an impressive archive which became the Schuberts’
+                            major research tool.
                         </p>
-                    </div>
-                    <div class="card-footer">
-                        <button type="button" class="btn btn-link" data-toggle="modal" data-target="#modal">
+                        <a href="#" class="btn btn-link" data-toggle="modal" data-target="#modal">
                             Read more
-                        </button>
+                        </a>
 
                         <!-- Modal -->
                         <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modal"
@@ -94,21 +99,45 @@
                     </div>
                 </div>
             </div>
-            <div class="col mt-5">
-                <div class="card text-center">
-                    <div class="card-header">
-                        Browse By
-                    </div>
-                    <div class="card-body">
-                        <div class="btn-group-vertical w-100">
-                            <a href="{{ url('/sch/browse/subject') }}" class="btn btn-secondary">Iconographical Subject</a>
-                            <a href="{{ url('/sch/browse/origin') }}" class="btn btn-secondary">Origin</a>
-                            <a href="{{ url('/sch/browse/artist') }}" class="btn btn-secondary">Artist</a>
-                            <a href="{{ url('/sch/browse/collection') }}" class="btn btn-secondary">Collection</a>
+            <div class="row justify-content-center">
+                <div class="col-lg-6 mb-4 align-center">
+                    <a class="link-reset" href="{{ url($header['prefix'] . '/browse/subject') }}">
+                        <div class="browse-block medium shadow subject">
+                            <span class="label">Browse by:</span>
+                            <span class="value text-center">Iconographical Subject</span>
                         </div>
-                        <a href="{{ url('/sch/browse/collection') }}" class="btn btn-secondary w-100 mt-3">Map</a>
-
-                    </div>
+                    </a>
+                </div>
+                <div class="col-lg-6 mb-4">
+                    <a class="link-reset" href="{{ url($header['prefix'] . '/browse/origin') }}">
+                        <div class="browse-block medium shadow origin">
+                            <span class="label">Browse by:</span>
+                            <span class="value text-center">Origin</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-6 mb-4">
+                    <a class="link-reset" href="{{ url($header['prefix'] . '/browse/origin') }}">
+                        <div class="browse-block medium shadow artist">
+                            <div class="label">Browse by:</div>
+                            <div class="value text-center">Artist</div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-6 mb-4">
+                    <a class="link-reset" href="{{ url($header['prefix'] . '/browse/collection') }}">
+                        <div class="browse-block medium shadow collection">
+                            <span class="label">Browse by:</span>
+                            <span class="value text-center">Collection</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-6 mb-4">
+                    <a class="link-reset" href="#">
+                        <div class="browse-block medium shadow map">
+                            <span class="value text-center">Map</span>
+                        </div>
+                    </a>
                 </div>
             </div>
         </div>

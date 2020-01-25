@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Tenant;
 use Illuminate\Support\Str;
 
 class MHSController extends Controller
@@ -15,9 +16,21 @@ class MHSController extends Controller
 	 */
 	public function index($page = null)
 	{
-		if (!$page) return view('mhs.home');
+		$prefix = (new Tenant)->projects()['mhs']['url'];
+
+		if (!$page) {
+			$header = [
+				'prefix' => $prefix
+			];
+
+			return view('mhs.home', compact('header'));
+		}
 		else if (view()->exists("mhs.$page")) {
-			$header['title'] = Str::title($page);
+			$header = [
+				'title' => Str::title($page),
+				'prefix' => $prefix
+			];
+
 			return view("mhs.$page", compact('header'));
 		}
 		else return abort(404);

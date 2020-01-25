@@ -35,26 +35,30 @@ Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 
 
 // MHS
-Route::get('/mhs/{page?}', 'MHSController@index');
+Route::get('/historic-synagogues-of-europe/{page?}', 'MHSController@index');
 
-// Other catalogs
-Route::group(['middleware' => ['project']], function () {
+// Single pages
+Route::get('activities', function () {
+	return view('activities', ['header' => ['title' => 'Activities', 'index_page' => true]]);
+});
+Route::get('publications', function () {
+	return view('publications', ['header' => ['title' => 'Publications', 'index_page' => true]]);
+});
+Route::get('about', function () {
+	return view('about', ['header' => ['title' => 'About', 'index_page' => true]]);
+});
+
+// Other projects
+Route::group(['middleware' => 'project'], function () {
     Route::get('/{project}', 'HomeController@index');
     Route::get('/{project}/items', 'CatalogController@index');
     Route::get('/{project}/items/{item}', 'CatalogController@show');
     Route::get('/{project}/images/{item}', 'CatalogController@showItem');
+	Route::get('/{project}/browse/{any}', 'BrowseController@index')->where('any', '.*');;
 });
 
-
-/* Vue.js SPA */
-Route::get('/{project}/browse/{any?}/{other?}', function ($project) {
-    return view('browse', [ 'project' => $project]);
-});
 Route::get('/data/analize','DataController@analize');
 Route::get('/data/search_index','DataController@searchIndex');
-
-
-
 
 Auth::routes();
 

@@ -16,6 +16,8 @@ mix.js('resources/assets/js/app.js', 'public/js')
 
 mix.js('resources/assets/browse/browse.js', 'public/js');
 
+mix.js('resources/assets/mhs/mhs.js', 'public/js');
+
 mix.styles([
     'public/assets/css/bootstrap.min.css',
     'public/assets/css/style.css',

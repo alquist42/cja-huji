@@ -1,0 +1,34 @@
+.wpc-block {
+  height: $wpc-block-height;
+  color: white;
+  display: flex;
+  align-items: center;
+  transition: all 0.5s ease-out;
+  flex-direction: column;
+  justify-content: space-between;
+
+  .wpc-title {
+    font-size: $wpc-font-size;
+    display: flex;
+    margin: 0;
+    height: $wpc-block-height - $wpc-image-height;
+    align-items: center;
+    text-align: center;
+  }
+
+  .wpc-image {
+    background-size: cover;
+    background-position: center;
+    height: $wpc-image-height;
+    width: 100%;
+    transition: all 0.5s ease-out;
+  }
+
+  &:hover {
+    padding-top: $wpc-block-height - ($wpc-block-height / 2) - $wpc-font-size;
+
+    .wpc-image {
+      opacity: 0;
+    }
+  }
+}

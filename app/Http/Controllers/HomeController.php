@@ -4,71 +4,60 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Location;
+use App\Models\Tenant;
 
 class HomeController extends Controller
 {
 	/**
-	 * Call another function by project
+	 * Header of page
 	 *
-	 * @param $project
+	 * @var array
+	 */
+	protected $header = [];
+
+	/**
+	 * Call another function by project
 	 *
 	 * @return mixed
 	 */
-	public function index($project)
+	public function index()
 	{
-		if (method_exists($this, $project)) return $this->$project();
+		$project = resolve(Tenant::class);
+		$name = $project->project;
+		$projectData = $project->getProjectData();
+
+		$this->header = [
+			'h1' => $projectData['title'],
+			'title' => $projectData['title'],
+			'prefix' => $projectData['url'],
+			'index_page' => true
+		];
+
+		if (method_exists($this, $name)) return $this->$name();
 		else abort(404);
 	}
 
 	/**
-	 * Show the catalogue main page.
+	 * Show the CJA main page.
 	 *
 	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
 	 */
-	private function catalogue()
+	private function cja()
 	{
-		/*$imagesAndObjects = Search::selectRaw('type, category, count(*) as total')
-			->groupBy(['type', 'category'])
-			->get();*/
-
 		$categories = Category::select("slug", "name")
 			->where("in_search", 1)
 			->get();
 
-		$header = [
-			'title' => 'Catalogue',
-			'h1' => 'Catalogue'
-		];
-
-		return view('catalogue.home', get_defined_vars());
-	}
-
-	/**
-	 * Show the MHS main page.
-	 *
-	 * @param $page
-	 *
-	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-	 */
-	private function mhs($page = null)
-	{
-		return $page && view()->exists("mhs.$page") ? view("mhs.$page") : view('mhs.home');
+		return view('catalogue.home', ['categories' => $categories, 'header' => $this->header]);
 	}
 
 	/**
 	 * Show the WPC main page.
 	 *
-	 * @param $page
-	 *
 	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
 	 */
 	private function wpc()
 	{
-		$header = [
-			'title' => 'WPC',
-			'h1' => 'A Catalogue of Wall Paintings in Central and East European Synagogues'
-		];
-
 		$countries = Location::select('locations.id', 'locations.name')
 			->join('projects', function ($join) {
 				$join->on('projects.taggable_id', 'locations.id')
@@ -80,68 +69,107 @@ class HomeController extends Controller
 			->whereNull('parent_id')
 			// Building does not exist
 			->where('locations.id', '!=', 758)
-			->get();
+			->get()
+			->map(function ($country) {
+				if (strpos($country->name, ' ') !== false)
+					$country->image = substr($country->name, 0, strpos($country->name, ' ')) . '.jpg';
+				else $country->image = "$country->name.jpg";
+				$country->image = strtolower($country->image);
 
-		return view('wpc.home', get_defined_vars());
+				return $country;
+			});
+
+		return view('wpc.home', ['countries' => $countries, 'header' => $this->header]);
 	}
 
 	/**
 	 * Show the SCH main page.
 	 *
-	 * @param $page
-	 *
 	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
 	 */
 	private function sch()
 	{
-		$header = [
-			'title' => 'SCH',
-			'h1' => 'Ursula and Kurt Schubert Archives'
-		];
-
 		$categories = [
 			[
-				'title' => 'All the Archives',
-				'search' => ''
-			],
-			[
 				'title' => 'Bible',
-				'search' => 'bible'
+				'search' => 'bible',
+				'image' => 'bible.jpg',
 			],
 			[
 				'title' => 'Biblical Paraphrase',
-				'search' => 'biblical paraphrase'
+				'search' => 'biblical paraphrase',
+				'image' => 'bib_par.jpg',
 			],
 			[
 				'title' => 'Haggadah',
-				'search' => 'haggadah'
+				'search' => 'haggadah',
+				'image' => 'haggadah.jpg',
 			],
 			[
 				'title' => 'Evronot',
-				'search' => 'evronot'
+				'search' => 'evronot',
+				'image' => 'evronot.jpg',
 			],
 			[
 				'title' => 'Esther scroll',
-				'search' => 'esther'
+				'search' => 'esther',
+				'image' => 'esther.jpg',
 			],
 			[
 				'title' => 'Halakhic Literature',
-				'search' => 'halakhic'
+				'search' => 'halakhic',
+				'image' => 'halkhic.jpg',
 			],
 			[
-				'title' => 'Siddut',
-				'search' => 'siddur'
+				'title' => 'Siddur',
+				'search' => 'siddur',
+				'image' => 'prayer.jpg',
 			],
 			[
 				'title' => 'Medical Literature',
-				'search' => 'siddur'
+				'search' => 'medical',
+				'image' => 'medical.jpg',
 			],
 			[
 				'title' => 'Miscellany',
-				'search' => 'miscellany'
+				'search' => 'miscellany',
+				'image' => 'miscellany.jpg',
 			],
 		];
 
-		return view('sch.home', get_defined_vars());
+		return view('sch.home', ['categories' => $categories, 'header' => $this->header]);
+	}
+
+	/**
+	 * Show the Slovenia main page.
+	 *
+	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+	 */
+	private function slovenia()
+	{
+		$categories = [
+			[
+				'name' => 'Jewish Architecture',
+				'slug' => 'arc',
+				'image' => 'Maribor-Syn.jpg',
+			],
+			[
+				'name' => 'Jewish Funerary Art',
+				'slug' => 'rafa',
+				'image' => 'tombstone_fragment.jpg',
+			],
+			[
+				'name' => 'Sacred and Ritual Objects',
+				'slug' => 'sro',
+				'image' => 'Kiddush.jpg',
+			],
+			[
+				'name' => 'Hebrew Manuscripts',
+				'slug' => 'ilmb',
+				'image' => 'ms.jpg',
+			],
+		];
+
+		return view('slovenia.home', ['categories' => $categories, 'header' => $this->header]);
 	}
 }

@@ -8,8 +8,9 @@
                 </a>
             </div>
             <div class="mx-auto py-2 text-center" width="500">
-                <h3 class="main-title">The Center for Jewish Art</h3>
-                <h5 class="main-subtitle text-muted">The Hebrew University of Jerusalem @if(request()->project) ({{ request()->project }})@endif</h5>
+                <h3 class="main-title">The Center of Jewish Art</h3>
+                <h5 class="main-subtitle text-muted">The Hebrew University of Jerusalem @if(isset($header['title']))
+                        ({{ $header['title'] }})@endif</h5>
             </div>
             <div class="float-right">
                 <a href="/">
@@ -39,35 +40,34 @@
             </button>
             <div class="collapse navbar-collapse" id="main-menu">
                 <ul class="navbar-nav mr-auto">
-                    @foreach ($menu['general'] as $index => $item)
-                        <li class="nav-item {{ $item['url'] === 'catalogue' ? 'dropdown' : '' }}">
-                            <a class="nav-link
-                            {{ isset($item['disabled']) ? 'disabled' : '' }}
-                            {{ $item['url'] === 'catalogue' ? 'dropdown-toggle' : '' }}"
-                               @if ($item['url'] === 'catalogue')
-                               id="navbarDropdownMenuLink{{ $index }}" role="button" data-toggle="dropdown"
-                               aria-haspopup="true" aria-expanded="false"
-                               @endif
-                               href="{{ url($item['url'] === 'catalogue' ? '#' : $item['url']) }}">
-                                {{ $item['title'] }}
-                            </a>
-                            @if ($item['url'] === 'catalogue')
-                                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink{{ $index }}">
-                                    @foreach ($projects as $slug => $project)
-                                        <a class="dropdown-item"
-                                           href="{{ url($project['sub_project'] ? $slug : ($slug . '/items')) }}">{{ $project['title'] }}</a>
-                                    @endforeach
-                                </div>
-                            @endisset
-                        </li>
+                    @foreach ($menu['general'] as $item)
+                        @if(!isset($item['only_index_page']) || isset($header['index_page']))
+                            @if($item['url'] === 'projects')
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle"
+                                       id="navbarDropdownMenuLink"
+                                       role="button"
+                                       data-toggle="dropdown"
+                                       aria-haspopup="true"
+                                       aria-expanded="false"
+                                       href="#">{{ $item['title'] }}</a>
+                                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                        @foreach ($projects as $project)
+                                            <a class="dropdown-item"
+                                               href="{{ url($project['url']) }}">{{ $project['title'] }}</a>
+                                        @endforeach
+                                    </div>
+                                </li>
+                            @else
+                                <li class="nav-item {{ request()->is($item['url']) ? 'active' : '' }}">
+                                    <a class="nav-link {{ isset($item['disabled']) ? 'disabled' : '' }}"
+                                       href="{{ request()->is($item['url']) ? '#' : $item['url'] }}"
+                                    >{{ $item['title'] }}
+                                    </a>
+                                </li>
+                            @endif
+                        @endif
                     @endforeach
-                    @if (!empty(request()->project))
-                        @foreach($menu['in_project'] as $item)
-                        <li class="nav-item">
-                            <a class="nav-link" href="/{{ request()->project . $item['url'] }}">{{ $item['title'] }}</a>
-                        </li>
-                        @endforeach
-                    @endif
                 </ul>
                 <ul class="navbar-nav">
                     @if (Auth::check())
