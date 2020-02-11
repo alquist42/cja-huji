@@ -1,0 +1,77 @@
+.browse-block {
+  display: flex;
+  margin: auto;
+  align-items: center;
+  border-radius: 50%;
+  flex-direction: column;
+  justify-content: center;
+  transition: opacity 0.5s ease-out;
+
+  .label {
+    display: flex;
+    margin-bottom: 10px;
+    transform: rotate(15deg);
+    opacity: 0.6;
+    text-transform: uppercase;
+  }
+
+  .value {
+    text-transform: uppercase;
+  }
+
+  &.big {
+    background-color: $color-10;
+    height: 180px;
+    width: 180px;
+    .label {
+      color: #878055;
+    }
+
+    .value {
+      color: #880000;
+    }
+  }
+
+  &.medium {
+    height: 150px;
+    width: 150px;
+    &.origin {
+      background-color: $color-1;
+    }
+    &.subject {
+      background-color: $color-9;
+    }
+    &.artist {
+      background-color: $color-3;
+    }
+    &.object {
+      background-color: $color-4;
+    }
+    &.community {
+      background-color: $color-1;
+    }
+    &.collection {
+      background-color: $color-2;
+    }
+    &.location {
+      background-color: $color-8;
+    }
+    &.map {
+      background-color: $color-7;
+      padding: 0;
+      justify-content: center;
+    }
+
+    .label {
+      color: #f1f1f1;
+    }
+
+    .value {
+      color: white;
+    }
+  }
+
+  &:hover {
+    opacity: 0.5
+  }
+}

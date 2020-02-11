@@ -1,0 +1,39 @@
+.catalogue-block {
+  height: 200px;
+  color: white;
+  display: flex;
+  align-items: center;
+  transition: opacity 0.5s ease-out;
+
+  &.all {
+    background-color: $color-1
+  }
+  &.anc {
+    background-color: $color-2
+  }
+  &.ilmb {
+    background-color: $color-3
+  }
+  &.arc {
+    background-color: $color-4
+  }
+  &.rafa {
+    background-color: $color-6
+  }
+  &.hpb {
+    background-color: $color-7
+  }
+  &.mod {
+    background-color: $color-9
+  }
+  &.sro {
+    background-color: $color-5
+  }
+  &.msk {
+    background-color: $color-8
+  }
+
+  &:hover {
+    opacity: 0.5
+  }
+}

@@ -2,6 +2,7 @@
     "/js/app.js": "/js/app.js",
     "/css/app.css": "/css/app.css",
     "/js/browse.js": "/js/browse.js",
+    "/js/mhs.js": "/js/mhs.js",
     "/admin/css/all.css": "/admin/css/all.css",
     "/admin/js/all.js": "/admin/js/all.js"
 }

@@ -1,11 +1,12 @@
 import Browse from './pages/Browse.vue';
 import VueRouter from 'vue-router';
 
-window.project = document.getElementById('app').dataset.project
+window.project = document.getElementById('app').dataset.project;
+const BASE_URL = document.getElementById('app').dataset.url;
 
 const routes = {
   mode: 'history',
-  base: `/${window.project}/browse`,
+  base: `/${BASE_URL}/browse`,
   routes: [
     {
       path: '/',

@@ -12,11 +12,7 @@ class AdminController extends Controller
     {
         $this->middleware('auth');
     }
-    public function viewLinks($name) {
-        if (empty($name)) {
-            $name = 'index';
-        }
-
+    public function viewLinks($name = "index") {
         if(View::exists('admin/' . $name)){
             return view('admin/' . $name);
         }

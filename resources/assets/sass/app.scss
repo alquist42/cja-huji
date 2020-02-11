@@ -1,18 +1,89 @@
-
-// Fonts
+//// FONTS
 @import url(https://fonts.googleapis.com/css?family=Raleway:300,400,600);
 
-// Variables
-@import "variables";
-
+//// PACKAGES
 // Bootstrap
 @import "~bootstrap/scss/bootstrap";
-
 // select2
 @import "~select2/dist/css/select2";
 
+//// VARIABLES
+@import "variables";
+
+//// MEDIA
+@import 'media';
+
+//// PARTIALS
+@import 'banner';
+@import 'browse_block';
+@import 'background';
+
+/// PAGES
+@import 'welcome';
+@import 'about';
+@import 'catalogue';
+@import 'wpc';
+@import 'mhs';
+
+html, body, h1, h2, h3, h4, h5, h6 {
+    font-family: $font-family-sans-serif;
+}
+
+.carousel-header {
+    padding: 20px;
+    height: 100%;
+    h3 {
+        color: white;
+        font-weight: bold;
+    }
+}
+
+.caption-head {
+    position: absolute;
+    right: 0;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    padding: 20px;
+    color: #fff;
+
+    h4 {
+        font-weight: bold;
+    }
+}
+
+.carousel-inner .carousel-item-right.active,
+.carousel-inner .carousel-item-next {
+    transform: translateX(33.33%);
+}
+
+.carousel-inner .carousel-item-left.active,
+.carousel-inner .carousel-item-prev {
+    transform: translateX(-33.33%)
+}
+
+.carousel-inner .carousel-item-right,
+.carousel-inner .carousel-item-left{
+    transform: translateX(0);
+}
+
+.link-reset {
+    color: white;
+    &:hover {
+        color: white;
+        text-decoration: unset;
+        cursor: pointer;
+    }
+}
+
 .form-search {
     margin-bottom: 15px;
+}
+
+@for $i from 1 through 10 {
+    .height-#{$i * 100} {
+        height: $i * 100 * 1px;
+    }
 }
 
 .main-title, .main-subtitle {
@@ -29,6 +100,10 @@
 .main-subtitle {
     font-size: 15px;
     letter-spacing: 1.7px;
+}
+
+.p-20 {
+    padding: 20px;
 }
 
 .card-img-top {

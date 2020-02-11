@@ -23,6 +23,7 @@ use App\Models\Taxonomy\Subject;
 use App\Models\Set;
 use App\Models\Item;
 use App\Models\Image;
+use Illuminate\Support\Facades\View;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -41,6 +42,12 @@ class AppServiceProvider extends ServiceProvider
         ]);
 
         $this->app->instance(Tenant::class, new Tenant());
+
+//		View::share('menu', config('menu.general'));
+		View::share([
+			'projects' => $this->app->make(Tenant::class)->projects(),
+			'menu' => config('menu')
+		]);
 
         Relation::morphMap([
             'subject' => Subject::class,

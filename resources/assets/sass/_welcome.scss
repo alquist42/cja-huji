@@ -1,0 +1,35 @@
+.welcome-divisions {
+  height: $welcome-divisions-height;
+  color: white;
+  display: flex;
+  align-items: center;
+  transition: all 0.5s ease-out;
+  flex-direction: column;
+  justify-content: space-between;
+
+  .welcome-title {
+    padding: 0 20px;
+    font-size: $welcome-divisions-font-size;
+    display: flex;
+    margin: 0;
+    height: $welcome-divisions-height - $welcome-image-height;
+    align-items: center;
+    text-align: center;
+  }
+
+  .welcome-image {
+    background-size: cover;
+    background-position: center;
+    height: $welcome-image-height;
+    width: 100%;
+    transition: all 0.5s ease-out;
+  }
+
+  &:hover {
+    padding-top: $welcome-divisions-height - ($welcome-divisions-height / 2) - $welcome-divisions-font-size;
+
+    .welcome-image {
+      opacity: 0;
+    }
+  }
+}

@@ -17,17 +17,16 @@ class CurrentProject
     public function handle($request, Closure $next)
     {
         $project = null;
+		$tenant = app()->make(Tenant::class);
 
         if (!empty($request->route('project'))) {
             $project = $request->route('project');
-        }
+			$tenant->setProjectByURL($project);
+		}
         else {
             $project = $request->get('project');
+            $tenant->setProject($project);
         }
-
-
-        $tenant = app()->make(Tenant::class);
-        $tenant->setProject($project);
 
         return $next($request);
     }

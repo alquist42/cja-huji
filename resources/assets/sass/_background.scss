@@ -1,0 +1,69 @@
+@for $i from 0 through 3 {
+  .background-#{$i * 10 + 1} {
+    background-color: $color-1;
+  }
+
+  .background-#{$i * 10 + 2} {
+    background-color: $color-2;
+  }
+
+  .background-#{$i * 10 + 3} {
+    background-color: $color-3;
+  }
+
+  .background-#{$i * 10 + 4} {
+    background-color: $color-4;
+  }
+
+  .background-#{$i * 10 + 5} {
+    background-color: $color-5;
+  }
+
+  .background-#{$i * 10 + 6} {
+    background-color: $color-6;
+  }
+
+  .background-#{$i * 10 + 7} {
+    background-color: $color-7;
+  }
+
+  .background-#{$i * 10 + 8} {
+    background-color: $color-8;
+  }
+
+  .background-#{$i * 10 + 9} {
+    background-color: $color-9;
+  }
+
+  .background-#{$i * 10 + 10} {
+    background-color: $color-10;
+  }
+}
+
+.background-quote {
+  background-color: #FFF8DF;
+}
+
+.background-bezalel {
+  background-color: $bezalel-narkiss;
+}
+
+.background-narkiss-price {
+  background-color: $narkiss-prize;
+}
+
+.background-publications {
+  background-color: $publications
+}
+
+.background-mhs {
+  background-color: $division-of-the-index
+}
+
+.background-media {
+  background-color: $media-block
+}
+
+.background-about {
+  background-color: $about-block
+}
