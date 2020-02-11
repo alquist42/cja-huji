@@ -29,7 +29,7 @@ class HomeController extends Controller
 		$this->header = [
 			'h1' => $projectData['title'],
 			'title' => $projectData['title'],
-			'prefix' => "catalogue/" . $projectData['url'],
+			'prefix' => "/catalogue/" . $projectData['url'],
 			'index_page' => true
 		];
 

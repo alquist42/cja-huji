@@ -5,7 +5,7 @@
         <div class="col-md-8">
             <div class="col-12 mb-5">
                 <div class="banner bni-banner rounded shadow">
-                    <a href="{{ url($projects['cja']['url']) }}"
+                    <a href="{{ url("catalogue/" . $projects['cja']['url']) }}"
                        class="banner-link background-bezalel link-reset">
                         <h3 class="banner-title">The Bezalel Narkiss Index of Jewish Art</h3>
                         <p class="banner-description">Read more</p>
@@ -18,7 +18,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6 mb-4">
-                        <a href="{{ url($projects['mhs']['url']) }}"
+                        <a href="{{ url("catalogue/" . $projects['mhs']['url']) }}"
                            class="link-reset">
                             <div class="welcome-divisions rounded shadow background-8">
                                 <h4 class="welcome-title">{{ $projects['mhs']['title'] }}</h4>
@@ -28,7 +28,7 @@
                         </a>
                     </div>
                     <div class="col-md-6 mb-4">
-                        <a href="{{ url($projects['wpc']['url']) }}"
+                        <a href="{{ url("catalogue/" . $projects['wpc']['url']) }}"
                            class="link-reset">
                             <div class="welcome-divisions rounded shadow background-3">
                                 <h4 class="welcome-title">{{ $projects['wpc']['title'] }}</h4>
@@ -38,7 +38,7 @@
                         </a>
                     </div>
                     <div class="col-md-6 mb-4">
-                        <a href="{{ url($projects['sch']['url']) }}"
+                        <a href="{{ url("catalogue/" . $projects['sch']['url']) }}"
                            class="link-reset">
                             <div class="welcome-divisions rounded shadow background-4">
                                 <h4 class="welcome-title">{{ $projects['sch']['title'] }}</h4>
@@ -48,7 +48,7 @@
                         </a>
                     </div>
                     <div class="col-md-6 mb-4">
-                        <a href="{{ url($projects['slovenia']['url']) }}"
+                        <a href="{{ url("catalogue/" . $projects['slovenia']['url']) }}"
                            class="link-reset">
                             <div class="welcome-divisions rounded shadow background-5">
                                 <h4 class="welcome-title">{{ $projects['slovenia']['title'] }}</h4>
@@ -69,7 +69,7 @@
                     @for ($i=0; $i<12; $i++)
                         <div class="col-md-4">
                             <div class="card mb-4 box-shadow">
-                                {{--<iframe width="100%" src="https://www.youtube.com/embed/xItkombbAqs" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen=""></iframe>--}}
+                                <iframe width="100%" src="https://www.youtube.com/embed/xItkombbAqs" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen=""></iframe>
 
                                 <div class="card-body">
                                     <p class="card-text">
@@ -125,12 +125,6 @@
                     <h3 class="font-weight-bold text-white">News from Jewish Heritage Europe</h3>
                 </div>
             </div>
-            <div class="col-12">
-                {{--<iframe id="fw-iframe9677522028" name="fw-iframe9677522028" height="150" width="150"
-                        style="position: relative; width: 100%; height: 320px;" class="fw-iframe" scrolling="no"
-                        frameborder="0"
-                        src="http://feed.mikle.com/widget/v2/82996/?id=fw-iframe9677522028null"></iframe>--}}
-            </div>
             <div class="col-12 mb-5">
                 <div class="banner about-banner rounded shadow">
                     <a href="{{ url('about') }}"
@@ -139,6 +133,12 @@
                         <p>Researchers and Staff</p>
                     </a>
                 </div>
+            </div>
+            <div class="col-12">
+                <iframe id="fw-iframe9677522028" name="fw-iframe9677522028" height="150" width="150"
+                        style="position: relative; width: 100%; height: 320px;" class="fw-iframe" scrolling="no"
+                        frameborder="0"
+                        src="http://feed.mikle.com/widget/v2/82996/?id=fw-iframe9677522028null"></iframe>
             </div>
         </div>
     </div>

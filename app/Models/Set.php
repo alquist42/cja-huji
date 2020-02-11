@@ -148,7 +148,7 @@ class Set extends Classifiable
     }
 
     public function url(){
-        return  request()->project . "/items/" . $this->id ;
+        return  "/catalogue/" . request()->project . "/items/" . $this->id ;
     }
 
     public function image_url(){
