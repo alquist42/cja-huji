@@ -5,7 +5,7 @@
         <div class="col-md-8">
             <div class="col-12 mb-5">
                 <div class="banner bni-banner rounded shadow">
-                    <a href="{{ url("catalogue/" . $projects['cja']['url']) }}"
+                    <a href="{{ url($projects['cja']['url']) }}"
                        class="banner-link background-bezalel link-reset">
                         <h3 class="banner-title">The Bezalel Narkiss Index of Jewish Art</h3>
                         <p class="banner-description">Read more</p>
@@ -18,7 +18,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6 mb-4">
-                        <a href="{{ url("catalogue/" . $projects['mhs']['url']) }}"
+                        <a href="{{ url($projects['mhs']['url']) }}"
                            class="link-reset">
                             <div class="welcome-divisions rounded shadow background-8">
                                 <h4 class="welcome-title">{{ $projects['mhs']['title'] }}</h4>
@@ -28,7 +28,7 @@
                         </a>
                     </div>
                     <div class="col-md-6 mb-4">
-                        <a href="{{ url("catalogue/" . $projects['wpc']['url']) }}"
+                        <a href="{{ url($projects['wpc']['url']) }}"
                            class="link-reset">
                             <div class="welcome-divisions rounded shadow background-3">
                                 <h4 class="welcome-title">{{ $projects['wpc']['title'] }}</h4>
@@ -38,7 +38,7 @@
                         </a>
                     </div>
                     <div class="col-md-6 mb-4">
-                        <a href="{{ url("catalogue/" . $projects['sch']['url']) }}"
+                        <a href="{{ url($projects['sch']['url']) }}"
                            class="link-reset">
                             <div class="welcome-divisions rounded shadow background-4">
                                 <h4 class="welcome-title">{{ $projects['sch']['title'] }}</h4>
@@ -48,7 +48,7 @@
                         </a>
                     </div>
                     <div class="col-md-6 mb-4">
-                        <a href="{{ url("catalogue/" . $projects['slovenia']['url']) }}"
+                        <a href="{{ url($projects['slovenia']['url']) }}"
                            class="link-reset">
                             <div class="welcome-divisions rounded shadow background-5">
                                 <h4 class="welcome-title">{{ $projects['slovenia']['title'] }}</h4>

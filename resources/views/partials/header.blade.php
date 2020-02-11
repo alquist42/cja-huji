@@ -54,7 +54,7 @@
                                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                                         @foreach ($projects as $project)
                                             <a class="dropdown-item"
-                                               href="{{ url("catalogue/" . $project['url']) }}">{{ $project['title'] }}</a>
+                                               href="{{ url($project['url']) }}">{{ $project['title'] }}</a>
                                         @endforeach
                                     </div>
                                 </li>

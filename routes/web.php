@@ -29,10 +29,10 @@ Route::get('about', function () {
 });
 
 // MHS
-Route::get('/catalogue/mhs/{page?}', 'MHSController@index');
+Route::get('/mhs/{page?}', 'MHSController@index');
 // Other projects
 
-Route::group(['prefix' => 'catalogue', 'middleware' => 'project'], function () {
+Route::group(['middleware' => 'project'], function () {
     Route::get('/{project}', 'HomeController@index');
     Route::get('/{project}/items', 'CatalogController@index');
     Route::get('/{project}/items/{item}', 'CatalogController@show');

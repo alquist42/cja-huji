@@ -16,7 +16,7 @@ class MHSController extends Controller
 	 */
 	public function index($page = null)
 	{
-		$prefix = "catalogue/" . (new Tenant)->projects()['mhs']['url'];
+		$prefix = (new Tenant)->projects()['mhs']['url'];
 
 		if (!$page) {
 			$header = [

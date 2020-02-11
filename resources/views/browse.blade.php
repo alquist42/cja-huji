@@ -24,7 +24,7 @@
 
     @include('partials.header')
 
-    <div id="app" class="leading-normal tracking-normal gradient" data-url="catalogue/{{ request()->project }}" data-project="{{ $project }}">
+    <div id="app" class="leading-normal tracking-normal gradient" data-url="{{ request()->project }}" data-project="{{ $project }}">
         <router-view daad="dawda"></router-view>
     </div>
 

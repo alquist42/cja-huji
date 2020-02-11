@@ -91,7 +91,7 @@ class Item extends Classifiable
     }
 
     public function url(){
-        return  "catalogue/" . request()->project . "/images/" . $this->id ;
+        return request()->project . "/images/" . $this->id;
     }
 
     public function image_url(){

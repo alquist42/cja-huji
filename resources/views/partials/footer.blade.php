@@ -28,7 +28,7 @@
                             <ul class="list-unstyled">
                                 @foreach ($projects as $project)
                                     <li>
-                                        <a href="{{ url("catalogue/" . $project['url']) }}">{{ $project['title'] }}</a>
+                                        <a href="{{ url($project['url']) }}">{{ $project['title'] }}</a>
                                     </li>
                                 @endforeach
                             </ul>

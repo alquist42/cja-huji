@@ -45,7 +45,7 @@
                     </a>
                 </div>
                 <div class="col-xl-4 col-lg-6 mb-4">
-                    <a class="link-reset" href="{{ url($header['prefix'] . '/browse/object') }}">
+                    <a class="link-reset" href="{{ url($header['prefix'] . '/browse/objects') }}">
                         <div class="browse-block medium shadow object">
                             <span class="label">Browse by:</span>
                             <span class="value text-center">Object</span>

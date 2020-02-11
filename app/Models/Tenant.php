@@ -21,7 +21,7 @@ class Tenant
     protected $projects = [
         'cja' => [
         	'title' => 'The Bezalel Narkiss Index of Jewish Art',
-			'url' => 'main',
+			'url' => 'catalogue',
 		],
 		'mhs'  => [
 			'title' => 'Historic Synagogues of Europe',
