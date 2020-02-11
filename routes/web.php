@@ -11,26 +11,10 @@
 |
 */
 Route::get('/', 'WelcomeController@index');
-Route::get('/admin/{name?}','AdminController@viewLinks');
+Route::get('/staff/{name?}','AdminController@viewLinks');
 
 Route::get('/images/{model}-{id}-{size}.png', 'ImagesController@view')->
         where('model', 's|i')->where('id', '[0-9]+')->where('size', 'original|thumb|small|medium');
-
-//// Authentication Routes...
-//Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
-//Route::post('login', 'Auth\LoginController@login');
-//Route::post('logout', 'Auth\LoginController@logout')->name('logout');
-//Route::get('logout', 'Auth\LoginController@logout');
-//
-//// Registration Routes...
-//Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
-//Route::post('register', 'Auth\RegisterController@register');
-//
-//// Password Reset Routes...
-//Route::get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm');
-//Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail');
-//Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm');
-//Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 
 
 // Single pages
