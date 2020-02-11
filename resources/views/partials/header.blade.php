@@ -30,29 +30,37 @@
                     aria-controls="navbarSupportedContent-4" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent-4">
-                <ul class="navbar-nav">
+            <div class="collapse navbar-collapse justify-content-between" id="navbarSupportedContent-4">
+                <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="/">Home</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/catalogue/items">Main</a>
                     </li>
-                    {{-- needs design
-                    @if (Auth::guest())
-                        <a href="{{ route('login') }}">Login</a>
-                        <a href="{{ route('register') }}">Register</a>
-                    @else
-                        {{ Auth::user()->name }}
-                        <a href="{{ route('logout') }}">Logout</a>
-                    @endif
-                    --}}
                     @if (!empty(request()->project))
                         <li class="nav-item">
                             <a class="nav-link" href="/{{ request()->project }}/items">Search</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/{{ request()->project }}/browse/origins">Browse</a>
+                        </li>
+                    @endif
+                    </ul>
+                <ul class="navbar-nav ">
+                    @if (Auth::guest())
+                        <li class="nav-item">
+                        <a class="nav-link" href="{{ route('login') }}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                        <a class="nav-link" href="{{ route('register') }}">Register</a>
+                        </li>
+                    @else
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">{{ Auth::user()->name }}</a>
+                        </li>
+                        <li class="nav-item">
+                        <a class="nav-link" href="{{ route('logout') }}">Logout</a>
                         </li>
                     @endif
                 </ul>
