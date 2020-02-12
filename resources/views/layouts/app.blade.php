@@ -20,7 +20,7 @@
 <body>
 @include('partials.header')
 <main>
-    <div id="app">
+    <div id="app" data-project="{{ request()->project }}">
         <div class="container-fluid">
             @include('flash::message')
             @yield('content')

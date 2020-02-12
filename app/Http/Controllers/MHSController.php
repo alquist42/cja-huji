@@ -8,13 +8,13 @@ use Illuminate\Support\Str;
 class MHSController extends Controller
 {
 	/**
-	 * Show the application dashboard.
+	 * Show MHS project specific pages.
 	 *
 	 * @param $page
 	 *
 	 * @return mixed
 	 */
-	public function index($page = null)
+	public function __invoke($page = null)
 	{
 		$prefix = (new Tenant)->projects()['mhs']['url'];
 

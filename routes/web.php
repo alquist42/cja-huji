@@ -29,9 +29,10 @@ Route::get('about', function () {
 });
 
 // MHS
-Route::get('/mhs/{page?}', 'MHSController@index');
-// Other projects
 
+Route::get('mhs/{page?}', 'MHSController')->where('page', 'acknowledgments|approach|contact|links|map');
+
+// Other projects
 Route::group(['middleware' => 'project'], function () {
     Route::get('/{project}', 'HomeController@index');
     Route::get('/{project}/items', 'CatalogController@index');

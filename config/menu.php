@@ -35,9 +35,8 @@ return [
 			'title' => 'Approach'
 		],
 		[
-			'url' => '/search',
-			'title' => 'Synagogue Search',
-			'disabled' => true
+			'url' => '/items',
+			'title' => 'Synagogue Search'
 		],
 		[
 			'url' => '/map',
