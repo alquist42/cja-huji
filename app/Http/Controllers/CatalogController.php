@@ -117,7 +117,12 @@ class CatalogController extends Controller
 
     public function showItem($project, $id)
     {
-        $item = Item::published()->findOrFail($id);
+        if (Gate::allows('has-account')){
+            $item = Item::findOrFail($id);
+        } else {
+            $item = Item::published()->findOrFail($id);
+        }
+
         $item->load(Item::$relationships);
 
         return view('img', compact('item'));
