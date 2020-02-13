@@ -16,6 +16,45 @@ use Illuminate\Support\Facades\DB;
 
 class Search
 {
+    const INNODB_FT_DEFAULT_STOPWORD = array(
+            "value",
+            "a",
+            "about",
+            "an",
+            "are",
+            "as",
+            "at",
+            "be",
+            "by",
+            "com",
+            "de",
+            "en",
+            "for",
+            "from",
+            "how",
+            "i",
+            "in",
+            "is",
+            "it",
+            "la",
+            "of",
+            "on",
+            "or",
+            "that",
+            "the",
+            "this",
+            "to",
+            "was",
+            "what",
+            "when",
+            "where",
+            "who",
+            "will",
+            "with",
+            "und",
+            "the",
+            "www",
+        );
     public function findByTaxonomy($filters){
         DB::enableQueryLog();
         $project = app()->make(Tenant::class)->slug();
@@ -121,14 +160,21 @@ class Search
     }
 
     public function find($filters, $search, $text, $categories){
+
+
         DB::enableQueryLog();
         $project = app()->make(Tenant::class)->slug();
         $collection = collect([]);
         $result = null;
         $total = 0;
         if(!empty($text)){
+            $text = preg_replace('/[^\p{L}\p{N}_]+/u', ' ', $text);
+            $text = preg_replace('/[+\-><\(\)~*\"@]+/', ' ', $text);
             $text = explode(" ",$text);
-            $text = implode(array_map(function ($u) { if(strlen($u)>3) {return " +" . $u;} return " ".$u;}, $text));
+            $text = implode(array_map(function ($u) {
+                if(strlen($u)>2 && !in_array($u, self::INNODB_FT_DEFAULT_STOPWORD)) {
+                    return " +" . $u;
+                } return " ".$u;}, $text));
 
 
         //    $text = "+" . implode(' +', explode(" ",$text));
@@ -147,9 +193,6 @@ class Search
                     $q->where(function ($query) use ($filters) {
                         foreach ($filters as $type => $values) {
                             $field=str_singular($type);
-                            // TODO move from here
-                         //   $model = '\\App\\Models\\Taxonomy\\' . ucfirst($field);
-                         //   $selected = $model::select("name")->find($values);
                             $names = "";
                             foreach ($filters[$type] as $name) {
                                 $names .=" " . $name->name;
@@ -186,9 +229,6 @@ class Search
                                    $q->where(function ($query) use ($filters) {
                                        foreach ($filters as $type => $values) {
                                            $field=str_singular($type);
-                                           // TODO move from here
-                                       //    $model = '\\App\\Models\\Taxonomy\\' . ucfirst($field);
-                                         //  $selected = $model::select("name")->find($values);
                                            $names = "";
                                            foreach ($filters[$type] as $name) {
                                                $names .=" " . $name->name;
@@ -482,9 +522,10 @@ class Search
                     ");
 
 // TODO : add category, projects, title fields
-            // TODO add collection details to collection and may be other details
+            // TODO add collection details to collection and  other details for all taxonomies
         // TODO:   add id to text (include id in fulltext search)
             // TODO: renae maker to artist and remove profession and unknown value
+            // TODO: add photo info (photographer)
             /*
              * update search
 set projects =
@@ -499,7 +540,16 @@ CONCAT_WS(' ',COALESCE(text,''),  (select  COALESCE(GROUP_CONCAT(DISTINCT  ep.va
 from entity_properties ep WHERE ep.entity_id = search.id and ep.entity_type = 'set'))
 where   search.`type` = 'set';
 
+FOR PHOTOGRAPHER
 
+            update search
+set text =
+CONCAT_WS(' ',COALESCE(text,''),  (select name
+from photographers ph
+INNER JOIN images i ON i.photographer_id = ph.id
+INNER JOIN entity_images ei ON ei.image_id = i.id AND ei.entity_type = 'set' where ei.entity_id = search.id
+ ))
+ WHERE search.type = 'set'
 
             + set_id
             update search set set_id = (select set_id  from items where items.id = search.id) where type='item'
