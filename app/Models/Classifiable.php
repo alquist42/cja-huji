@@ -352,6 +352,13 @@ class Classifiable extends Model
 
     }
 
+    public function published(){
+        if($this->publish_state > 0){
+            return true;
+        }
+        return false;
+    }
+
     public function scopePublished($query)
     {
         return $query->where('publish_state', '>', 0);
