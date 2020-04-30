@@ -3726,10 +3726,10 @@ isobject@^3.0.0, isobject@^3.0.1:
   resolved "https://registry.yarnpkg.com/isobject/-/isobject-3.0.1.tgz#4e431e92b11a9731636aa1f9c8d1ccbcfdab78df"
   integrity sha1-TkMekrEalzFjaqH5yNHMvP2reN8=
 
-jquery@^3.4.1:
-  version "3.4.1"
-  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.4.1.tgz#714f1f8d9dde4bdfa55764ba37ef214630d80ef2"
-  integrity sha512-36+AdBzCL+y6qjw5Tx7HgzeGCzC81MDDgaUP8ld2zhx58HdqXGoBd+tHdrBMiyjGQs0Hxs/MLZTu/eHNJJuWPw==
+jquery@^3.5.0:
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.5.0.tgz#9980b97d9e4194611c36530e7dc46a58d7340fc9"
+  integrity sha512-Xb7SVYMvygPxbFMpTFQiHh1J7HClEaThguL15N/Gg37Lri/qKyhRGZYzHRyLH8Stq3Aow0LsHO2O2ci86fCrNQ==
 
 js-levenshtein@^1.1.3:
   version "1.1.6"
@@ -4083,6 +4083,11 @@ map-visit@^1.0.0:
   integrity sha1-7Nyo8TFE5mDxtb1B8S80edmN+48=
   dependencies:
     object-visit "^1.0.0"
+
+marker-clusterer-plus@^2.1.4:
+  version "2.1.4"
+  resolved "https://registry.yarnpkg.com/marker-clusterer-plus/-/marker-clusterer-plus-2.1.4.tgz#f8eff74d599dab3b7d0e3fed5264ea0e704f5d67"
+  integrity sha1-+O/3TVmdqzt9Dj/tUmTqDnBPXWc=
 
 md5.js@^1.3.4:
   version "1.3.5"
@@ -5608,6 +5613,11 @@ requires-port@^1.0.0:
   resolved "https://registry.yarnpkg.com/requires-port/-/requires-port-1.0.0.tgz#925d2601d39ac485e091cf0da5c6e694dc3dcaff"
   integrity sha1-kl0mAdOaxIXgkc8NpcbmlNw9yv8=
 
+resize-observer-polyfill@^1.5.0:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/resize-observer-polyfill/-/resize-observer-polyfill-1.5.1.tgz#0e9020dd3d21024458d4ebd27e23e40269810464"
+  integrity sha512-LwZrotdHOo12nQuZlHEmtuXdqGoOD0OhaxopaNFxWzInpEgaLWoVuAMbTzixuosCx2nEG58ngzW3vxdWoxIgdg==
+
 resolve-cwd@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/resolve-cwd/-/resolve-cwd-2.0.0.tgz#00a9f7387556e27038eae232caa372a6a59b665a"
@@ -6597,6 +6607,14 @@ vm-browserify@^1.0.1:
   resolved "https://registry.yarnpkg.com/vm-browserify/-/vm-browserify-1.1.0.tgz#bd76d6a23323e2ca8ffa12028dc04559c75f9019"
   integrity sha512-iq+S7vZJE60yejDYM0ek6zg308+UZsdtPExWP9VZoCFCz1zkJoXFnAX7aZfd/ZwrkidzdUZL0C/ryW+JwAiIGw==
 
+vue-bootstrap-typeahead@^0.2.6:
+  version "0.2.6"
+  resolved "https://registry.yarnpkg.com/vue-bootstrap-typeahead/-/vue-bootstrap-typeahead-0.2.6.tgz#8c1999a00bf4bf9fc906bae3a462482482cbc297"
+  integrity sha512-BcUAnvfN+PS0StL6E3endd37P7HUt9otk+8m7tsa2gkt2I2KY8O2Dma49oR8ie8iletvJAlAqpN+klF6ktPULQ==
+  dependencies:
+    resize-observer-polyfill "^1.5.0"
+    vue "^2.5.17"
+
 vue-context-menu@^2.0.6:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/vue-context-menu/-/vue-context-menu-2.0.6.tgz#185107cd3ae51f25c53266a2751008fa7da4f34e"
@@ -6623,6 +6641,11 @@ vue-router@^3.1.3:
   resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-3.1.3.tgz#e6b14fabc0c0ee9fda0e2cbbda74b350e28e412b"
   integrity sha512-8iSa4mGNXBjyuSZFCCO4fiKfvzqk+mhL0lnKuGcQtO1eoj8nq3CmbEG8FwK5QqoqwDgsjsf1GDuisDX4cdb/aQ==
 
+vue-select@^3.4.0:
+  version "3.10.3"
+  resolved "https://registry.yarnpkg.com/vue-select/-/vue-select-3.10.3.tgz#60659dc07ec4c96ec270fb12558eab7b938f5004"
+  integrity sha512-SgLmiSwnJwT2erxjq42AA1iTzu1uqhA5MPuF4UDtGot5YSgJLKy71H0LO0hHaBpIjb7d/nJHiufYKcrSakaupw==
+
 vue-style-loader@^4.1.0:
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/vue-style-loader/-/vue-style-loader-4.1.2.tgz#dedf349806f25ceb4e64f3ad7c0a44fba735fcf8"
@@ -6644,10 +6667,23 @@ vue-template-es2015-compiler@^1.9.0:
   resolved "https://registry.yarnpkg.com/vue-template-es2015-compiler/-/vue-template-es2015-compiler-1.9.1.tgz#1ee3bc9a16ecbf5118be334bb15f9c46f82f5825"
   integrity sha512-4gDntzrifFnCEvyoO8PqyJDmguXgVPxKiIxrBKjIowvL9l+N66196+72XVYR8BBf1Uv1Fgt3bGevJ+sEmxfZzw==
 
+vue2-google-maps@^0.10.7:
+  version "0.10.7"
+  resolved "https://registry.yarnpkg.com/vue2-google-maps/-/vue2-google-maps-0.10.7.tgz#2e4c1239386001bd47777d8c6a0475e5320cc3a8"
+  integrity sha512-y5aBJTAsfGvpsbfgPaeWU7o7QbOeINZKsP6SB9qrBe8U8EYBFO/bTWo3rcMq/NOtgT/XssV3Nwg/2u3no6jWbw==
+  dependencies:
+    babel-runtime "^6.26.0"
+    marker-clusterer-plus "^2.1.4"
+
 vue@^2.2.2, vue@^2.6.10:
   version "2.6.10"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.6.10.tgz#a72b1a42a4d82a721ea438d1b6bf55e66195c637"
   integrity sha512-ImThpeNU9HbdZL3utgMCq0oiMzAkt1mcgy3/E6zWC/G6AaQoeuFdsl9nDhTDU3X1R6FK7nsIUuRACVcjI+A2GQ==
+
+vue@^2.5.17:
+  version "2.6.11"
+  resolved "https://registry.yarnpkg.com/vue/-/vue-2.6.11.tgz#76594d877d4b12234406e84e35275c6d514125c5"
+  integrity sha512-VfPwgcGABbGAue9+sfrD4PuwFar7gPb1yl1UK1MwXoQPAw0BKSqWfoYCT/ThFrdEVWoI51dBuyCoiNU9bZDZxQ==
 
 watchpack@^1.6.0:
   version "1.6.0"
