@@ -11,7 +11,7 @@
 |
 */
 Route::get('/', 'WelcomeController@index');
-Route::get('/staff/{name?}','AdminController@viewLinks');
+Route::get('/staff/{name?}','AdminController@viewLinks')->where('name', '.*');
 
 Route::get('/images/{model}-{id}-{size}.png', 'ImagesController@view')->
         where('model', 's|i')->where('id', '[0-9]+')->where('size', 'original|thumb|small|medium');
