@@ -3,7 +3,7 @@
         <div class="row mt-5">
             <div class="card mx-1">
                 <div class="card-header" data-toggle="collapses" data-target="#collapseExample{{ $obj->id }}" aria-expanded="false" aria-controls="collapseExample{{ $obj->id }}">
-                    <a href="/{{ $obj->url() }}">{{ $obj->ntl }}</a>
+                    <a href="/{{ $obj->url() }}">ID: {{ $obj->id }} {{ $obj->ntl }}</a>
                 </div>
                 <div class="container collapses" id="collapseExample{{ $obj->id }}">
                     <div class="row mt-5">

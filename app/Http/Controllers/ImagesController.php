@@ -141,7 +141,11 @@ class ImagesController extends Controller
         if (Gate::allows('has-account')){
             return false; //TODO : PERMISSIONS FOR USERS
         }
+        if(empty($image->copyright)){
+            return true;
+        }
         $noCJAWatermarkCopirights = array('/wiki/i','/kunstkamera/i', '/Virtual Shtetl/i', '/Ajuntament/i', '/IS PAN/i', '/Tel Aviv Museum of Art/i'); //List of copirights with wich watermark will BE NOT applied (TODO: mov o separate file)
+
         $copyright=$image->copyright->name;
 
         foreach ($noCJAWatermarkCopirights as $term)

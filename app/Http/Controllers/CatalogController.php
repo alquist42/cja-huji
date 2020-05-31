@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Services\Search;
 use App\Services\Pagination;
 use Illuminate\Support\Facades\Gate;
+use App\Exceptions\UserHasNoPermissions;
 
 class CatalogController extends Controller
 {
@@ -37,6 +38,7 @@ class CatalogController extends Controller
     public function __construct(Search $search)
     {
         $this->search = $search;
+        $this->middleware('revalidate')->only(['show', 'showItem']);
     }
 
     public function index(Request $request, $project)
@@ -104,6 +106,10 @@ class CatalogController extends Controller
     public function show($project, $id)
     {
         $item = Set::findOrFail($id);
+        if (!Gate::allows('has-account') && !$item->published()){
+            throw new UserHasNoPermissions();
+        }
+
         $item->load(Set::$relationships);
 
         return view('item', compact('item'));
@@ -112,6 +118,10 @@ class CatalogController extends Controller
     public function showItem($project, $id)
     {
         $item = Item::findOrFail($id);
+        if (!Gate::allows('has-account') && !$item->published()){
+            throw new UserHasNoPermissions();
+        }
+
         $item->load(Item::$relationships);
 
         return view('img', compact('item'));
