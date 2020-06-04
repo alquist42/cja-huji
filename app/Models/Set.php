@@ -155,7 +155,37 @@ class Set extends Classifiable
         return  "/images/s-" . $this->id ;
     }
 
-    public function getObjects(){
+    public function getObjects()
+    {
         return $this->objects;
+    }
+
+    public function getMakers()
+    {
+        return $this->makers;
+    }
+
+    public function getSubjects(){
+        return $this->subjects;
+    }
+
+    public function getOrigins(){
+        return $this->origins;
+    }
+
+    public function getCollections(){
+        return $this->collections;
+    }
+
+    public function getCommunities(){
+        return $this->communities;
+    }
+
+    public function getLocations(){
+        return $this->locations;
+    }
+
+    public function getScools(){
+        return $this->scools;
     }
 }

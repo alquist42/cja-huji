@@ -108,4 +108,75 @@ class Item extends Classifiable
         }
 
     }
+
+    public function getMakers(){
+        if(count($this->makers)){
+            return $this->makers;
+        }
+        else {
+            $set = $this->set;
+            return $set->getMakers();
+        }
+
+    }
+
+    public function getSubjects(){
+        if(count($this->subjects)){
+            return $this->subjects;
+        }
+        else {
+            $set = $this->set;
+            return $set->getSubjects();
+        }
+    }
+
+    public function getOrigins(){
+        if(count($this->origins)){
+            return $this->origins;
+        }
+        else {
+            $set = $this->set;
+            return $set->getOrigins();
+        }
+    }
+
+    public function getCollections(){
+        if(count($this->collections)){
+            return $this->collections;
+        }
+        else {
+            $set = $this->set;
+            return $set->getCollections();
+        }
+    }
+
+    public function getCommunities(){
+        if(count($this->communities)){
+            return $this->communities;
+        }
+        else {
+            $set = $this->set;
+            return $set->getCommunities();
+        }
+    }
+
+    public function getLocations(){
+        if(count($this->locations)){
+            return $this->locations;
+        }
+        else {
+            $set = $this->set;
+            return $set->getLocations();
+        }
+    }
+
+    public function getScools(){
+        if(count($this->scools)){
+            return $this->scools;
+        }
+        else {
+            $set = $this->set;
+            return $set->getScools();
+        }
+    }
 }

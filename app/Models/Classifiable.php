@@ -132,7 +132,7 @@ class Classifiable extends Model
     }
 
     public function makersHasProfession(){
-        foreach ($this->makers as $maker){
+        foreach ($this->getMakers() as $maker){
             if($maker->profession->id != -1){
                 return true;
             }
