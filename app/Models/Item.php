@@ -97,4 +97,15 @@ class Item extends Classifiable
     public function image_url(){
         return  "/images/i-" . $this->id ;
     }
+
+    public function getObjects(){
+        if(count($this->objects)){
+            return $this->objects;
+        }
+        else {
+            $set = $this->set;
+            return $set->getObjects();
+        }
+
+    }
 }

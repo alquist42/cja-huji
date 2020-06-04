@@ -154,4 +154,8 @@ class Set extends Classifiable
     public function image_url(){
         return  "/images/s-" . $this->id ;
     }
+
+    public function getObjects(){
+        return $this->objects;
+    }
 }

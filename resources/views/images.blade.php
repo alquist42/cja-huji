@@ -9,65 +9,89 @@
                     <div class="row mt-5">
                         <div class="col-md-8">
                             <div class="container">
-                                <h4 class="lead"><u>Taxonomy</u></h4>
                                 <dl class="row my-3">
-                                    <dt class="col-sm-4">Object</dt>
-                                    <dd class="col-sm-8">
-                                        @if(!$obj->objects)
-                                            @foreach ($obj->objects as $object)
-
+                                    
+                                    @if(count($obj->getObjects()))
+                                        <dt class="col-sm-4">Object</dt>
+                                        <dd class="col-sm-8">
+                                            @foreach ($obj->getObjects() as $object)
                                                 <a href="/{{ request()->project }}/browse/objects/{{ $object->id }}">{{ $object->name }}</a> @if(!$loop->last) | @endif
                                             @endforeach
-                                        @else
-                                            @foreach ($item->objects as $object)
-                                                <a href="/{{ request()->project }}/browse/objects/{{ $object->id }}">{{ $object->name }}</a> @if(!$loop->last) | @endif
-                                            @endforeach
-                                        @endif
-                                    </dd>
+                                        </dd>
+                                    @endif
 
-                                    <dt class="col-sm-4">Date</dt>
-                                    <dd class="col-sm-8">{{ $obj->date }}</dd>
 
-                                    <dt class="col-sm-4">Subject</dt>
-                                    <dd class="col-sm-8">
-                                        @if(!$obj->subjects)
-                                            @foreach ($obj->subjects as $subject)
-                                                <a href="/{{ request()->project }}/browse/subjects/{{ $subject->id }}">{{ $subject->name }}</a> @if(!$loop->last) | @endif
-                                            @endforeach
-                                        @else
-                                            @foreach ($item->subjects as $subject)
-                                                <a href="/{{ request()->project }}/browse/subjects/{{ $subject->id }}">{{ $subject->name }}</a> @if(!$loop->last) | @endif
-                                            @endforeach
-                                        @endif
+                                    @if(count($obj->objects) || count($item->objects))
+                                        <dt class="col-sm-4">Object</dt>
+                                        <dd class="col-sm-8">
+                                            @if(count($obj->objects))
+                                                @foreach ($obj->objects as $object)
+                                                    <a href="/{{ request()->project }}/browse/objects/{{ $object->id }}">{{ $object->name }}</a> @if(!$loop->last) | @endif
+                                                @endforeach
+                                            @else
+                                                @foreach ($item->objects as $object)
+                                                    <a href="/{{ request()->project }}/browse/objects/{{ $object->id }}">{{ $object->name }}</a> @if(!$loop->last) | @endif
+                                                @endforeach
+                                            @endif
+                                        </dd>
+                                    @endif
 
-                                    </dd>
-
-                                    <dt class="col-sm-4">Origin</dt>
-                                    <dd class="col-sm-8">
-                                        @if(!$obj->origins)
-                                            @foreach ($obj->origins as $origin)
-                                                <a href="/{{ request()->project }}/browse/origins/{{ $origin->id }}">{{ $origin->name }}</a> @if(!$loop->last) | @endif
-                                            @endforeach
-                                        @else
-                                            @foreach ($item->origins as $origin)
-                                                <a href="/{{ request()->project }}/browse/origins/{{ $origin->id }}">{{ $origin->name }}</a> @if(!$loop->last) | @endif
-                                            @endforeach
+                                        @if($obj->creation_date || $item->creation_date)
+                                            <dt class="col-sm-4">Date</dt>
+                                            <dd class="col-sm-8">
+                                                @if($obj->creation_date)
+                                                    {{$obj->creation_date->name}}
+                                                @else
+                                                    {{$item->creation_date->name}}
+                                                @endif
+                                            </dd>
                                         @endif
 
-                                    </dd>
+                                    @if(count($obj->subjects) || count($item->subjects))
+                                        <dt class="col-sm-4">Subject</dt>
+                                        <dd class="col-sm-8">
+                                            @if(count($obj->subjects))
+                                                @foreach ($obj->subjects as $subject)
+                                                    <a href="/{{ request()->project }}/browse/subjects/{{ $subject->id }}">{{ $subject->name }}</a> @if(!$loop->last) | @endif
+                                                @endforeach
+                                            @else
+                                                @foreach ($item->subjects as $subject)
+                                                    <a href="/{{ request()->project }}/browse/subjects/{{ $subject->id }}">{{ $subject->name }}</a> @if(!$loop->last) | @endif
+                                                @endforeach
+                                            @endif
 
-                                    <dt class="col-sm-4">Collection</dt>
-                                    <dd class="col-sm-8">
-                                        @if(!$obj->collections)
-                                            @foreach ($obj->collections as $collection)
-                                                <a href="/{{ request()->project }}/browse/collections/{{ $collection->id }}">{{ $collection->name }}</a> @if(!$loop->last) | @endif
-                                            @endforeach
-                                        @else
-                                            @foreach ($item->collections as $collection)
-                                                <a href="/{{ request()->project }}/browse/collections/{{ $collection->id }}">{{ $collection->name }}</a> @if(!$loop->last) | @endif
-                                            @endforeach
+                                        </dd>
+                                    @endif
+
+                                    @if(count($obj->origins) || count($item->origins))
+                                        <dt class="col-sm-4">Origin</dt>
+                                        <dd class="col-sm-8">
+                                            @if(count($obj->origins))
+                                                @foreach ($obj->origins as $origin)
+                                                    <a href="/{{ request()->project }}/browse/origins/{{ $origin->id }}">{{ $origin->name }}</a> @if(!$loop->last) | @endif
+                                                @endforeach
+                                            @else
+                                                @foreach ($item->origins as $origin)
+                                                    <a href="/{{ request()->project }}/browse/origins/{{ $origin->id }}">{{ $origin->name }}</a> @if(!$loop->last) | @endif
+                                                @endforeach
+                                            @endif
+                                        </dd>
+                                    @endif
+
+                                        @if(count($obj->origins) || count($item->origins))
+                                            <dt class="col-sm-4">Collection</dt>
+                                            <dd class="col-sm-8">
+                                                @if(!$obj->collections)
+                                                    @foreach ($obj->collections as $collection)
+                                                        <a href="/{{ request()->project }}/browse/collections/{{ $collection->id }}">{{ $collection->name }}</a> @if(!$loop->last) | @endif
+                                                    @endforeach
+                                                @else
+                                                    @foreach ($item->collections as $collection)
+                                                        <a href="/{{ request()->project }}/browse/collections/{{ $collection->id }}">{{ $collection->name }}</a> @if(!$loop->last) | @endif
+                                                    @endforeach
+                                                @endif
+                                            </dd>
                                         @endif
-                                    </dd>
 
                                     <dt class="col-sm-4">Community</dt>
                                     <dd class="col-sm-8">
@@ -110,7 +134,6 @@
                                     </dd>
                                 </dl>
 
-                                <h4 class="mt-5 lead" data-toggle="collapses" data-target="#multiCollapseExample2" aria-expanded="true" aria-controls="multiCollapseExample2"><u>Properties</u></h4>
                                 <div class="collapses multi-collapse" id="multiCollapseExample2">
                                     <dl class="row my-1">
                                         @foreach ($obj->properties as $property)
