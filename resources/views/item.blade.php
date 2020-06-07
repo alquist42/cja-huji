@@ -13,6 +13,7 @@
                                 ,{{ $origin->name }}
                             @endforeach
                             @if($item->origin_detail()) | {{$item->origin_detail()}} @endif
+                            @if($item->creation_date) ,{{$item->creation_date->name}} @endif
                         </div>
                         <div class="card-body">
                             <div class="container">
