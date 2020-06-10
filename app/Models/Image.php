@@ -47,6 +47,11 @@ class Image extends Classifiable
         'order',
     ];
 
+
+    public static $relationships = [
+        'copyright'
+    ];
+
     /**
      * @return MorphTo
      */
@@ -70,6 +75,13 @@ class Image extends Classifiable
     {
         return $this->hasOne(Copyright::class, 'id', 'copyright_id');
     }
+
+    /*public function copyright_value()
+    {
+        $copyright = $this->copyright;
+        return $copyright->name;
+
+    }*/
 
     /**
      * @return BelongsToMany
