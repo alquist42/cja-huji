@@ -112,7 +112,7 @@ class CatalogController extends Controller
 
         $item->load(Set::$relationships);
 
-        return view('item', compact('item'));
+        return view('item', ['item' => $item]);
     }
 
     public function showItem($project, $id)
