@@ -110,7 +110,7 @@ class Set extends Classifiable
      */
     public function items()
     {
-        return $this->hasMany(Item::class);
+        return $this->hasMany(Item::class)->where('publish_state','>',0);
     }
 
     public static function withAllRelations() {
@@ -172,7 +172,7 @@ class Set extends Classifiable
     public function getOrigins(){
         return $this->origins;
     }
-
+/* comment this function in new branch*/
     public function getCollections(){
         return $this->collections;
     }
