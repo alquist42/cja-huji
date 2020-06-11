@@ -110,15 +110,22 @@ class Set extends Classifiable
      */
     public function items()
     {
-        $children = $this->children;
-        $items = [];
-        foreach($children as $child){
-          if(!count($child->children) && $child->published()){
-              $items[] = $child;
-          }
+        $descendants = $this->descendantsOf($this->id);
+        $parents = [];
+        foreach($descendants as $descendant){
+            if(!in_array($descendant->parent_id,$parents)){
+                $parents[] = $descendant->parent_id;
+            }
         }
-       return $items;
-      //  return $this->hasMany(Item::class)->where('publish_state','>',0);
+
+        $children = $this->children;
+        foreach($children as $key => $child){
+            if(in_array($child->id,$parents)){
+                unset($children[$key]);
+            }
+        }
+
+       return $children;
     }
 
     public static function withAllRelations() {
@@ -150,9 +157,15 @@ class Set extends Classifiable
                 break;
             }
         }
+       $parents = [];
+        foreach($descendants as $descendant){
+            if(!in_array($descendant->parent_id,$parents)){
+                $parents[] = $descendant->parent_id;
+            }
+        }
 
         foreach($descendants as $key => $descendant){
-            if(!count($descendant->children)){
+            if(!in_array($descendant->id,$parents)){
                 unset($descendants[$key]);
             }
         }
@@ -192,7 +205,8 @@ class Set extends Classifiable
 //        return $this->collections;
 //    }
 
-    public function getCommunities(){
+
+   /* public function getCommunities(){
         return $this->communities;
     }
 
@@ -202,5 +216,5 @@ class Set extends Classifiable
 
     public function getScools(){
         return $this->scools;
-    }
+    }*/
 }

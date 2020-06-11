@@ -1,18 +1,18 @@
 <dl class="row my-1">
-    @if ((count($item->objects) > 0) || $item->object_detail())
+    @if ((count($item->getObjects()) > 0) || $item->object_detail())
     <dt class="col-sm-3">Object</dt>
     <dd class="col-sm-9">
-        @foreach ($item->objects as $object)
+        @foreach ($item->getObjects() as $object)
             <a href="/{{ request()->project }}/browse/objects/{{ $object->id }}">{{ $object->name }}</a> @if(!$loop->last) | @endif
         @endforeach
             @if($item->object_detail()) | {{$item->object_detail()}} @endif
     </dd>
     @endif
 
-    @if((count($item->makers) > 0) || $item->maker_detail())
+    @if((count($item->getMakers()) > 0) || $item->maker_detail())
     <dt class="col-sm-3">Artist/ Maker</dt>
     <dd class="col-sm-9">
-        @foreach ($item->makers as $maker)
+        @foreach ($item->getMakers() as $maker)
             @if($maker->artist->id != -1)
                 <a href="/{{ request()->project }}/browse/artists/{{ $maker->artist->id }}">{{ $maker->artist->name }}</a> @if(!$loop->last), @endif
             @endif
@@ -38,30 +38,20 @@
     </dd>
     @endif
 
-    @if ((count($item->subjects) > 0) || $item->subject_detail())
-    <dt class="col-sm-3"> Subject</dt>
-    <dd class="col-sm-9">
-        @foreach ($item->subjects as $subject)
-            <a href="/{{ request()->project }}/browse/subjects/{{ $subject->id }}">{{ $subject->name }}</a> @if(!$loop->last) | @endif
-        @endforeach
-        @if($item->subject_detail()) | {{$item->subject_detail()}} @endif
-    </dd>
-    @endif
-
-    @if ((count($item->periods) > 0) || $item->period_detail())
+    @if (count($item->getPeriods()) > 0 || $item->period_detail())
     <dt class="col-sm-3">Period</dt>
     <dd class="col-sm-9">
-        @foreach ($item->periods as $period)
+        @foreach ($item->getPeriods() as $period)
             <a href="/{{ request()->project }}/browse/periods/{{ $period->id }}">{{ $period->name }}</a> @if(!$loop->last) | @endif
         @endforeach
         @if($item->period_detail()) | {{$item->period_detail()}} @endif
     </dd>
     @endif
 
-    @if ((count($item->origins) > 0) || $item->origin_detail())
+    @if ((count($item->getOrigins()) > 0) || $item->origin_detail())
     <dt class="col-sm-3">Origin</dt>
     <dd class="col-sm-9">
-        @foreach ($item->origins as $origin)
+        @foreach ($item->getOrigins() as $origin)
             @foreach ($origin-> getAncestors() as $anc)
                 <a href="/{{ request()->project }}/browse/origins/{{ $anc->id }}">{{ $anc->name }}</a> |
             @endforeach
@@ -80,10 +70,10 @@
     </dd>
     @endif
 
-    @if(count($item->communities) > 0)
+    @if(count($item->getCommunities()) > 0)
     <dt class="col-sm-3">Community</dt>
     <dd class="col-sm-9">
-        @foreach ($item->communities as $community)
+        @foreach ($item->getCommunities() as $community)
             @foreach ($community-> getAncestors() as $comm)
                 <a href="/{{ request()->project }}/browse/communities/{{ $comm->id }}">{{ $comm->name }}</a> |
             @endforeach
@@ -94,10 +84,10 @@
     </dd>
     @endif
 
-        @if (count($item->collections) > 0 || $item->collection_detail())
+        @if (count($item->getCollections()) > 0 || $item->collection_detail())
             <dt class="col-sm-3">Collection</dt>
             <dd class="col-sm-9">
-                @foreach ($item->collections as $collection)
+                @foreach ($item->getCollections() as $collection)
                     @foreach ($collection-> getAncestors() as $anc)
                         <a href="/{{ request()->project }}/browse/collections/{{ $anc->id }}">{{ $anc->name }}</a> |
                     @endforeach
@@ -107,10 +97,10 @@
             </dd>
         @endif
 
-    @if(count($item->locations) > 0)
+    @if(count($item->getLocations()) > 0)
     <dt class="col-sm-3">Location</dt>
     <dd class="col-sm-9">
-        @foreach ($item->locations as $location)
+        @foreach ($item->getLocations() as $location)
             @foreach ($location-> getAncestors() as $anc)
                 <a href="/{{ request()->project }}/browse/origins/{{ $anc->id }}">{{ $anc->name }}</a> |
             @endforeach
@@ -121,13 +111,23 @@
     </dd>
     @endif
 
-    @if(count($item->schools) > 0)
+    @if(count($item->getSchools()) > 0)
     <dt class="col-sm-3">School / Style</dt>
     <dd class="col-sm-9">
-        @foreach ($item->schools as $school)
+        @foreach ($item->getSchools() as $school)
             <a href="/{{ request()->project }}/browse/schools/{{ $school->id }}">{{ $school->name }}</a> @if(!$loop->last) | @endif
         @endforeach
         @if($item->school_detail()) | {{$item->school_detail()}} @endif
     </dd>
     @endif
+
+        @if ((count($item->getSubjects()) > 0) || $item->subject_detail())
+            <dt class="col-sm-3">Iconographical Subject</dt>
+            <dd class="col-sm-9">
+                @foreach ($item->getSubjects() as $subject)
+                    <a href="/{{ request()->project }}/browse/subjects/{{ $subject->id }}">{{ $subject->name }}</a> @if(!$loop->last) | @endif
+                @endforeach
+                @if($item->subject_detail()) | {{$item->subject_detail()}} @endif
+            </dd>
+        @endif
 </dl>

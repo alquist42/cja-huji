@@ -192,9 +192,15 @@ class Classifiable extends Model
 
     public function location_detail()
     {
-        $details = $this->location_details;
-        foreach ($details as $detail){
-            return $detail->details;
+        if(count($this->location_details)){
+            return $this->location_details->first()->details;
+        }
+        else {
+            $parent = $this->parent;
+            if(!empty($parent)){
+                return $parent->location_detail();
+            }
+            return null;
         }
     }
 
@@ -209,9 +215,15 @@ class Classifiable extends Model
 
     public function origin_detail()
     {
-        $details = $this->origin_details;
-        foreach ($details as $detail){
-            return $detail->details;
+        if(count($this->origin_details)){
+            return $this->origin_details->first()->details;
+        }
+        else {
+            $parent = $this->parent;
+            if(!empty($parent)){
+                return $parent->origin_detail();
+            }
+            return null;
         }
     }
 
@@ -226,9 +238,15 @@ class Classifiable extends Model
 
     public function object_detail()
     {
-        $details = $this->object_details;
-        foreach ($details as $detail){
-            return $detail->details;
+        if(count($this->object_details)){
+            return $this->object_details->first()->details;
+        }
+        else {
+            $parent = $this->parent;
+            if(!empty($parent)){
+                return $parent->object_detail();
+            }
+            return null;
         }
     }
 
@@ -243,9 +261,15 @@ class Classifiable extends Model
 
     public function collection_detail()
     {
-        $details = $this->collection_details;
-        foreach ($details as $detail){
-            return $detail->details;
+        if(count($this->collection_details)){
+            return $this->collection_details->first()->details;
+        }
+        else {
+            $parent = $this->parent;
+            if(!empty($parent)){
+                return $parent->collection_detail();
+            }
+            return null;
         }
     }
 
@@ -260,9 +284,15 @@ class Classifiable extends Model
 
     public function community_detail()
     {
-        $details = $this->community_details;
-        foreach ($details as $detail){
-            return $detail->details;
+        if(count($this->community_details)){
+            return $this->community_details->first()->details;
+        }
+        else {
+            $parent = $this->parent;
+            if(!empty($parent)){
+                return $parent->community_detail();
+            }
+            return null;
         }
     }
 
@@ -277,9 +307,15 @@ class Classifiable extends Model
 
     public function maker_detail()
     {
-        $details = $this->maker_details;
-        foreach ($details as $detail){
-            return $detail->details;
+        if(count($this->maker_details)){
+            return $this->maker_details->first()->details;
+        }
+        else {
+            $parent = $this->parent;
+            if(!empty($parent)){
+                return $parent->maker_detail();
+            }
+            return null;
         }
     }
 
@@ -294,9 +330,15 @@ class Classifiable extends Model
 
     public function period_detail()
     {
-        $details = $this->period_details;
-        foreach ($details as $detail){
-            return $detail->details;
+        if(count($this->period_details)){
+            return $this->period_details->first()->details;
+        }
+        else {
+            $parent = $this->parent;
+            if(!empty($parent)){
+                return $parent->period_detail();
+            }
+            return null;
         }
     }
 
@@ -311,9 +353,15 @@ class Classifiable extends Model
 
     public function school_detail()
     {
-        $details = $this->school_details;
-        foreach ($details as $detail){
-            return $detail->details;
+        if(count($this->school_details)){
+            return $this->school_details->first()->details;
+        }
+        else {
+            $parent = $this->parent;
+            if(!empty($parent)){
+                return $parent->school_detail();
+            }
+            return null;
         }
     }
 
@@ -328,14 +376,24 @@ class Classifiable extends Model
 
     public function subject_detail()
     {
-        $details = $this->subject_details;
-        foreach ($details as $detail){
-            return $detail->details;
+        if(count($this->subject_details)){
+            return $this->subject_details->first()->details;
+        }
+        else {
+            $parent = $this->parent;
+            if(!empty($parent)){
+                return $parent->subject_detail();
+            }
+            return null;
         }
     }
 
     public function getObjects()
     {
+        if(count($this->objects) == 1 && $this->objects->first()->id == -1 ){
+            return null;
+        }
+
         if(count($this->objects)){
             return $this->objects;
         }
@@ -351,6 +409,11 @@ class Classifiable extends Model
 
     public function getMakers()
     {
+
+        if(count($this->makers) == 1 && $this->makers->first()->id == -1 ){
+            return null;
+        }
+
         if(count($this->makers)){
             return $this->makers;
         }
@@ -364,7 +427,13 @@ class Classifiable extends Model
         }
     }
 
+
     public function getSubjects(){
+
+        if(count($this->subjects) == 1 && $this->subjects->first()->id == -1 ){
+            return null;
+        }
+
         if(count($this->subjects)){
             return $this->subjects;
         }
@@ -378,7 +447,28 @@ class Classifiable extends Model
         }
     }
 
+    public function getPeriods(){
+        if(count($this->periods) == 1 && $this->periods->first()->id == -1 ){
+            return null;
+        }
+
+        if(count($this->periods)){
+            return $this->periods;
+        }
+        else {
+            $parent = $this->parent;
+            if(!empty($parent)){
+                return $parent->getPeriods();
+            }
+            return null;
+
+        }
+    }
+
     public function getOrigins(){
+        if(count($this->origins) == 1 && $this->origins->first()->id == -1 ){
+            return null;
+        }
         if(count($this->origins)){
             return $this->origins;
         }
@@ -394,6 +484,9 @@ class Classifiable extends Model
 
 
     public function getCollections(){
+        if(count($this->collections) == 1 && $this->collections->first()->id == -1 ){
+            return null;
+        }
         if(count($this->collections)){
             return $this->collections;
         }
@@ -408,6 +501,9 @@ class Classifiable extends Model
     }
 
     public function getCommunities(){
+        if(count($this->communities) == 1 && $this->communities->first()->id == -1 ){
+            return null;
+        }
         if(count($this->communities)){
             return $this->communities;
         }
@@ -422,6 +518,9 @@ class Classifiable extends Model
     }
 
     public function getLocations(){
+        if(count($this->locations) == 1 && $this->locations->first()->id == -1 ){
+            return null;
+        }
         if(count($this->locations)){
             return $this->locations;
         }
@@ -435,19 +534,35 @@ class Classifiable extends Model
         }
     }
 
-    public function getScools(){
+    public function getSchools(){
+        if(count($this->schools) == 1 && $this->schools->first()->id == -1 ){
+            return null;
+        }
         if(count($this->schools)){
             return $this->schools;
         }
         else {
             $parent = $this->parent;
             if(!empty($parent)){
-                return $parent->getScools();
+                return $parent->getSchools();
             }
             return null;
 
         }
     }
+
+    public function addenda(){
+        if(!empty($this->addenda)){
+            parse_str ($this->addenda, $out);
+            if(count($out) == 1){
+                return $this->addenda;
+            }
+        }
+
+        return null;
+    }
+
+
 
     /**
      * Scope a query to only include popular users.
