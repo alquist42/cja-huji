@@ -47,6 +47,6 @@ class addToIndex extends Command
     {
         $offset = !empty($this->argument('offset')) ? $this->argument('offset') : 0;
 
-        $this->service->addToIndex($this->argument('type'), $offset);
+        $this->service->fillIndex($this->argument('type'), $offset);
     }
 }

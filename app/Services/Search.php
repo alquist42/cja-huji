@@ -410,13 +410,29 @@ class Search
             return self::findMissedParents($elements,$model);
 
     }
+    /*
+     * adds one record to index
+     * */
 
-    public function addToIndex($type,$offset){
+    public function addToIndex(){
+        // fill set id if item has no children
+    }
+
+    /*
+     * removes one record from index
+     * */
+
+    public function removeFromIndex(){
+
+    }
+
+    public function fillIndex($type, $offset){
         // TODO new structure:
      //   add set_id or flag for images (items without children)
         // compact sets with one child
         // merge same items
         // merge same items into parent
+        // TODO FOR MIGRATION taxonomy_details - merge with taxonomy??
    //     DB::enableQueryLog();
         $step = 500;
         DB::statement("SET group_concat_max_len=15000000000;");
