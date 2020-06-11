@@ -20,4 +20,9 @@
         <dt class="col-sm-3">Negative / Photo. No.</dt>
         <dd class="col-sm-9">{{ array_get($item->images,'0.negative') }}</dd>
     @endif
+
+    @if(array_get($item->images,'0.nli_picname'))
+            <dt class="col-sm-3">Scan No.</dt>
+            <dd class="col-sm-9">{{ array_get($item->images,'0.nli_picname') }}</dd>
+    @endif
 </dl>
