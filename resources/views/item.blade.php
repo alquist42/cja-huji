@@ -47,17 +47,17 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card mx-1 mb-4">
-                        <div class="card-body">
-                            @include('item.properties')
-                        </div>
-                    </div>
+                    @if(count($item->properties))
+                     @include('item.properties')
+                    @endif
+                    @if($item->addenda())
                     <div class="card mx-1">
                         <div class="card-body">
                             <p>Temp: Addenda</p>
-                            <p>{{ $item->addenda }}</p>
+                            <p>{{ $item->addenda() }}</p>
                         </div>
                     </div>
+                    @endif
                 </div>
 
                 <style>
