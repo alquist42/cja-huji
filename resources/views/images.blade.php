@@ -7,7 +7,7 @@
                 </div>
                 <div class="container collapses" id="collapseExample{{ $obj->id }}">
                     <div class="row mt-5">
-                        <div class="col-md-8">
+                        {{--<div class="col-md-8">
                             <div class="container">
                                 <dl class="row my-3">
 
@@ -117,7 +117,7 @@
                                     </dl>
                                 </div>
                             </div>
-                        </div>
+                        </div>--}}
                         <div class="col-md-4">
                             @if (!empty($obj->images[0]))
                                 <a href="/{{ $obj->url() }}">
