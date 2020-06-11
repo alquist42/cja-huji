@@ -71,7 +71,7 @@ class Set extends Classifiable
         'makers.profession',
         'creation_date',
 
-        'items',
+      /*  'items',
         'items.locations',
         'items.origins',
         'items.schools',
@@ -91,7 +91,7 @@ class Set extends Classifiable
 
         'items.images',
         'items.images.photographer',
-        'items.images.copyright',
+        'items.images.copyright',*/
 
 
         'images',
@@ -110,7 +110,15 @@ class Set extends Classifiable
      */
     public function items()
     {
-        return $this->hasMany(Item::class)->where('publish_state','>',0);
+        $children = $this->children;
+        $items = [];
+        foreach($children as $child){
+          if(!count($child->children) && $child->published()){
+              $items[] = $child;
+          }
+        }
+       return $items;
+      //  return $this->hasMany(Item::class)->where('publish_state','>',0);
     }
 
     public static function withAllRelations() {
@@ -142,6 +150,13 @@ class Set extends Classifiable
                 break;
             }
         }
+
+        foreach($descendants as $key => $descendant){
+            if(!count($descendant->children)){
+                unset($descendants[$key]);
+            }
+        }
+
         return $ancestors->merge($descendants)->toTree();
        // return Set::ancestorsAndSelf($this->id)->merge($this->descendants)->toTree();
 
@@ -155,7 +170,7 @@ class Set extends Classifiable
         return  "/images/s-" . $this->id ;
     }
 
-    public function getObjects()
+    /*public function getObjects()
     {
         return $this->objects;
     }
@@ -171,11 +186,11 @@ class Set extends Classifiable
 
     public function getOrigins(){
         return $this->origins;
-    }
+    }*/
 /* comment this function in new branch*/
-    public function getCollections(){
-        return $this->collections;
-    }
+//    public function getCollections(){
+//        return $this->collections;
+//    }
 
     public function getCommunities(){
         return $this->communities;

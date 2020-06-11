@@ -1,5 +1,5 @@
 <div class="container">
-    @forelse ($item->items as $obj)
+    @forelse ($item->items() as $obj)
         <div class="row mt-5">
             <div class="card mx-1">
                 <div class="card-header" data-toggle="collapses" data-target="#collapseExample{{ $obj->id }}" aria-expanded="false" aria-controls="collapseExample{{ $obj->id }}">

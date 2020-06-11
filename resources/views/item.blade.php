@@ -101,7 +101,7 @@
                 <div class="col-md-12">
 
                     <hr style="margin-top: 50px; width: 100%; color: grey; height: 1px; background-color:grey;" />
-                    <p class="h3 text-center">Object's Images ({{ count($item->items) }})</p>
+                    <p class="h3 text-center">Object's Images ({{ count($item->items()) }})</p>
 
                     @include('images')
                 </div>

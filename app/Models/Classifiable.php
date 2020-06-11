@@ -334,6 +334,121 @@ class Classifiable extends Model
         }
     }
 
+    public function getObjects()
+    {
+        if(count($this->objects)){
+            return $this->objects;
+        }
+        else {
+            $parent = $this->parent;
+            if(!empty($parent)){
+                return $parent->getObjects();
+            }
+            return null;
+
+        }
+    }
+
+    public function getMakers()
+    {
+        if(count($this->makers)){
+            return $this->makers;
+        }
+        else {
+            $parent = $this->parent;
+            if(!empty($parent)){
+                return $parent->getMakers();
+            }
+            return null;
+
+        }
+    }
+
+    public function getSubjects(){
+        if(count($this->subjects)){
+            return $this->subjects;
+        }
+        else {
+            $parent = $this->parent;
+            if(!empty($parent)){
+                return $parent->getSubjects();
+            }
+            return null;
+
+        }
+    }
+
+    public function getOrigins(){
+        if(count($this->origins)){
+            return $this->origins;
+        }
+        else {
+            $parent = $this->parent;
+            if(!empty($parent)){
+                return $parent->getOrigins();
+            }
+            return null;
+
+        }
+    }
+
+
+    public function getCollections(){
+        if(count($this->collections)){
+            return $this->collections;
+        }
+        else {
+            $parent = $this->parent;
+            if(!empty($parent)){
+                return $parent->getCollections();
+            }
+            return null;
+
+        }
+    }
+
+    public function getCommunities(){
+        if(count($this->communities)){
+            return $this->communities;
+        }
+        else {
+            $parent = $this->parent;
+            if(!empty($parent)){
+                return $parent->getCommunities();
+            }
+            return null;
+
+        }
+    }
+
+    public function getLocations(){
+        if(count($this->locations)){
+            return $this->locations;
+        }
+        else {
+            $parent = $this->parent;
+            if(!empty($parent)){
+                return $parent->getLocations();
+            }
+            return null;
+
+        }
+    }
+
+    public function getScools(){
+        if(count($this->schools)){
+            return $this->schools;
+        }
+        else {
+            $parent = $this->parent;
+            if(!empty($parent)){
+                return $parent->getScools();
+            }
+            return null;
+
+        }
+    }
+
     /**
      * Scope a query to only include popular users.
      *

@@ -48,7 +48,7 @@ class ImagesController extends Controller
         $url = str_replace(" ","%20",$url);
 
         if(!file_exists($url)){
-            $this->saveImage($url); //YOU may save it to test the speed
+          //  $this->saveImage($url); //YOU may save it to test the speed
             $url='http://cja.huji.ac.il/' . $url;
         }
 
@@ -119,7 +119,8 @@ class ImagesController extends Controller
         }
             $img_rights = $image->rights;
         if(empty($img_rights) || $img_rights == 2){
-            $collection = $model->collections()->first();
+         //   $collection = $model->collections()->first();
+            $collection = $model->getCollections()->first();
             if(!empty($collection)){
                 $img_rights = $collection->rights;
             }

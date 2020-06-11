@@ -412,6 +412,11 @@ class Search
     }
 
     public function addToIndex($type,$offset){
+        // TODO new structure:
+     //   add set_id or flag for images (items without children)
+        // compact sets with one child
+        // merge same items
+        // merge same items into parent
    //     DB::enableQueryLog();
         $step = 500;
         DB::statement("SET group_concat_max_len=15000000000;");
