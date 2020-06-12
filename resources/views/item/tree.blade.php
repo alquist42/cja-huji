@@ -1,6 +1,6 @@
 <div class="card mx-1 mb-4">
     <div class="card-header">
-        Item Tree
+        Item Composition
     </div>
     <div class="card-body">
         @php
