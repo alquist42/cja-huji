@@ -39,9 +39,9 @@ class TaxonomyController extends Controller
                     $q->whereHas('sets', function($q) {
                         $q->join('projects', 'sets.id', '=', 'projects.taggable_id');
                     });
-                    $q->orWhereHas('items', function($q) {
-                        $q->join('projects', 'items.id', '=', 'projects.taggable_id');
-                    });
+//                    $q->orWhereHas('items', function($q) {
+//                        $q->join('projects', 'items.id', '=', 'projects.taggable_id');
+//                    });
                 })
             //    ->orderBy('id')
                 ->get();

@@ -74,17 +74,17 @@ class Search
        // dd(DB::getQueryLog());
 
         $result = DB::table('taxonomy')
-            ->select('sets.id as set','items.id as item')
+            ->select('sets.id as set'/*,'items.id as item'*/)
             ->leftJoin('sets', function ($join) {
                 $join->on('sets.id', '=', 'taxonomy.entity_id')->
                 where('taxonomy.entity_type', '=', 'set')->
                 where('sets.publish_state', '>', 0);
             })
-            ->leftJoin('items', function ($join) {
+            /*->leftJoin('items', function ($join) {
                 $join->on('items.id', '=', 'taxonomy.entity_id')->
                 where('taxonomy.entity_type', '=', 'item')->
                 where('items.publish_state', '>', 0);
-            })
+            })*/
             ->where('taxonomy.taxonomy_type', '=', str_singular($type))
             ->whereIn('taxonomy.taxonomy_id', $taxonomyIds)
             ->when($project != 'CJA', function ($q) use ($project) {
@@ -95,14 +95,14 @@ class Search
                             ->whereRaw('projects.taggable_id = sets.id')
                             ->where('projects.taggable_type', 'set')
                             ->where('projects.tag_slug', $project);
-                    })
-                        ->orWhereExists(function ($query) use ($project) {
+                    });
+                        /*->orWhereExists(function ($query) use ($project) {
                             $query->select(DB::raw(1))
                                 ->from('projects')
                                 ->whereRaw('projects.taggable_id = items.id')
                                 ->where('projects.taggable_type', 'item')
                                 ->where('projects.tag_slug', $project);
-                        });
+                        });*/
 
                 });
             })
