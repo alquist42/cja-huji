@@ -61,6 +61,9 @@ class Search
         $collection = collect([]);
         foreach ($filters as $type => $values) {
             $model = '\\App\\Models\\Taxonomy\\' . ucfirst(str_singular($type));
+            if ($type === 'objects') {
+                $model = '\\App\\Models\\Taxonomy\\IObject';
+            }
             $selected = $model::select("id", "_lft", "_rgt")->find($values);
             foreach ($selected as $sModel) {
                 $descendants = $model::select("id","name")->

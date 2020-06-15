@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use \Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Kalnoy\Nestedset\NodeTrait;
 
 class Item extends Classifiable
@@ -86,15 +85,18 @@ class Item extends Classifiable
     /**
      * @return string
      */
-    public function name() {
+    public function name()
+    {
         return $this->ntl;
     }
 
-    public function url(){
+    public function url()
+    {
         return request()->project . "/images/" . $this->id;
     }
 
-    public function image_url(){
+    public function image_url()
+    {
         return  "/images/i-" . $this->id ;
     }
 

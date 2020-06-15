@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Console\Commands;
+
 use App\Services\Search;
 use Illuminate\Console\Command;
 

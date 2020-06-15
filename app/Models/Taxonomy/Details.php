@@ -3,16 +3,14 @@
 
 namespace App\Models\Taxonomy;
 
-
 use App\Models\Item;
-use App\Models\Image;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+
 //use Kalnoy\Nestedset\NodeTrait;
 
 class Details extends Model
 {
-   // use NodeTrait;
+    // use NodeTrait;
     public $timestamps = false;
     protected $table = 'taxomony_details';
     /**

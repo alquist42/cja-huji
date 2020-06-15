@@ -49,7 +49,7 @@ class Handler extends ExceptionHandler
             //redirect to errors.custom view page
             return response()->view('errors.custom', [], 404);
         }
-        if ($exception instanceof \App\Exceptions\UserHasNoPermissions)  {
+        if ($exception instanceof \App\Exceptions\UserHasNoPermissions) {
             return $exception->render($request);
         }
 

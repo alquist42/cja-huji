@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Services\Search;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Set;
+use App\Services\Search;
+use Illuminate\Http\Request;
 
 class ItemsController extends Controller
 {
@@ -37,12 +37,11 @@ class ItemsController extends Controller
 
     public function index(Request $request)
     {
-
         $page = $request->get('page');
 
-        $filters = collect($request->only($this->allowed_filters))->filter(function($value) {
+        $filters = collect($request->only($this->allowed_filters))->filter(function ($value) {
             return null !== $value;
-        })->map(function($value) {
+        })->map(function ($value) {
             return is_array($value) ? $value : [$value];
         })->toArray();
 
@@ -64,7 +63,6 @@ class ItemsController extends Controller
 //            'setsCount' => $data['setsCount'],
 //            'itemsCount' => $data['itemsCount']
 //        ]);
-
     }
 
     public function show(Set $item)

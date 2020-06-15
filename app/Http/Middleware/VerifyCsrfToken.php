@@ -2,8 +2,8 @@
 
 namespace App\Http\Middleware;
 
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken as BaseVerifier;
 use Closure;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken as BaseVerifier;
 use Illuminate\Support\Facades\Session;
 
 class VerifyCsrfToken extends BaseVerifier
@@ -19,10 +19,8 @@ class VerifyCsrfToken extends BaseVerifier
 
     public function handle($request, Closure $next)
     {
-        if($request->input('_token'))
-        {
-            if ( Session::token() != $request->input('_token'))
-            {
+        if ($request->input('_token')) {
+            if (Session::token() != $request->input('_token')) {
                 return redirect()->guest('/login')
                     ->with('global', 'Expired token found. Redirecting to /');
             }

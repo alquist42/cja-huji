@@ -182,39 +182,4 @@ class Set extends Classifiable
     public function image_url(){
         return  "/images/s-" . $this->id ;
     }
-
-    /*public function getObjects()
-    {
-        return $this->objects;
-    }
-
-    public function getMakers()
-    {
-        return $this->makers;
-    }
-
-    public function getSubjects(){
-        return $this->subjects;
-    }
-
-    public function getOrigins(){
-        return $this->origins;
-    }*/
-/* comment this function in new branch*/
-//    public function getCollections(){
-//        return $this->collections;
-//    }
-
-
-   /* public function getCommunities(){
-        return $this->communities;
-    }
-
-    public function getLocations(){
-        return $this->locations;
-    }
-
-    public function getScools(){
-        return $this->scools;
-    }*/
 }

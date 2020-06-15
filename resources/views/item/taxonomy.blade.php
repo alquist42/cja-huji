@@ -158,14 +158,14 @@
                     </span>
                 </li>
             @endif
-        </ul>
 
-        {{--Properties--}}
-        @foreach ($item->properties as $property)
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                <span>{{ $property->verbose_name }}</span>
-                <span class="text-right">{!!  $property->pivot->value !!}</span>
-            </li>
-        @endforeach
+            {{--Properties--}}
+            @foreach ($item->properties as $property)
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>{{ $property->verbose_name }}</span>
+                    <span class="text-right">{!!  $property->pivot->value !!}</span>
+                </li>
+            @endforeach
+        </ul>
     </div>
 </div>

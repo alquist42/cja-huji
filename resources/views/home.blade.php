@@ -23,7 +23,7 @@
                             <div class="welcome-divisions rounded shadow background-8">
                                 <h4 class="welcome-title">{{ $projects['mhs']['title'] }}</h4>
                                 <div class="welcome-image"
-                                     style="background-image: url('{{"http://cja.huji.ac.il/home/pics/mhs.jpg"}}')"></div>
+                                     style="background-image: url('{{ "http://cja.huji.ac.il/home/pics/mhs.jpg" }}')"></div>
                             </div>
                         </a>
                     </div>
@@ -33,7 +33,7 @@
                             <div class="welcome-divisions rounded shadow background-3">
                                 <h4 class="welcome-title">{{ $projects['wpc']['title'] }}</h4>
                                 <div class="welcome-image"
-                                     style="background-image: url('{{"http://cja.huji.ac.il/home/pics/wpc.jpg"}}')"></div>
+                                     style="background-image: url('{{ "http://cja.huji.ac.il/home/pics/wpc.jpg" }}')"></div>
                             </div>
                         </a>
                     </div>
@@ -53,7 +53,7 @@
                             <div class="welcome-divisions rounded shadow background-5">
                                 <h4 class="welcome-title">{{ $projects['slovenia']['title'] }}</h4>
                                 <div class="welcome-image"
-                                     style="background-image: url('{{"http://cja.huji.ac.il/slovenia/pics/Maribor-Keystone.jpg"}}')"></div>
+                                     style="background-image: url('{{ "http://cja.huji.ac.il/slovenia/pics/Maribor-Keystone.jpg" }}')"></div>
                             </div>
                         </a>
                     </div>

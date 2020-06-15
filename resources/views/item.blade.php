@@ -22,10 +22,7 @@
                         <div class="card mt-4">
                             <div class="card-body small">
                                 <p>Temp: Addenda</p>
-                                <?php
-                                    parse_str(urldecode($item->addenda()), $out);
-                                ?>
-                                <p>{{ $out }}</p>
+                                {{ $item->addenda() }}
                             </div>
                         </div>
                     @endif

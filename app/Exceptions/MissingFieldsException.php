@@ -7,5 +7,4 @@ namespace App\Exceptions;
  */
 class MissingFieldsException extends ImporterException
 {
-
 }

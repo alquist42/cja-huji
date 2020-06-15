@@ -5,21 +5,17 @@ namespace App\Models;
 use App\Models\Taxonomy\Collection;
 use App\Models\Taxonomy\Community;
 use App\Models\Taxonomy\Congregation;
+use App\Models\Taxonomy\Details;
 use App\Models\Taxonomy\HistoricOrigin;
 use App\Models\Taxonomy\Location;
 use App\Models\Taxonomy\Maker;
-use App\Models\Taxonomy\Object  as TaxonomyObject;
+use App\Models\Taxonomy\IObject  as TaxonomyObject;
 use App\Models\Taxonomy\Origin;
 use App\Models\Taxonomy\Period;
 use App\Models\Taxonomy\School;
 use App\Models\Taxonomy\Site;
 use App\Models\Taxonomy\Subject;
-
-use App\Models\Taxonomy\Details;
-
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Classifiable extends Model
 {
@@ -391,7 +387,7 @@ class Classifiable extends Model
     public function getObjects()
     {
         if(count($this->objects) == 1 && $this->objects->first()->id == -1 ){
-            return null;
+            return [];
         }
 
         if(count($this->objects)){
@@ -402,7 +398,7 @@ class Classifiable extends Model
             if(!empty($parent)){
                 return $parent->getObjects();
             }
-            return null;
+            return [];
 
         }
     }
@@ -411,7 +407,7 @@ class Classifiable extends Model
     {
 
         if(count($this->makers) == 1 && $this->makers->first()->id == -1 ){
-            return null;
+            return [];
         }
 
         if(count($this->makers)){
@@ -422,7 +418,7 @@ class Classifiable extends Model
             if(!empty($parent)){
                 return $parent->getMakers();
             }
-            return null;
+            return [];
 
         }
     }
@@ -431,7 +427,7 @@ class Classifiable extends Model
     public function getSubjects(){
 
         if(count($this->subjects) == 1 && $this->subjects->first()->id == -1 ){
-            return null;
+            return [];
         }
 
         if(count($this->subjects)){
@@ -442,14 +438,14 @@ class Classifiable extends Model
             if(!empty($parent)){
                 return $parent->getSubjects();
             }
-            return null;
+            return [];
 
         }
     }
 
     public function getPeriods(){
         if(count($this->periods) == 1 && $this->periods->first()->id == -1 ){
-            return null;
+            return [];
         }
 
         if(count($this->periods)){
@@ -460,14 +456,14 @@ class Classifiable extends Model
             if(!empty($parent)){
                 return $parent->getPeriods();
             }
-            return null;
+            return [];
 
         }
     }
 
     public function getOrigins(){
         if(count($this->origins) == 1 && $this->origins->first()->id == -1 ){
-            return null;
+            return [];
         }
         if(count($this->origins)){
             return $this->origins;
@@ -477,7 +473,7 @@ class Classifiable extends Model
             if(!empty($parent)){
                 return $parent->getOrigins();
             }
-            return null;
+            return [];
 
         }
     }
@@ -485,7 +481,7 @@ class Classifiable extends Model
 
     public function getCollections(){
         if(count($this->collections) == 1 && $this->collections->first()->id == -1 ){
-            return null;
+            return [];
         }
         if(count($this->collections)){
             return $this->collections;
@@ -495,14 +491,14 @@ class Classifiable extends Model
             if(!empty($parent)){
                 return $parent->getCollections();
             }
-            return null;
+            return [];
 
         }
     }
 
     public function getCommunities(){
         if(count($this->communities) == 1 && $this->communities->first()->id == -1 ){
-            return null;
+            return [];
         }
         if(count($this->communities)){
             return $this->communities;
@@ -512,14 +508,14 @@ class Classifiable extends Model
             if(!empty($parent)){
                 return $parent->getCommunities();
             }
-            return null;
+            return [];
 
         }
     }
 
     public function getLocations(){
         if(count($this->locations) == 1 && $this->locations->first()->id == -1 ){
-            return null;
+            return [];
         }
         if(count($this->locations)){
             return $this->locations;
@@ -529,14 +525,14 @@ class Classifiable extends Model
             if(!empty($parent)){
                 return $parent->getLocations();
             }
-            return null;
+            return [];
 
         }
     }
 
     public function getSchools(){
         if(count($this->schools) == 1 && $this->schools->first()->id == -1 ){
-            return null;
+            return [];
         }
         if(count($this->schools)){
             return $this->schools;
@@ -546,7 +542,7 @@ class Classifiable extends Model
             if(!empty($parent)){
                 return $parent->getSchools();
             }
-            return null;
+            return [];
 
         }
     }
@@ -576,14 +572,11 @@ class Classifiable extends Model
             ->leftJoin('projects', "{$model}s.id", '=', 'projects.taggable_id')
             ->where('projects.taggable_type', $model)
             ->where('projects.tag_slug', app()->make(Tenant::class)->slug());
-
-
-
-
     }
 
-    public function published(){
-        if($this->publish_state > 0){
+    public function published()
+    {
+        if ($this->publish_state > 0) {
             return true;
         }
         return false;

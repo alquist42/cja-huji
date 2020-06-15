@@ -2,9 +2,9 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Importer\Importer;
 use App\Models\Imports\Items;
+use Illuminate\Console\Command;
 
 class ImportItems extends Command
 {

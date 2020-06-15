@@ -2,9 +2,7 @@
 
 namespace App\Importer;
 
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Validator;
-use League\Csv\Exception;
 use League\Csv\Reader;
 
 /**

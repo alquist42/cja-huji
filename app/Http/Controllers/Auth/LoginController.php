@@ -9,6 +9,7 @@ use  Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Http\Request;
+
 class LoginController extends Controller
 {
     /*
@@ -47,10 +48,11 @@ class LoginController extends Controller
         return Session::get('backUrl') ? Session::get('backUrl') :   $this->redirectTo;
     }
 
-    public function logout(Request $request) {
+    public function logout(Request $request)
+    {
         Auth::logout(); // logout user
         Session::flush();
-    //    $request->session()->invalidate();
+        //    $request->session()->invalidate();
         return Redirect::to('/login'); //redirect back to login
     }
 }

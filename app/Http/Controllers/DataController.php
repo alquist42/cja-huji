@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Set;
 use App\Models\Origin;
-//use App\Models\Taxonomy\Object;
+//use App\Models\Taxonomy\IObject;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -25,9 +25,9 @@ class DataController extends Controller
                     FROM sets
                     INNER JOIN objects
                     INNER JOIN taxonomy
-                    INNER JOIN projects 
+                    INNER JOIN projects
                     ON sets.id =taxonomy.entity_id AND objects.id = taxonomy.taxonomy_id AND projects.taggable_id = sets.id
-                    WHERE 
+                    WHERE
                      taxonomy.taxonomy_type='object' AND taxonomy.entity_type = 'set'
                       AND projects.tag_slug = 'SCH' AND projects.taggable_type='set'
                     GROUP BY objects.id,objects.name
@@ -37,9 +37,9 @@ class DataController extends Controller
                     FROM items
                     INNER JOIN objects
                     INNER JOIN taxonomy
-                    INNER JOIN projects 
+                    INNER JOIN projects
                     ON items.id =taxonomy.entity_id AND objects.id = taxonomy.taxonomy_id AND projects.taggable_id = items.id
-                    WHERE 
+                    WHERE
                      taxonomy.taxonomy_type='object' AND taxonomy.entity_type = 'item'
                       AND projects.tag_slug = 'SCH' AND projects.taggable_type='item'
                     GROUP BY objects.id,objects.name
@@ -87,7 +87,7 @@ class DataController extends Controller
 
 
         /*foreach($results as $result ){
-            $obj = Object::where("id",$result->id)->first();
+            $obj = IObject::where("id",$result->id)->first();
             echo $obj->name . ' (' .$obj->id. ')<br>';
             foreach ($obj -> getAncestors() as $anc){
                 echo '--' . $anc->name . ' (' .$anc->id. ')<br>';

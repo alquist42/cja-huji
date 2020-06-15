@@ -1,14 +1,10 @@
 <?php
 
-use App\User;
-use Carbon\Carbon;
-
-use App\Models\Origin;
-use App\Models\Subject;
 use App\Models\Image;
 use App\Models\Item;
+use App\Models\Origin;
+use App\Models\Subject;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class DummyDataSeeder extends Seeder
 {

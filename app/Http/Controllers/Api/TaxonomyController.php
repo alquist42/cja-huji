@@ -29,26 +29,27 @@ class TaxonomyController extends Controller
     {
         DB::enableQueryLog();
 
+        if ($type === 'objects') {
+            $type = 'iObjects';
+        }
+
         $model = $this->nameSpace . ucfirst(str_singular($type));
         if (!class_exists($model)) {
             return response()->json([ 'error' => 400, 'message' => 'Missing or unsupported type' ], 400);
         }
         if(request()->get('as_tree')){
             $elements = $model::where('id', '!=', '-1')
-                ->where(function ($q)  {
-                    $q->whereHas('sets', function($q) {
-                        $q->join('projects', 'sets.id', '=', 'projects.taggable_id');
-                    });
-//                    $q->orWhereHas('items', function($q) {
-//                        $q->join('projects', 'items.id', '=', 'projects.taggable_id');
+//                ->where(function ($q)  {
+//                    $q->whereHas('sets', function($q) {
+//                        $q->join('projects', 'sets.id', '=', 'projects.taggable_id');
 //                    });
-                })
+//                })
             //    ->orderBy('id')
                 ->get();
 
 
             $elements = $this->search->findMissedParents($elements,$model);
-            $elements = $elements->sortBy('name')->values()->toTree()->toArray();
+            $elements = $elements->sortBy('name')->values()->toTree();
 
 //            ini_set('xdebug.var_display_max_depth', 90);
 //            ini_set('xdebug.var_display_max_children', 2545);

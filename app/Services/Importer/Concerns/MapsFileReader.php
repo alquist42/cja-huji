@@ -5,9 +5,6 @@ namespace App\Importer\Concerns;
 use App\Exceptions\FileNotFoundException;
 use App\Exceptions\UnsupportedFileException;
 use App\Importer\Csv;
-use App\Importer\FileReader;
-use Illuminate\Container\Container;
-use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Str;
 
 /**

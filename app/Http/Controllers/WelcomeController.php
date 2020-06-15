@@ -28,9 +28,9 @@ class WelcomeController extends Controller
      */
     public function index()
     {
-    	$header = [
-    		'index_page' => true
-		];
+        $header = [
+            'index_page' => true
+        ];
 
         return view('home', compact('header'));
     }

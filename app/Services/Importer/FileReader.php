@@ -2,8 +2,6 @@
 
 namespace App\Importer;
 
-use Illuminate\Support\Collection;
-
 /**
  * Interface FileReader
  */

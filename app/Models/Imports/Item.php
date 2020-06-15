@@ -1,31 +1,11 @@
 <?php
 namespace App\Models\Imports;
-use App\Models\Item;
-use App\Models\Image;
+
 use App\Importer\Importable;
-use App\Models\Taxonomy\Photographer;
-use App\Models\Taxonomy\Collection as C;
-use App\Models\Taxonomy\Community;
-use App\Models\Taxonomy\Congregation;
-use App\Models\Taxonomy\HistoricOrigin;
-use App\Models\Taxonomy\Location;
-use App\Models\Taxonomy\Maker;
-// use App\Models\Taxonomy\Object;
-use App\Models\Taxonomy\Origin;
-use App\Models\Taxonomy\Period;
-use App\Models\Taxonomy\School;
-use App\Models\Taxonomy\Site;
-use App\Models\Taxonomy\Subject;
-use Futureecom\Utils\AuthGuard\Models\Tenancy;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\In;
-use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
+
 /**
  * Class Product
  */
@@ -86,13 +66,12 @@ class Items implements Importable
 //        HistoricOrigin::fixTree();
 //        Location::fixTree();
 //        Maker::fixTree();
-//        Object::fixTree();
+//        IObject::fixTree();
 //        Period::fixTree();
 //        Photographer::fixTree();
 //        School::fixTree();
 //        Site::fixTree();
 //        Item::fixTree();
-
     }
     /**
      * @param $item
@@ -190,6 +169,5 @@ class Items implements Importable
             "collection_id" => $item['collection_id'],
             "details" => $item['details']
         ]);
-
     }
 }

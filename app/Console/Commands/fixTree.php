@@ -2,21 +2,18 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
-
+use App\Models\Set;
 use App\Models\Taxonomy\Collection;
 use App\Models\Taxonomy\Community;
-use App\Models\Taxonomy\Congregation;
 use App\Models\Taxonomy\HistoricOrigin;
 use App\Models\Taxonomy\Location;
-use App\Models\Taxonomy\Maker;
-use App\Models\Taxonomy\Object as TaxonomyObject;
+use App\Models\Taxonomy\IObject as TaxonomyObject;
 use App\Models\Taxonomy\Origin;
 use App\Models\Taxonomy\Period;
 use App\Models\Taxonomy\School;
 use App\Models\Taxonomy\Site;
 use App\Models\Taxonomy\Subject;
-use App\Models\Set;
+use Illuminate\Console\Command;
 
 class FixTree extends Command
 {

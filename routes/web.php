@@ -10,8 +10,14 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+
 Route::get('/', 'WelcomeController@index');
-Route::get('/staff/{name?}','AdminController@viewLinks')->where('name', '.*');
+Route::get('/staff', 'AdminController@viewLinks');
+Route::get('/staff/items', 'AdminController@items')->name('admin.items');
+Route::get('/staff/items/{item}', 'AdminController@item')->name('admin.item');
+Route::get('/staff/media', function () {
+    return view('vendor.file-manager.ckeditor');
+});
 
 Route::get('/images/{model}-{id}-{size}.png', 'ImagesController@view')->
         where('model', 's|i')->where('id', '[0-9]+')->where('size', 'original|thumb|small|medium');
@@ -34,13 +40,13 @@ Route::get('logout', 'Auth\LoginController@logout');
 
 // Single pages
 Route::get('activities', function () {
-	return view('activities', ['header' => ['title' => 'Activities', 'index_page' => true]]);
+    return view('activities', ['header' => ['title' => 'Activities', 'index_page' => true]]);
 });
 Route::get('publications', function () {
-	return view('publications', ['header' => ['title' => 'Publications', 'index_page' => true]]);
+    return view('publications', ['header' => ['title' => 'Publications', 'index_page' => true]]);
 });
 Route::get('about', function () {
-	return view('about', ['header' => ['title' => 'About', 'index_page' => true]]);
+    return view('about', ['header' => ['title' => 'About', 'index_page' => true]]);
 });
 
 // MHS
@@ -52,12 +58,10 @@ Route::group(['middleware' => 'project'], function () {
     Route::get('/{project}', 'HomeController@index');
     Route::get('/{project}/items', 'CatalogController@index');
     Route::get('/{project}/items/{item}', 'CatalogController@show');
-    Route::get('/{project}/images/{item}', 'CatalogController@showItem');
-	Route::get('/{project}/browse/{any}', 'BrowseController@index')->where('any', '.*');
+    Route::get('/{project}/browse/{any}', 'BrowseController@index')->where('any', '.*');
 });
 
-Route::get('/data/analize','DataController@analize');
-Route::get('/data/search_index','DataController@searchIndex');
+Route::get('/data/analize', 'DataController@analize');
+Route::get('/data/search_index', 'DataController@searchIndex');
 
 Auth::routes();
-
