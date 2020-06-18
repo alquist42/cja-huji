@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use DB;
 use App\Services\Search;
+use App\Models\Tenant;
 class TaxonomyController extends Controller
 {
 
@@ -88,10 +89,14 @@ class TaxonomyController extends Controller
      */
     public function search(Request $request)
     {
-
+        DB::enableQueryLog();
+        $type_plural = $request->get('type');
         $type = str_singular($request->get('type'));
         $model = $this->nameSpace . ucfirst($type);
 
+//        if($type == 'object'){
+//            $model = $this->nameSpace . 'IObject';
+//        }
         $search = $request->get('term');
 
         if (!class_exists($model)) {
@@ -102,10 +107,32 @@ class TaxonomyController extends Controller
             return response()->json([ 'error' => 400, 'message' => 'Missing query term' ], 400);
         }
 
-        $data = $model::select("id", "name")
-            ->where('name', 'LIKE', "%$search%")
-            ->get();
+        $project = app()->make(Tenant::class)->slug();
 
+    $data = $model::select($type_plural.".id", $type_plural.".name")
+        ->join('taxonomy', function ($join) use ($type,$type_plural){
+            $join->on('taxonomy.taxonomy_id', '=', $type_plural . '.id')->
+            where('taxonomy.taxonomy_type', $type);
+
+        })
+        ->join('sets', function ($join) use ($type,$type_plural){
+            $join->on('sets.id', '=', 'taxonomy.entity_id')->
+            where('taxonomy.entity_type', '=', 'set');
+        })
+
+        ->when($project != 'CJA', function ($q) use ($type,$type_plural,$project) {
+                $q->join('projects', function ($join) use ($type,$type_plural,$project){
+                    $join->on('sets.id', '=', 'projects.taggable_id')->
+                    where('projects.taggable_type', '=', 'set')
+                        ->where('projects.tag_slug', $project);
+                });
+        })
+        ->where('sets.publish_state', '>', 0)
+        ->where($type_plural.'.name','LIKE',"%$search%")
+        ->distinct()
+        ->get();
+
+   //     dd(DB::getQueryLog());
 
         return response()->json($data);
     }

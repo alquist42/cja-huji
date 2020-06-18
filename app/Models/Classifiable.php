@@ -9,7 +9,7 @@ use App\Models\Taxonomy\Details;
 use App\Models\Taxonomy\HistoricOrigin;
 use App\Models\Taxonomy\Location;
 use App\Models\Taxonomy\Maker;
-use App\Models\Taxonomy\IObject  as TaxonomyObject;
+use App\Models\Taxonomy\Object  as TaxonomyObject;
 use App\Models\Taxonomy\Origin;
 use App\Models\Taxonomy\Period;
 use App\Models\Taxonomy\School;
@@ -260,13 +260,14 @@ class Classifiable extends Model
         if(count($this->collection_details)){
             return $this->collection_details->first()->details;
         }
-        else {
+        elseif(!is_null($this->parent_id)) {
             $parent = $this->parent;
             if(!empty($parent)){
                 return $parent->collection_detail();
             }
             return null;
         }
+        return null;
     }
 
     /**

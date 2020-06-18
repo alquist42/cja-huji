@@ -3,7 +3,7 @@
 
 namespace App\Models\Taxonomy;
 
-class IObject extends Taxonomy
+class Object extends Taxonomy
 {
     /**
      * DB Table name
