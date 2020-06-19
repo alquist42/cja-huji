@@ -30,22 +30,39 @@ class TaxonomyController extends Controller
     {
         DB::enableQueryLog();
 
-        if ($type === 'objects') {
-            $type = 'iObjects';
-        }
-
-        $model = $this->nameSpace . ucfirst(str_singular($type));
+//        if ($type === 'objects') {
+//            $type = 'iObjects';
+//        }
+        $type_plural = $type;
+        $type = str_singular($type);
+        $model = $this->nameSpace . ucfirst($type);
+        $project = app()->make(Tenant::class)->slug();
         if (!class_exists($model)) {
             return response()->json([ 'error' => 400, 'message' => 'Missing or unsupported type' ], 400);
         }
         if(request()->get('as_tree')){
-            $elements = $model::where('id', '!=', '-1')
-//                ->where(function ($q)  {
-//                    $q->whereHas('sets', function($q) {
-//                        $q->join('projects', 'sets.id', '=', 'projects.taggable_id');
-//                    });
-//                })
-            //    ->orderBy('id')
+        //    $elements = $model::where($type_plural.'.id', '!=', '-1')
+            $elements = $model::select($type_plural.".*")
+                ->join('taxonomy', function ($join) use ($type,$type_plural){
+                    $join->on('taxonomy.taxonomy_id', '=', $type_plural . '.id')->
+                    where('taxonomy.taxonomy_type', $type);
+
+                })
+                ->join('sets', function ($join) use ($type,$type_plural){
+                    $join->on('sets.id', '=', 'taxonomy.entity_id')->
+                    where('taxonomy.entity_type', '=', 'set');
+                })
+
+                ->when($project != 'CJA', function ($q) use ($type,$type_plural,$project) {
+                    $q->join('projects', function ($join) use ($type,$type_plural,$project){
+                        $join->on('sets.id', '=', 'projects.taggable_id')->
+                        where('projects.taggable_type', '=', 'set')
+                            ->where('projects.tag_slug', $project);
+                    });
+                })
+                ->where('sets.publish_state', '>', 0)
+                ->where($type_plural.'.id', '!=', '-1')
+                ->distinct()
                 ->get();
 
 
