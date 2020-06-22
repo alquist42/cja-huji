@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Set;
+use App\Models\Item;
 use App\Models\Taxonomy\Collection;
 use App\Models\Taxonomy\Community;
 use App\Models\Taxonomy\HistoricOrigin;
@@ -59,7 +59,7 @@ class FixTree extends Command
             Community::fixTree();
             Collection::fixTree();
             Site::fixTree();
-            Set::fixTree();
+            Item::fixTree();
         } catch (Exception $e) {
             $this->error($e->getMessage());
             return 1;

@@ -5,7 +5,6 @@ namespace App\Models\Taxonomy;
 
 use App\Models\Image;
 use App\Models\Item;
-use App\Models\Set;
 use Illuminate\Database\Eloquent\Model;
 use Kalnoy\Nestedset\NodeTrait;
 
@@ -37,20 +36,9 @@ class Taxonomy extends Model
     /**
      * @return BelongsToMany
      */
-    public function items()
-    {
-        return $this->morphToMany(Item::class, 'taxonomy', 'taxonomy', 'taxonomy_id', 'entity_id')
-            ->wherePivot('entity_type', 'item')
-            ->published()
-            ->project('item');
-    }
-
-    /**
-     * @return BelongsToMany
-     */
     public function sets()
     {
-        return $this->morphToMany(Set::class, 'taxonomy', 'taxonomy', 'taxonomy_id', 'entity_id')
+        return $this->morphToMany(Item::class, 'taxonomy', 'taxonomy', 'taxonomy_id', 'entity_id')
             ->wherePivot('entity_type', 'set')
             ->published()
             ->project('set');

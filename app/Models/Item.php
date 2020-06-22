@@ -2,18 +2,22 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Kalnoy\Nestedset\NodeTrait;
 
 class Item extends Classifiable
 {
     use NodeTrait;
 
+    public $timestamps = false;
+
     /**
      * DB Table name
      *
      * @var string
      */
-    protected $table = 'items';
+    protected $table = 'sets';
+    protected $searchableColumns = ['name'];
 
     /**
      * @var array
@@ -44,6 +48,8 @@ class Item extends Classifiable
         'ntl',
         'ntl_localname',
 
+        'date',
+
         'remarks',
     ];
 
@@ -51,134 +57,129 @@ class Item extends Classifiable
         'locations',
         'origins',
         'schools',
-        'properties',
         'objects',
         'subjects',
         'historic_origins',
         'periods',
+        'sites',
+//        'congregations',
         'collections',
         'communities',
+
+        'properties',
+
+        'location_details',
         'origin_details',
+        'school_details',
+        'object_details',
+        'subject_details',
+//        'historic_origin_details',
+        'period_details',
+//        'site_details',
+//        'congregation_details',
         'collection_details',
+        'community_details',
+        'maker_details',
+
         'makers',
         'makers.artist',
         'makers.profession',
+
         'creation_date',
+        'category_object',
+        'copyright',
+
 
         'images',
         'images.photographer',
         'images.copyright',
 
-        'set',
-        'set.items',
-        'set.items.images'
+        'children',
+        'children.images',
+
+        'ancestors',
+        'descendants'
     ];
 
     /**
-     * @return BelongsTo
+     * @return HasMany
      */
-    public function set()
+    public function items()
     {
-        return $this->belongsTo(Set::class);
+        $descendants = $this->descendantsOf($this->id);
+        $parents = [];
+        foreach($descendants as $descendant){
+            if(!in_array($descendant->parent_id,$parents)){
+                $parents[] = $descendant->parent_id;
+            }
+        }
+
+        $children = $this->children;
+        foreach($children as $key => $child){
+            if(in_array($child->id,$parents)){
+                unset($children[$key]);
+            }
+        }
+
+       return $children;
+    }
+
+    public static function withAllRelations() {
+        return static::with(Item::$relationships);
     }
 
     /**
      * @return string
      */
-    public function name()
-    {
-        return $this->ntl;
+    public function name() {
+        return $this->name ? $this->name : $this->ntl;
     }
 
-    public function url()
-    {
-        return request()->project . "/images/" . $this->id;
+    public function ntl() {
+        return $this->ntl ? $this->ntl : $this->name;
     }
 
-    public function image_url()
-    {
-        return  "/images/i-" . $this->id ;
+    public function name_in_tree() {
+        $name =  $this->name ? $this->name : $this->ntl;
+        $names = explode(" - ",$name);
+        return end($names);
     }
 
-    public function getObjects(){
-        if(count($this->objects)){
-            return $this->objects;
+    public function getLeafAttribute() {
+        return $this->leaf();
+    }
+
+    public function leaf() {
+        $ancestors = Item::ancestorsAndSelf($this->id);
+        foreach ($ancestors as $anc){
+            if(empty($anc->parent_id)){
+                $descendants = $anc->descendantsOf($anc->id);
+                break;
+            }
         }
-        else {
-            $set = $this->set;
-            return $set->getObjects();
+       $parents = [];
+        foreach($descendants as $descendant){
+            if(!in_array($descendant->parent_id,$parents)){
+                $parents[] = $descendant->parent_id;
+            }
         }
+
+        foreach($descendants as $key => $descendant){
+            if(!in_array($descendant->id,$parents)){
+                unset($descendants[$key]);
+            }
+        }
+
+        return $ancestors->merge($descendants)->toTree();
+       // return Item::ancestorsAndSelf($this->id)->merge($this->descendants)->toTree();
 
     }
 
-    public function getMakers(){
-        if(count($this->makers)){
-            return $this->makers;
-        }
-        else {
-            $set = $this->set;
-            return $set->getMakers();
-        }
-
+    public function url(){
+        return request()->project . "/items/" . $this->id;
     }
 
-    public function getSubjects(){
-        if(count($this->subjects)){
-            return $this->subjects;
-        }
-        else {
-            $set = $this->set;
-            return $set->getSubjects();
-        }
-    }
-
-    public function getOrigins(){
-        if(count($this->origins)){
-            return $this->origins;
-        }
-        else {
-            $set = $this->set;
-            return $set->getOrigins();
-        }
-    }
-
-    public function getCollections(){
-        if(count($this->collections)){
-            return $this->collections;
-        }
-        else {
-            $set = $this->set;
-            return $set->getCollections();
-        }
-    }
-
-    public function getCommunities(){
-        if(count($this->communities)){
-            return $this->communities;
-        }
-        else {
-            $set = $this->set;
-            return $set->getCommunities();
-        }
-    }
-
-    public function getLocations(){
-        if(count($this->locations)){
-            return $this->locations;
-        }
-        else {
-            $set = $this->set;
-            return $set->getLocations();
-        }
-    }
-
-    public function getScools(){
-        if(count($this->scools)){
-            return $this->scools;
-        }
-        else {
-            $set = $this->set;
-            return $set->getScools();
-        }
+    public function image_url(){
+        return  "/images/s-" . $this->id ;
     }
 }

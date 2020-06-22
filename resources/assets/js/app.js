@@ -1,6 +1,7 @@
 import $ from 'jquery'
 import 'select2'
 import 'bootstrap'
+import './bootstrap'
 
 $(document).ready(function () {
     window.project = document.getElementById('app').dataset.project

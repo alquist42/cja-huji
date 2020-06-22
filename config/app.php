@@ -21,7 +21,7 @@ return [
     |
     | This value determines the "environment" your application is currently
     | running in. This may determine how you prefer to configure various
-    | services your application utilizes. Set this in your ".env" file.
+    | services your application utilizes. Item this in your ".env" file.
     |
     */
 
@@ -182,7 +182,7 @@ return [
         Barryvdh\Debugbar\ServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
         Laravel\Scout\ScoutServiceProvider::class,
-        Alexusmai\LaravelFileManager\FileManagerServiceProvider::class,
+        ctf0\MediaManager\MediaManagerServiceProvider::class,
     ],
 
     /*

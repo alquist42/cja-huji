@@ -11,12 +11,45 @@
 |
 */
 
+
+use App\Models\Tenant;
+
 Route::get('/', 'WelcomeController@index');
-Route::get('/staff', 'AdminController@viewLinks');
-Route::get('/staff/items', 'AdminController@items')->name('admin.items');
-Route::get('/staff/items/{item}', 'AdminController@item')->name('admin.item');
-Route::get('/staff/media', function () {
-    return view('vendor.file-manager.ckeditor');
+
+Route::group([
+    'prefix' => 'staff',
+    'as'     => 'staff.',
+    'middleware' => 'auth'
+], function () {
+    Route::get('', 'AdminController@viewLinks');
+    Route::get('/items', 'AdminController@items')->name('admin.items');
+    Route::get('/items/{item}', 'AdminController@item')->name('admin.item');
+
+    $controller = config('mediaManager.controller', '\ctf0\MediaManager\App\Controllers\MediaController');
+
+    Route::group([
+        'prefix' => 'media',
+        'as'     => 'media.',
+    ], function () use ($controller) {
+        Route::get('/', ['uses' => "$controller@index", 'as' => 'index']);
+        Route::post('upload', ['uses' => "$controller@upload", 'as' => 'upload']);
+        Route::post('upload-cropped', ['uses' => "$controller@uploadEditedImage", 'as' => 'uploadCropped']);
+        Route::post('upload-link', ['uses' => "$controller@uploadLink", 'as' => 'uploadLink']);
+
+        Route::post('get-files', ['uses' => "$controller@getFiles", 'as' => 'get_files']);
+        Route::post('create-new-folder', ['uses' => "$controller@createNewFolder", 'as' => 'new_folder']);
+        Route::post('delete-file', ['uses' => "$controller@deleteItem", 'as' => 'delete_file']);
+        Route::post('move-file', ['uses' => "$controller@moveItem", 'as' => 'move_file']);
+        Route::post('rename-file', ['uses' => "$controller@renameItem", 'as' => 'rename_file']);
+        Route::post('change-visibility', ['uses' => "$controller@changeItemVisibility", 'as' => 'change_vis']);
+        Route::post('lock-file', ['uses' => "$controller@lockItem", 'as' => 'lock_file']);
+
+        Route::get('global-search', ['uses' => "$controller@globalSearch", 'as' => 'global_search']);
+        Route::post('get-locked-list', ['uses' => "$controller@getLockList", 'as' => 'locked_list']);
+
+        Route::post('folder-download', ['uses' => "$controller@downloadFolder", 'as' => 'folder_download']);
+        Route::post('files-download', ['uses' => "$controller@downloadFiles", 'as' => 'files_download']);
+    });
 });
 
 Route::get('/images/{model}-{id}-{size}.png', 'ImagesController@view')->
@@ -55,10 +88,10 @@ Route::get('mhs/{page?}', 'MHSController')->where('page', 'acknowledgments|appro
 
 // Other projects
 Route::group(['middleware' => 'project'], function () {
-    Route::get('/{project}', 'HomeController@index');
-    Route::get('/{project}/items', 'CatalogController@index');
-    Route::get('/{project}/items/{item}', 'CatalogController@show');
-    Route::get('/{project}/browse/{any}', 'BrowseController@index')->where('any', '.*');
+    Route::get('/{project}', 'HomeController@index')->where('project', app()->make(Tenant::class)->allowed());
+    Route::get('/{project}/items', 'CatalogController@index')->where('project', app()->make(Tenant::class)->allowed());
+    Route::get('/{project}/items/{item}', 'CatalogController@show')->where('project', app()->make(Tenant::class)->allowed());
+    Route::get('/{project}/browse/{any}', 'BrowseController@index')->where('project', app()->make(Tenant::class)->allowed());
 });
 
 Route::get('/data/analize', 'DataController@analize');

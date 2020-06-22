@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Set;
+use App\Models\Item;
 use App\Services\Search;
 use Illuminate\Http\Request;
 
@@ -65,9 +65,12 @@ class ItemsController extends Controller
 //        ]);
     }
 
-    public function show(Set $item)
+    public function show(Item $item)
     {
-        $item->loadMissing(['children', 'parent']);
+        $item->load(Item::$relationships);
+        $item->leaf = $item->leaf();
+        $item->parent = $item->parent()->get();
+        $item->parent->load(Item::$relationships);
         return response()->json($item);
     }
 }

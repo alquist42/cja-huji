@@ -8,7 +8,6 @@
 
 namespace App\Services;
 
-use App\Models\Set;
 use App\Models\Item;
 use App\Models\Tenant;
 use App\Models\Search as SearchIndex;
@@ -125,7 +124,7 @@ class Search
             $setIds = array_map(function ($u) { return $u->set; }, $setObjects);
 
             $ids_ordered = implode(',', $setIds);
-            $sets = Set::select("id","name")
+            $sets = Item::select("id","name")
                 ->whereIn('id',$setIds)
                 ->orderByRaw(DB::raw("FIELD(id, $ids_ordered)"))
                 ->with('images')
@@ -293,7 +292,7 @@ class Search
                 $setIds = array_map(function ($u) { return $u->id; }, $setObjects);
              //   dd($setIds);
                 $ids_ordered = implode(',', $setIds);
-                $sets = Set::select("id","name")
+                $sets = Item::select("id","name")
                 ->with('collections')
                 ->with('collection_details')
                 ->whereIn('id',$setIds)

@@ -7,7 +7,7 @@ export default new Vuex.Store({
   state: {
     barColor: 'rgba(0, 0, 0, .8), rgba(0, 0, 0, .8)',
     barImage: null,
-    drawer: null,
+    drawer: false,
   },
   mutations: {
     SET_BAR_IMAGE (state, payload) {

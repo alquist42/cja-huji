@@ -18,7 +18,7 @@ class ImagesController extends Controller
         $addWatermark = false;
         switch ($type) {
             case 's':
-                $modelClass = '\\App\\Models\\Set';
+                $modelClass = '\\App\\Models\\Item';
                 break;
             case 'i':
                 $modelClass = '\\App\\Models\\Item';

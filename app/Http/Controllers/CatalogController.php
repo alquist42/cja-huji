@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Exceptions\UserHasNoPermissions;
 use App\Models\Category;
 use App\Models\Item;
-use App\Models\Set;
 use App\Services\Search;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -102,12 +101,12 @@ class CatalogController extends Controller
 
     public function show($project, $id)
     {
-        $item = Set::findOrFail($id);
+        $item = Item::findOrFail($id);
         if (! Gate::allows('has-account') && !$item->published()) {
             throw new UserHasNoPermissions;
         }
 
-        $item->load(Set::$relationships);
+        $item->load(Item::$relationships);
 
         return view('item', ['item' => $item]);
     }
