@@ -73,4 +73,19 @@ class ItemsController extends Controller
         $item->parent->load(Item::$relationships);
         return response()->json($item);
     }
+
+    public function store(Request $request) {
+        $data = $request->get('item');
+        unset($data['id']);
+
+        $item = Item::create();
+        $item->locations()->sync($request->get('taxonomy')['locations']);
+
+        $item->load(Item::$relationships);
+        return response()->json($item);
+    }
+
+    public function update(Request $request, Item $item) {
+
+    }
 }

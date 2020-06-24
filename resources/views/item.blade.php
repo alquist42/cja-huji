@@ -29,7 +29,7 @@
 
                     @if(count($item->items()))
                         <h3 class="text-center mt-5">Related Items ({{ count($item->items()) }})</h3>
-                        @include('images')
+                        @include('item.items')
                     @endif
                 </div>
 

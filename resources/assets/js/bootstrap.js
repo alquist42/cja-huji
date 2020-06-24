@@ -25,7 +25,7 @@ try {
 window.Vue = require('vue')
 require('../vendor/MediaManager/js/manager')
 new Vue({
-  el: '#app',
+  el: '#app-media',
 })
 
 /**

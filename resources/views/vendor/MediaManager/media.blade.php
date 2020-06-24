@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
 </head>
 <body>
-    <section id="app" v-cloak>
+    <section id="app-media" v-cloak>
         {{-- notifications --}}
         <div class="notif-container">
             <my-notification></my-notification>

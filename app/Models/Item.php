@@ -18,6 +18,7 @@ class Item extends Classifiable
      */
     protected $table = 'sets';
     protected $searchableColumns = ['name'];
+    protected $hidden = ['parent_id', '_lft', '_rgt', 'old_id'];
 
     /**
      * @var array
@@ -94,11 +95,11 @@ class Item extends Classifiable
         'images.photographer',
         'images.copyright',
 
-        'children',
-        'children.images',
-
-        'ancestors',
-        'descendants'
+//        'children',
+//        'children.images',
+//
+//        'ancestors',
+//        'descendants'
     ];
 
     /**

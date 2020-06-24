@@ -23,7 +23,7 @@ module.exports = {
     })
   },
 
-  publicPath: '/admin', //http://localhost:8080
+  publicPath: (process.env.NODE_ENV === 'development' ? 'http://localhost:8080' : '') + '/admin',
   outputDir: 'public/admin',
   //indexPath: '../../resources/views/admin.blade.php',
 

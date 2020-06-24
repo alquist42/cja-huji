@@ -87,11 +87,18 @@ Route::get('about', function () {
 Route::get('mhs/{page?}', 'MHSController')->where('page', 'acknowledgments|approach|contact|links|map');
 
 // Other projects
-Route::group(['middleware' => 'project'], function () {
-    Route::get('/{project}', 'HomeController@index')->where('project', app()->make(Tenant::class)->allowed());
-    Route::get('/{project}/items', 'CatalogController@index')->where('project', app()->make(Tenant::class)->allowed());
-    Route::get('/{project}/items/{item}', 'CatalogController@show')->where('project', app()->make(Tenant::class)->allowed());
-    Route::get('/{project}/browse/{any}', 'BrowseController@index')->where('project', app()->make(Tenant::class)->allowed());
+Route::group([
+    'as' => 'index',
+    'prefix' => '{project}',
+    'where' => [
+        'project' => app()->make(Tenant::class)->allowed()
+    ],
+    'middleware' => 'project'
+], function () {
+    Route::get('/', 'HomeController@index');
+    Route::get('/items', 'CatalogController@index');
+    Route::get('/items/{item}', 'CatalogController@show');
+    Route::get('/browse/{any}', 'BrowseController@index')->where('any', '.*');
 });
 
 Route::get('/data/analize', 'DataController@analize');

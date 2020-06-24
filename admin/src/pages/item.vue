@@ -11,6 +11,13 @@
         tag="section"
       >
         <v-row>
+          <v-col cols="12">
+            <v-btn @click="save">
+              Save
+            </v-btn>
+          </v-col>
+        </v-row>
+        <v-row>
           <v-col cols="8">
             <base-material-card class="px-5 py-3">
               <template v-slot:heading>
@@ -114,8 +121,8 @@
                       cols="6"
                     >
                       <v-autocomplete
-                        :disabled="item[taxon] && item[taxon].length"
                         v-model="item[taxon]"
+                        :disabled="item[taxon] && item[taxon].length === 0"
                         :items="queryItems"
                         :loading="isLoading"
                         :search-input.sync="search[taxon]"
@@ -368,6 +375,20 @@
       type: 'origins',
       item: {},
 
+      taxonomy: {
+        locations: [],
+        origins: [],
+        schools: [],
+        subjects: [],
+        objects: [],
+        historic_origins: [],
+        periods: [],
+        collections: [],
+        communities: [],
+        sites: [],
+        properties: [],
+      },
+
       taxons: [
         'locations',
         'origins',
@@ -501,6 +522,28 @@
         const { data } = await this.$http.get(`/api/autocomplete/?type=${type}&project=catalogue&term=${query}`)
         this.isLoading = false
         this.queryItems = data || []
+      },
+      async save () {
+        Object.keys(this.item).forEach(field => {
+          if (this.taxons.includes(field)) {
+            this.taxonomy[field] = this.item[field].map(t => {
+              const d = `${singular(field)}_details`
+
+              return {
+                id: t.id,
+                details: this.item[d] && this.item[d][0] && this.item[d][0].details,
+              }
+            })
+          }
+        })
+        this.taxonomy.properties = this.item.properties.map(t => {
+          return {
+            property_id: t.pivot.property_id,
+            value: t.pivot.value,
+          }
+        })
+        await this.$http.post('/api/items/' + this.id + '?project=slovenia', { item: this.item, taxonomy: this.taxonomy })
+        console.log(this.item, this.taxonomy)
       },
     },
   }

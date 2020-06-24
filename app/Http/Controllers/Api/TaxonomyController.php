@@ -30,7 +30,10 @@ class TaxonomyController extends Controller
     {
         DB::enableQueryLog();
 
-        $model = $this->nameSpace . ucfirst(str_singular($type));
+        $type_plural = $type;
+        $type = str_singular($type);
+        $model = $this->nameSpace . ucfirst($type);
+        $project = app()->make(Tenant::class)->slug();
         if (!class_exists($model)) {
             return response()->json([ 'error' => 400, 'message' => 'Missing or unsupported type' ], 400);
         }
