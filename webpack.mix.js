@@ -1,4 +1,4 @@
-const mix = require('laravel-mix');
+const mix = require('laravel-mix')
 
 /*
  |--------------------------------------------------------------------------
@@ -12,8 +12,12 @@ const mix = require('laravel-mix');
  */
 
 mix.js('resources/assets/js/app.js', 'public/js')
-   .sass('resources/assets/sass/app.scss', 'public/css');
+   .sass('resources/assets/sass/app.scss', 'public/css')
 
-mix.js('resources/assets/browse/browse.js', 'public/js');
+mix.js('resources/assets/browse/browse.js', 'public/js')
 
-mix.js('resources/assets/mhs/mhs.js', 'public/js');
+mix.js('resources/assets/mhs/mhs.js', 'public/js')
+
+// MediaManager
+mix.sass('resources/assets/vendor/MediaManager/sass/manager.scss', 'public/assets/vendor/MediaManager/style.css')
+    .copyDirectory('resources/assets/vendor/MediaManager/dist', 'public/assets/vendor/MediaManager')

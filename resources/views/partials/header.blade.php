@@ -76,7 +76,7 @@
                         </li>
                         <li class="nav-item">
                             @if (request()->is('*/items/*'))
-                                <a class="nav-link" href="{{ route('admin.item', ['item' => Route::current()->parameters['item']]) }}">Edit</a>
+                                <a class="nav-link" href="{{ route('staff.admin.item', ['item' => Route::current()->parameters['item']]) }}">Edit</a>
                             @else
                                 <a class="nav-link" href="{{ url('staff/items') }}">Edit</a>
                             @endif

@@ -8,6 +8,8 @@ Route::group(['namespace' => 'Api'], function () {
     Route::group(['middleware' => 'project'], function () {
         Route::get('/items', 'ItemsController@index');
         Route::get('/items/{item}', 'ItemsController@show');
+        Route::put('/items/{item}', 'ItemsController@update');
+        Route::post('/items/{item}', 'ItemsController@store');
 
         //   Route::get('/images', 'ImagesController@index');
         //  Route::get('/images/{image}', 'ImagesController@show');

@@ -1,6 +1,5 @@
 @php
-// $set = \App\Models\Set::findOrFail($id);
-$set =  \App\Models\Set::where('id', $id)->first();
+$set = \App\Models\Item::where('id', $id)->first();
 @endphp
 @if(isset($set))
 <div class="card mb-3" style="max-width: 540px;">
