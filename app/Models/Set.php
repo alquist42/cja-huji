@@ -100,6 +100,7 @@ class Set extends Classifiable
 
         'children',
         'children.images',
+        'children.collections',
 
         'ancestors',
         'descendants'
@@ -119,6 +120,7 @@ class Set extends Classifiable
         }
 
         $children = $this->children;
+    //    dd($children);
         foreach($children as $key => $child){
             if(in_array($child->id,$parents)){
                 unset($children[$key]);
