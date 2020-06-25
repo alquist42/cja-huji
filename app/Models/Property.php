@@ -16,16 +16,8 @@ class Property extends Model
     /**
      * @return MorphTo
      */
-    public function items()
-    {
-        return $this->morphTo(Item::class, 'entity');
-    }
-
-    /**
-     * @return MorphTo
-     */
     public function sets()
     {
-        return $this->morphTo(Set::class, 'entity');
+        return $this->morphTo(Item::class, 'entity');
     }
 }

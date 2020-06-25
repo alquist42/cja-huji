@@ -1,5 +1,7 @@
 <?php
 
+use App\Support\Optional;
+
 if (!function_exists('vuecli')) {
     /**
      * Get the path to Vue-Cli-Service generated assets.
@@ -60,6 +62,24 @@ if (!function_exists('vuecli')) {
         }
         else{
             return ":AssetNotFound_{$bundle}";
+        }
+    }
+}
+
+if (! function_exists('optional')) {
+    /**
+     * Provide access to optional objects.
+     *
+     * @param  mixed  $value
+     * @param  callable|null  $callback
+     * @return mixed
+     */
+    function optional($value = null, callable $callback = null)
+    {
+        if (is_null($callback)) {
+            return new Optional($value);
+        } elseif (! is_null($value)) {
+            return $callback($value);
         }
     }
 }

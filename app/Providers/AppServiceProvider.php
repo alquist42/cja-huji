@@ -4,7 +4,6 @@ namespace App\Providers;
 
 use App\Models\Image;
 use App\Models\Item;
-use App\Models\Set;
 use App\Models\Taxonomy\Collection;
 use App\Models\Taxonomy\Community;
 use App\Models\Taxonomy\HistoricOrigin;
@@ -57,7 +56,7 @@ class AppServiceProvider extends ServiceProvider
             'period' => Period::class,
             'school' => School::class,
             'site' => Site::class,
-            'set' => Set::class,
+            'set' => Item::class,
             'item' => Item::class,
             'image' => Image::class,
         ]);

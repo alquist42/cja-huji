@@ -109,22 +109,22 @@
         {
           icon: 'mdi-view-dashboard',
           title: 'Overview',
-          to: '/',
+          href: '/',
         },
         {
           icon: 'mdi-account',
           title: 'Properties',
-          to: '/staff/properties',
+          href: '/staff/properties',
         },
         {
           title: 'Catalogue',
           icon: 'mdi-format-font',
-          to: '/staff/items',
+          href: '/staff/items',
         },
         {
           title: 'Media',
           icon: 'mdi-chart-bubble',
-          to: '/staff/media',
+          href: '/staff/media',
         },
       ],
     }),

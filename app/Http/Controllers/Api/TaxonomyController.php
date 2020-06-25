@@ -30,9 +30,6 @@ class TaxonomyController extends Controller
     {
         DB::enableQueryLog();
 
-//        if ($type === 'objects') {
-//            $type = 'iObjects';
-//        }
         $type_plural = $type;
         $type = str_singular($type);
         $model = $this->nameSpace . ucfirst($type);
@@ -125,6 +122,12 @@ class TaxonomyController extends Controller
         }
 
         $project = app()->make(Tenant::class)->slug();
+
+        if ($type_plural === 'artists' || $type_plural === 'professions') {
+            return response()->json($model::select($type_plural.".id", $type_plural.".name")->where($type_plural.'.name','LIKE',"%$search%")
+                ->distinct()
+                ->get());
+        }
 
     $data = $model::select($type_plural.".id", $type_plural.".name")
         ->join('taxonomy', function ($join) use ($type,$type_plural){

@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Property;
-use App\Models\Set;
+use App\Models\Item;
 use App\Models\Taxonomy\Artist;
 use App\Models\Taxonomy\Collection;
 use App\Models\Taxonomy\Community;
@@ -23,13 +23,9 @@ use Illuminate\Support\Facades\View;
 
 class AdminController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
     public function viewLinks($name = "index")
     {
-        $sets = Set::with(Set::$relationships)->paginate(3);
+        $sets = Item::with(Item::$relationships)->paginate(3);
 
 
 //        $locations = Location::get()->sortBy('name')->values()->toTree();
@@ -45,7 +41,7 @@ class AdminController extends Controller
 //        $artists =  Artist::get()->sortBy('name')->values()->toTree();
 //        $makers = Maker::with(['artist', 'profession'])->get()->sortBy('name')->values();
 //
-        $item = Set::with(Set::$relationships)->findOrFail(2);
+        $item = Item::with(Item::$relationships)->findOrFail(2);
 
         $projects = array_values(app()->make(Tenant::class)->projects());
         $categories = Category::get();
@@ -74,7 +70,7 @@ class AdminController extends Controller
     }
 
     public function items() {
-        $collection = Set::with(Set::$relationships)->paginate(20, ['*'], 'page', 30);
+        $collection = Item::with(Item::$relationships)->paginate(20, ['*'], 'page', 30);
 
         return view('admin', [
             'name' => 'Items',
@@ -85,12 +81,13 @@ class AdminController extends Controller
     }
 
     public function item($item) {
-        $item = Set::with(Set::$relationships)->findOrFail($item);
-
+//        $item = Item::with(Item::$relationships)->findOrFail($item);
+        $properties = Property::get()->sortBy('name')->values();
         return view('admin', [
             'name' => 'Item',
             'data' => [
-                'item' => $item
+                'id' => $item,
+                'properties' =>  $properties,
             ]
         ]);
     }

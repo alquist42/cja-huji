@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Models\Set;
+use App\Models\Item;
 use Illuminate\Database\Eloquent\Model;
 
 class Search extends Model
@@ -16,7 +16,7 @@ class Search extends Model
 
     public function sets()
     {
-        return $this->morphToMany(Set::class, 'id', 'id')
+        return $this->morphToMany(Item::class, 'id', 'id')
             ->where('type', '=', 'set');
     }
 

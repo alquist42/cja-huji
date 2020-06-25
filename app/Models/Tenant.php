@@ -43,7 +43,7 @@ class Tenant
     ];
 
     /**
-     * Set project by key
+     * Item project by key
      *
      * @param $project
      * @throws \Exception
@@ -58,7 +58,7 @@ class Tenant
     }
 
     /**
-     * Set project by URL
+     * Item project by URL
      *
      * @param $url
      * @throws \Exception
@@ -111,5 +111,9 @@ class Tenant
     public function getProjectData()
     {
         return $this->projects[$this->project];
+    }
+
+    public function allowed() {
+        return collect($this->projects)->pluck('url')->implode('|');
     }
 }

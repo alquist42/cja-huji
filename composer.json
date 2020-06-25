@@ -6,8 +6,8 @@
     "type": "project",
     "require": {
         "php": ">=5.6.4",
-        "alexusmai/laravel-file-manager": "1.0.4",
         "algolia/algoliasearch-client-php": "^1.27",
+        "ctf0/media-manager": "3.6.7",
         "intervention/image": "^2.5",
         "kalnoy/nestedset": "4.3.4",
         "laracasts/flash": "^2.0",
@@ -39,6 +39,9 @@
         "psr-4": {
             "Tests\\": "tests/"
         }
+    },
+    "platform": {
+        "php": "5.6"
     },
     "scripts": {
         "post-root-package-install": [
