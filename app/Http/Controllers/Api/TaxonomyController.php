@@ -46,8 +46,8 @@ class TaxonomyController extends Controller
 
                 })
                 ->join('sets', function ($join) use ($type,$type_plural){
-                    $join->on('sets.id', '=', 'taxonomy.entity_id')->
-                    where('taxonomy.entity_type', '=', 'set');
+                    $join->on('sets.id', '=', 'taxonomy.entity_id');
+                      //  ->where('taxonomy.entity_type', '=', 'set');
                 })
 
                 ->when($project != 'CJA', function ($q) use ($type,$type_plural,$project) {
@@ -136,8 +136,8 @@ class TaxonomyController extends Controller
 
         })
         ->join('sets', function ($join) use ($type,$type_plural){
-            $join->on('sets.id', '=', 'taxonomy.entity_id')->
-            where('taxonomy.entity_type', '=', 'set');
+            $join->on('sets.id', '=', 'taxonomy.entity_id');
+              //  ->where('taxonomy.entity_type', '=', 'set');
         })
 
         ->when($project != 'CJA', function ($q) use ($type,$type_plural,$project) {

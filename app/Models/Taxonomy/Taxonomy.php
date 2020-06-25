@@ -39,7 +39,7 @@ class Taxonomy extends Model
     public function sets()
     {
         return $this->morphToMany(Item::class, 'taxonomy', 'taxonomy', 'taxonomy_id', 'entity_id')
-            ->wherePivot('entity_type', 'set')
+         //   ->wherePivot('entity_type', 'set')
             ->published()
             ->project('set');
     }
