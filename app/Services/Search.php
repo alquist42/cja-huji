@@ -457,12 +457,16 @@ class Search
             $groupByName = ($type =='set') ? "s.name, " : "";
             // ". $type =='set'? "COALESCE(s.name,'')," : "" . "
             DB::insert("insert into search(
-                     id,type,publish_state,text,subject,object,maker,period,
+                     id,type,category,title,publish_state,projects,text,subject,object,artist,period,
                      origin,historical_origin,school,community,
                      collection,site,location,image
                      ) 
-                     SELECT s.id,'{$type}',s.publish_state,
-                     CONCAT_WS(' ',{$name} COALESCE(s.ntl,''),COALESCE(s.addenda,''),COALESCE(s.description,''),
+                     SELECT s.id,'{$type}',
+                     s.category,
+                     s.ntl,
+                     s.publish_state,
+                     COALESCE(GROUP_CONCAT(DISTINCT  proj.tag_slug SEPARATOR ' '),''),
+                     CONCAT_WS(' ',{$name} COALESCE(s.ntl,''),COALESCE(s.addenda,''),COALESCE(s.description,''),COALESCE(s.id,''),
                      COALESCE(GROUP_CONCAT(DISTINCT  sbj.name SEPARATOR ' '),''),
                      COALESCE(GROUP_CONCAT(DISTINCT  obj.name SEPARATOR ' '),''),
                      COALESCE(GROUP_CONCAT(DISTINCT  p.name SEPARATOR ' '),''),
@@ -540,14 +544,15 @@ class Search
                     
                     LEFT JOIN entity_images ei on ei.entity_id = s.id AND ei.entity_type = '{$type}'
                     LEFT JOIN images ii on ei.image_id = ii.id
+                    LEFT JOIN projects proj ON proj.taggable_id = s.id AND proj.taggable_type = '{$type}'
                     WHERE s.id in ({$ids})
                     GROUP BY s.id
                   
                     ");
 
-// TODO : add category, projects, title fields
+// TODO : add  title fields ?
+            // add localname
             // TODO add collection details to collection and  other details for all taxonomies
-        // TODO:   add id to text (include id in fulltext search)
             // TODO: renae maker to artist and remove profession and unknown value
             // TODO: add photo info (photographer)
             /*
@@ -579,7 +584,7 @@ INNER JOIN entity_images ei ON ei.image_id = i.id AND ei.entity_type = 'set' whe
             update search set set_id = (select set_id  from items where items.id = search.id) where type='item'
 
             */
-          //  dd(DB::getQueryLog());
+
             if(($i+$step) <= $count){
                 $incr = $step;
             } else {
