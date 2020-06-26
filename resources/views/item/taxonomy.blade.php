@@ -28,13 +28,13 @@
                     <span class="text-right">
                         @foreach ($item->getMakers() as $maker)
                             @if($maker->artist->id != -1)
-                                <a class="text-white" href="/{{ request()->project }}/browse/artists/{{ $maker->artist->id }}">{{ $maker->artist->name }}</a> @if(!$loop->last), @endif
+                                <a  href="/{{ request()->project }}/browse/artists/{{ $maker->artist->id }}">{{ $maker->artist->name }}</a> @if(!$loop->last), @endif
                             @endif
                         @endforeach
                         @if($item->makersHasProfession())
                             @foreach ($item->makers as $maker)
                                 @if($maker->profession->id != -1)
-                                    <a class="text-white" href="/{{ request()->project }}/browse/professions/{{ $maker->profession->id }}">{{ $maker->profession->name }}</a> @if(!$loop->last), @endif
+                                    <a  href="/{{ request()->project }}/browse/professions/{{ $maker->profession->id }}">{{ $maker->profession->name }}</a> @if(!$loop->last), @endif
                                 @endif
                             @endforeach
                         @endif
