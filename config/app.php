@@ -182,7 +182,7 @@ return [
         Barryvdh\Debugbar\ServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
         Laravel\Scout\ScoutServiceProvider::class,
-        ctf0\MediaManager\MediaManagerServiceProvider::class,
+        App\Providers\MediaManagerServiceProvider::class,
     ],
 
     /*
