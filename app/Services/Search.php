@@ -223,7 +223,7 @@ class Search
                         ->orWhereNotIn("set_id", function($query) use ($text,$filters,$categories,$search){
                             $query->select('id')
                                 ->from('search')
-                                ->where('search.type','=','set')
+                             //   ->where('search.type','=','set')
                                 ->when(!empty($text), function ($q) use ($text) {
                                     $q->whereRaw('MATCH (`text`) AGAINST ("'.$text.'" IN BOOLEAN MODE) > 0');
                                 })

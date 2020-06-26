@@ -18,6 +18,6 @@ class Property extends Model
      */
     public function sets()
     {
-        return $this->morphTo(Item::class, 'entity');
+        return $this->belongsToMany(Item::class, 'entity_properties', 'property_id','entity_id');
     }
 }

@@ -8,6 +8,7 @@ use App\Models\Taxonomy\Collection;
 use App\Models\Taxonomy\Community;
 use App\Models\Taxonomy\HistoricOrigin;
 use App\Models\Taxonomy\Location;
+use App\Models\Taxonomy\Maker;
 use App\Models\Taxonomy\Object as TaxonomyObject;
 use App\Models\Taxonomy\Origin;
 use App\Models\Taxonomy\Period;
@@ -59,6 +60,7 @@ class AppServiceProvider extends ServiceProvider
             'set' => Item::class,
             'item' => Item::class,
             'image' => Image::class,
+            'maker' => Maker::class,
         ]);
 //
 //        ViewFactory::macro('component', function ($name, $viewData = [], $componentData = []) {

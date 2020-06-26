@@ -66,7 +66,7 @@ class Item extends Classifiable
 //        'congregations',
         'collections',
         'communities',
-
+        'makers',
         'properties',
 
         'location_details',
@@ -82,7 +82,7 @@ class Item extends Classifiable
         'community_details',
         'maker_details',
 
-        'makers',
+
         'makers.artist',
         'makers.profession',
 

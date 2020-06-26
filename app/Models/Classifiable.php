@@ -25,8 +25,7 @@ class Classifiable extends Model
      */
     public function origins()
     {
-        return $this->morphToMany(Origin::class, 'entity', 'taxonomy', 'entity_id', 'taxonomy_id')
-            ->wherePivot('taxonomy_type', '=', 'origin');
+        return $this->morphedByMany(Origin::class, 'taxonomy','taxonomy','entity_id', 'taxonomy_id');
     }
 
     /**
@@ -34,8 +33,8 @@ class Classifiable extends Model
      */
     public function subjects()
     {
-        return $this->morphToMany(Subject::class, 'entity', 'taxonomy', 'entity_id', 'taxonomy_id')
-            ->wherePivot('taxonomy_type', '=', 'subject');
+        return $this->morphedByMany(Subject::class, 'taxonomy','taxonomy','entity_id', 'taxonomy_id');
+
     }
 
     /**
@@ -43,8 +42,7 @@ class Classifiable extends Model
      */
     public function objects()
     {
-        return $this->morphToMany(TaxonomyObject::class, 'entity', 'taxonomy', 'entity_id', 'taxonomy_id')
-            ->wherePivot('taxonomy_type', '=', 'object');
+        return $this->morphedByMany(TaxonomyObject::class, 'taxonomy','taxonomy','entity_id', 'taxonomy_id');
     }
 
     /**
@@ -52,8 +50,7 @@ class Classifiable extends Model
      */
     public function locations()
     {
-        return $this->morphToMany(Location::class, 'entity', 'taxonomy', 'entity_id', 'taxonomy_id')
-            ->wherePivot('taxonomy_type', '=', 'location');
+        return $this->morphedByMany(Location::class, 'taxonomy','taxonomy','entity_id', 'taxonomy_id');
     }
 
     /**
@@ -61,8 +58,7 @@ class Classifiable extends Model
      */
     public function collections()
     {
-        return $this->morphToMany(Collection::class, 'entity', 'taxonomy', 'entity_id', 'taxonomy_id')
-            ->wherePivot('taxonomy_type', '=', 'collection');
+        return $this->morphedByMany(Collection::class, 'taxonomy','taxonomy','entity_id', 'taxonomy_id');
     }
 
     /**
@@ -70,8 +66,7 @@ class Classifiable extends Model
      */
     public function communities()
     {
-        return $this->morphToMany(Community::class, 'entity', 'taxonomy', 'entity_id', 'taxonomy_id')
-            ->wherePivot('taxonomy_type', '=', 'community');
+        return $this->morphedByMany(Community::class, 'taxonomy','taxonomy','entity_id', 'taxonomy_id');
     }
 
     /**
@@ -88,8 +83,7 @@ class Classifiable extends Model
      */
     public function historic_origins()
     {
-        return $this->morphToMany(HistoricOrigin::class, 'entity', 'taxonomy', 'entity_id', 'taxonomy_id')
-            ->wherePivot('taxonomy_type', '=', 'historical_origin');
+        return $this->morphedByMany(HistoricOrigin::class, 'taxonomy','taxonomy','entity_id', 'taxonomy_id');
     }
 
     /**
@@ -97,8 +91,8 @@ class Classifiable extends Model
      */
     public function periods()
     {
-        return $this->morphToMany(Period::class, 'entity', 'taxonomy', 'entity_id', 'taxonomy_id')
-            ->wherePivot('taxonomy_type', '=', 'period');
+        return $this->morphedByMany(Period::class, 'taxonomy','taxonomy','entity_id', 'taxonomy_id');
+
     }
 
     /**
@@ -106,8 +100,7 @@ class Classifiable extends Model
      */
     public function schools()
     {
-        return $this->morphToMany(School::class, 'entity', 'taxonomy', 'entity_id', 'taxonomy_id')
-            ->wherePivot('taxonomy_type', '=', 'school');
+        return $this->morphedByMany(School::class, 'taxonomy','taxonomy','entity_id', 'taxonomy_id');
     }
 
     /**
@@ -115,16 +108,15 @@ class Classifiable extends Model
      */
     public function sites()
     {
-        return $this->morphToMany(Site::class, 'entity', 'taxonomy', 'entity_id', 'taxonomy_id')
-            ->wherePivot('taxonomy_type', '=', 'site');
+        return $this->morphedByMany(Site::class, 'taxonomy','taxonomy','entity_id', 'taxonomy_id');
+
     }
     /**
      * @return BelongsToMany
      */
     public function makers()
     {
-        return $this->morphToMany(Maker::class, 'entity', 'taxonomy', 'entity_id', 'taxonomy_id')
-            ->wherePivot('taxonomy_type', '=', 'maker');
+        return $this->morphedByMany(Maker::class, 'taxonomy','taxonomy','entity_id', 'taxonomy_id');
     }
 
     public function makersHasProfession(){
@@ -141,7 +133,7 @@ class Classifiable extends Model
      */
     public function images()
     {
-        return $this->morphToMany(Image::class, 'entity', 'entity_images');
+        return $this->belongsToMany(Image::class,'entity_images','entity_id', 'image_id');
     }
 
     /**
@@ -173,7 +165,7 @@ class Classifiable extends Model
      */
     public function properties()
     {
-        return $this->morphToMany(Property::class, 'entity', 'entity_properties')->withPivot('value', 'prop_flags');
+        return $this->belongsToMany(Property::class,'entity_properties','entity_id', 'property_id')->withPivot('value', 'prop_flags');
     }
 
     /* DETAILS */

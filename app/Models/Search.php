@@ -16,8 +16,8 @@ class Search extends Model
 
     public function sets()
     {
-        return $this->morphToMany(Item::class, 'id', 'id')
-            ->where('type', '=', 'set');
+        return $this->morphToMany(Item::class, 'id', 'id');
+       //     ->where('type', '=', 'set');
     }
 
     public static $relationships = [
