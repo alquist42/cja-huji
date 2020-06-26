@@ -1,5 +1,6 @@
 <?php
 namespace App\Contracts;
+
 /**
  * Interface CatalogRelatives
  */

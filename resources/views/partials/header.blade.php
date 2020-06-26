@@ -75,7 +75,11 @@
                             <span class="nav-link">Hello, {{ Auth::user()->name }}</span>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url('staff') }}">Edit</a>
+                            @if (request()->is('*/items/*'))
+                                <a class="nav-link" href="{{ route('staff.admin.item', ['item' => Route::current()->parameters['item']]) }}">Edit</a>
+                            @else
+                                <a class="nav-link" href="{{ url('staff/items') }}">Edit</a>
+                            @endif
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('logout') }}"
@@ -99,38 +103,6 @@
                 </ul>
 
             </div>
-            {{-- needs design
-               @if (Auth::guest())
-                   <a href="{{ route('login') }}">Login</a>
-                   <a href="{{ route('register') }}">Register</a>
-               @else
-                   {{ Auth::user()->name }}
-                   <a href="{{ route('logout') }}">Logout</a>
-               @endif
-               --}}
-
-            {{--                @includeWhen(Auth::user(), 'layouts._admin_menu')--}}
-
-            {{--                <ul class="navbar-nav float-right">--}}
-            {{--                    @if (Auth::guest())--}}
-            {{--                        <li class="nav-item">--}}
-            {{--                            <a class="text-white" href="{{ route('login') }}">Login</a>--}}
-            {{--                        </li>--}}
-            {{--                        <li class="nav-item">--}}
-            {{--                            <a class="text-white" href="{{ route('register') }}">Register</a>--}}
-            {{--                        </li>--}}
-            {{--                    @else--}}
-            {{--                        <li class="nav-item dropdown">--}}
-            {{--                            <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink-4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">--}}
-            {{--                                <i class="fas fa-user"></i> {{ Auth::user()->name }} <span class="caret"></span>--}}
-            {{--                            </a>--}}
-            {{--                            <div class="dropdown-menu dropdown-menu-right dropdown-info" aria-labelledby="navbarDropdownMenuLink-4">--}}
-            {{--                                <a class="dropdown-item" href="#">My account</a>--}}
-            {{--                                <a class="dropdown-item" href="#">Log out</a>--}}
-            {{--                            </div>--}}
-            {{--                        </li>--}}
-            {{--                    @endif--}}
-            {{--                </ul>--}}
         </nav>
     </div>
 </header>

@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Model;
 
 class Property extends Model
@@ -17,16 +16,8 @@ class Property extends Model
     /**
      * @return MorphTo
      */
-    public function items()
-    {
-        return $this->morphTo(Item::class, 'entity');
-    }
-
-    /**
-     * @return MorphTo
-     */
     public function sets()
     {
-        return $this->morphTo(Set::class, 'entity');
+        return $this->belongsToMany(Item::class, 'entity_properties', 'property_id','entity_id');
     }
 }

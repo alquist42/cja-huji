@@ -18,7 +18,7 @@ class UserHasNoPermissions extends Exception
      */
     public function report()
     {
-     //   \Log::debug('User not found');
+        //   \Log::debug('User not found');
     }
 
     public function render($request)

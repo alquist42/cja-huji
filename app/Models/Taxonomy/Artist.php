@@ -14,6 +14,6 @@ class Artist extends Taxonomy
 
     public function makers()
     {
-        return $this->hasMany(Maker::class,'maker_name_id');
+        return $this->hasMany(Maker::class, 'maker_name_id');
     }
 }

@@ -1,13 +1,11 @@
 <?php
 
-use App\User;
-
-use Faker\Generator;
-
-use App\Models\Origin;
-use App\Models\Subject;
 use App\Models\Image;
 use App\Models\Item;
+use App\Models\Origin;
+use App\Models\Subject;
+use App\User;
+use Faker\Generator;
 
 $factory->define(User::class, function (Generator $faker) {
     static $password;

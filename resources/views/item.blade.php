@@ -4,59 +4,33 @@
     <div class="content">
         <div class="container-fluid">
             <div class="row mt-5">
-                <div class="col-md-8">
-                    <div class="card mb-4">
+                <div class="col-xl-8 col-lg-8 col-md-12 col-sm-12 col-12">
+                    <div class="card">
                         <div class="card-header">
                             Obj. ID: {{ $item->id }} {{ $item->name() }}
-                            @if($item->object_detail()) ,{{$item->object_detail()}} @endif
-                            @foreach ($item->origins as $origin)
-                                ,{{ $origin->name }}
+                            @if($item->object_detail()), {{$item->object_detail()}} @endif
+                            @foreach ($item->origins as $origin), {{ $origin->name }}
                             @endforeach
                             @if($item->origin_detail()) | {{$item->origin_detail()}} @endif
+                            @if($item->creation_date), {{$item->creation_date->name}} @endif
                         </div>
-                        <div class="card-body">
-                            <div class="container">
-                                <div class="row">
 
-                                    <div class="col-md-6">
-                                        @include('item.image')
-                                        @include('item.image-details')
-                                    </div>
+                        @include('item.image')
+                    </div>
 
-                                    <div class="col-md-6">
-                                        <div class="container">
-                                            <dl class="row">
-                                                <dt class="col-sm-3 lead">Category</dt>
-                                                <dd class="col-sm-9 lead">
-                                                    {{ $item->category_object->name}}
-                                                </dd>
-                                            </dl>
-                                            <dl class="row">
-                                                <dt class="col-sm-3">Name/Title</dt>
-                                                <dd class="col-sm-9">
-                                                    {{ $item->name()}}
-                                                </dd>
-                                            </dl>
-                                            @include('item.taxonomy')
-
-                                        </div>
-                                    </div>
-
-                                </div>
+                    @if($item->addenda())
+                        <div class="card mt-4">
+                            <div class="card-body small">
+                                <p>Temp: Addenda</p>
+                                {{ $item->addenda() }}
                             </div>
                         </div>
-                    </div>
-                    <div class="card mx-1 mb-4">
-                        <div class="card-body">
-                            @include('item.properties')
-                        </div>
-                    </div>
-                    <div class="card mx-1">
-                        <div class="card-body">
-                            <p>Temp: Addenda</p>
-                            <p>{{ $item->addenda }}</p>
-                        </div>
-                    </div>
+                    @endif
+
+                    @if(count($item->items()))
+                        <h3 class="text-center mt-5">Related Items ({{ count($item->items()) }})</h3>
+                        @include('item.items')
+                    @endif
                 </div>
 
                 <style>
@@ -75,8 +49,13 @@
                     }
                 </style>
 
-                <div class="col-md-4">
-                    @include('item.description')
+                <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
+
+                    @include('item.taxonomy')
+
+                    @if(!empty($item->description))
+                        @include('item.description')
+                    @endif
 
                     @if(!empty($item->geo_lat) && !empty($item->geo_lng))
                         <div class="card mx-1 mb-4">
@@ -95,14 +74,6 @@
                     @endif
 
                     @include('item.tree')
-                </div>
-
-                <div class="col-md-12">
-
-                    <hr style="margin-top: 50px; width: 100%; color: grey; height: 1px; background-color:grey;" />
-                    <p class="h3 text-center">Object's Images ({{ count($item->items) }})</p>
-
-                    @include('images')
                 </div>
             </div>
         </div>

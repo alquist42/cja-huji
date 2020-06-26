@@ -14,11 +14,11 @@ class Maker extends Taxonomy
 
     public function artist()
     {
-        return $this->belongsTo(Artist::class,'maker_name_id');
+        return $this->belongsTo(Artist::class, 'maker_name_id');
     }
 
     public function profession()
     {
-        return $this->belongsTo(Profession::class,'maker_profession_id');
+        return $this->belongsTo(Profession::class, 'maker_profession_id');
     }
 }

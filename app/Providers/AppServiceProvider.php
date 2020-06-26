@@ -2,14 +2,10 @@
 
 namespace App\Providers;
 
-use App\Models\Tenant;
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Eloquent\Relations\Relation;
-
+use App\Models\Image;
+use App\Models\Item;
 use App\Models\Taxonomy\Collection;
 use App\Models\Taxonomy\Community;
-use App\Models\Taxonomy\Congregation;
 use App\Models\Taxonomy\HistoricOrigin;
 use App\Models\Taxonomy\Location;
 use App\Models\Taxonomy\Maker;
@@ -19,11 +15,12 @@ use App\Models\Taxonomy\Period;
 use App\Models\Taxonomy\School;
 use App\Models\Taxonomy\Site;
 use App\Models\Taxonomy\Subject;
-
-use App\Models\Set;
-use App\Models\Item;
-use App\Models\Image;
+use App\Models\Tenant;
+use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\ServiceProvider;
+use Illuminate\View\Factory as ViewFactory;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -43,11 +40,11 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->instance(Tenant::class, new Tenant());
 
-//		View::share('menu', config('menu.general'));
-		View::share([
-			'projects' => $this->app->make(Tenant::class)->projects(),
-			'menu' => config('menu')
-		]);
+        //		View::share('menu', config('menu.general'));
+        View::share([
+            'projects' => $this->app->make(Tenant::class)->projects(),
+            'menu' => config('menu')
+        ]);
 
         Relation::morphMap([
             'subject' => Subject::class,
@@ -60,10 +57,15 @@ class AppServiceProvider extends ServiceProvider
             'period' => Period::class,
             'school' => School::class,
             'site' => Site::class,
-            'set' => Set::class,
+            'set' => Item::class,
             'item' => Item::class,
             'image' => Image::class,
+            'maker' => Maker::class,
         ]);
+//
+//        ViewFactory::macro('component', function ($name, $viewData = [], $componentData = []) {
+//            return View::make('app', ['name' => $name, 'data' => $componentData] + $viewData);
+//        });
     }
 
     /**

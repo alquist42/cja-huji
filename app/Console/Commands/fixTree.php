@@ -2,21 +2,18 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
-
+use App\Models\Item;
 use App\Models\Taxonomy\Collection;
 use App\Models\Taxonomy\Community;
-use App\Models\Taxonomy\Congregation;
 use App\Models\Taxonomy\HistoricOrigin;
 use App\Models\Taxonomy\Location;
-use App\Models\Taxonomy\Maker;
 use App\Models\Taxonomy\Object as TaxonomyObject;
 use App\Models\Taxonomy\Origin;
 use App\Models\Taxonomy\Period;
 use App\Models\Taxonomy\School;
 use App\Models\Taxonomy\Site;
 use App\Models\Taxonomy\Subject;
-use App\Models\Set;
+use Illuminate\Console\Command;
 
 class FixTree extends Command
 {
@@ -62,7 +59,7 @@ class FixTree extends Command
             Community::fixTree();
             Collection::fixTree();
             Site::fixTree();
-            Set::fixTree();
+            Item::fixTree();
         } catch (Exception $e) {
             $this->error($e->getMessage());
             return 1;

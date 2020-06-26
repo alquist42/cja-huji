@@ -2,10 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
-
 class Image extends Classifiable
 {
     /**
@@ -47,20 +43,17 @@ class Image extends Classifiable
         'order',
     ];
 
-    /**
-     * @return MorphTo
-     */
-    public function items()
-    {
-        return $this->morphTo(Item::class, 'entity');
-    }
+
+    public static $relationships = [
+        'copyright'
+    ];
 
     /**
      * @return MorphTo
      */
     public function sets()
     {
-        return $this->morphTo(Set::class, 'entity');
+        return $this->morphTo(Item::class, 'entity');
     }
 
     /**
@@ -70,6 +63,13 @@ class Image extends Classifiable
     {
         return $this->hasOne(Copyright::class, 'id', 'copyright_id');
     }
+
+    /*public function copyright_value()
+    {
+        $copyright = $this->copyright;
+        return $copyright->name;
+
+    }*/
 
     /**
      * @return BelongsToMany

@@ -8,7 +8,6 @@
 
 namespace App\Services;
 
-use App\Models\Set;
 use App\Models\Item;
 use App\Models\Tenant;
 use App\Models\Search as SearchIndex;
@@ -61,6 +60,9 @@ class Search
         $collection = collect([]);
         foreach ($filters as $type => $values) {
             $model = '\\App\\Models\\Taxonomy\\' . ucfirst(str_singular($type));
+//            if ($type === 'objects') {
+//                $model = '\\App\\Models\\Taxonomy\\IObject';
+//            }
             $selected = $model::select("id", "_lft", "_rgt")->find($values);
             foreach ($selected as $sModel) {
                 $descendants = $model::select("id","name")->
@@ -74,17 +76,17 @@ class Search
        // dd(DB::getQueryLog());
 
         $result = DB::table('taxonomy')
-            ->select('sets.id as set','items.id as item')
+            ->select('sets.id as set'/*,'items.id as item'*/)
             ->leftJoin('sets', function ($join) {
                 $join->on('sets.id', '=', 'taxonomy.entity_id')->
-                where('taxonomy.entity_type', '=', 'set')->
+              //  where('taxonomy.entity_type', '=', 'set')->
                 where('sets.publish_state', '>', 0);
             })
-            ->leftJoin('items', function ($join) {
+            /*->leftJoin('items', function ($join) {
                 $join->on('items.id', '=', 'taxonomy.entity_id')->
                 where('taxonomy.entity_type', '=', 'item')->
                 where('items.publish_state', '>', 0);
-            })
+            })*/
             ->where('taxonomy.taxonomy_type', '=', str_singular($type))
             ->whereIn('taxonomy.taxonomy_id', $taxonomyIds)
             ->when($project != 'CJA', function ($q) use ($project) {
@@ -95,14 +97,14 @@ class Search
                             ->whereRaw('projects.taggable_id = sets.id')
                             ->where('projects.taggable_type', 'set')
                             ->where('projects.tag_slug', $project);
-                    })
-                        ->orWhereExists(function ($query) use ($project) {
+                    });
+                        /*->orWhereExists(function ($query) use ($project) {
                             $query->select(DB::raw(1))
                                 ->from('projects')
                                 ->whereRaw('projects.taggable_id = items.id')
                                 ->where('projects.taggable_type', 'item')
                                 ->where('projects.tag_slug', $project);
-                        });
+                        });*/
 
                 });
             })
@@ -122,7 +124,7 @@ class Search
             $setIds = array_map(function ($u) { return $u->set; }, $setObjects);
 
             $ids_ordered = implode(',', $setIds);
-            $sets = Set::select("id","name")
+            $sets = Item::select("id","name")
                 ->whereIn('id',$setIds)
                 ->orderByRaw(DB::raw("FIELD(id, $ids_ordered)"))
                 ->with('images')
@@ -221,7 +223,7 @@ class Search
                         ->orWhereNotIn("set_id", function($query) use ($text,$filters,$categories,$search){
                             $query->select('id')
                                 ->from('search')
-                                ->where('search.type','=','set')
+                             //   ->where('search.type','=','set')
                                 ->when(!empty($text), function ($q) use ($text) {
                                     $q->whereRaw('MATCH (`text`) AGAINST ("'.$text.'" IN BOOLEAN MODE) > 0');
                                 })
@@ -290,7 +292,7 @@ class Search
                 $setIds = array_map(function ($u) { return $u->id; }, $setObjects);
              //   dd($setIds);
                 $ids_ordered = implode(',', $setIds);
-                $sets = Set::select("id","name")
+                $sets = Item::select("id","name")
                 ->with('collections')
                 ->with('collection_details')
                 ->whereIn('id',$setIds)
@@ -410,8 +412,29 @@ class Search
             return self::findMissedParents($elements,$model);
 
     }
+    /*
+     * adds one record to index
+     * */
 
-    public function addToIndex($type,$offset){
+    public function addToIndex(){
+        // fill set id if item has no children
+    }
+
+    /*
+     * removes one record from index
+     * */
+
+    public function removeFromIndex(){
+
+    }
+
+    public function fillIndex($type, $offset){
+        // TODO new structure:
+     //   add set_id or flag for images (items without children)
+        // compact sets with one child
+        // merge same items
+        // merge same items into parent
+        // TODO FOR MIGRATION taxonomy_details - merge with taxonomy??
    //     DB::enableQueryLog();
         $step = 500;
         DB::statement("SET group_concat_max_len=15000000000;");
@@ -433,12 +456,16 @@ class Search
             $groupByName = ($type =='set') ? "s.name, " : "";
             // ". $type =='set'? "COALESCE(s.name,'')," : "" . "
             DB::insert("insert into search(
-                     id,type,publish_state,text,subject,object,maker,period,
+                     id,type,category,title,publish_state,projects,text,subject,object,artist,period,
                      origin,historical_origin,school,community,
                      collection,site,location,image
                      ) 
-                     SELECT s.id,'{$type}',s.publish_state,
-                     CONCAT_WS(' ',{$name} COALESCE(s.ntl,''),COALESCE(s.addenda,''),COALESCE(s.description,''),
+                     SELECT s.id,'{$type}',
+                     s.category,
+                     s.ntl,
+                     s.publish_state,
+                     COALESCE(GROUP_CONCAT(DISTINCT  proj.tag_slug SEPARATOR ' '),''),
+                     CONCAT_WS(' ',{$name} COALESCE(s.ntl,''),COALESCE(s.addenda,''),COALESCE(s.description,''),COALESCE(s.id,''),
                      COALESCE(GROUP_CONCAT(DISTINCT  sbj.name SEPARATOR ' '),''),
                      COALESCE(GROUP_CONCAT(DISTINCT  obj.name SEPARATOR ' '),''),
                      COALESCE(GROUP_CONCAT(DISTINCT  p.name SEPARATOR ' '),''),
@@ -470,60 +497,61 @@ class Search
                      (CASE WHEN CONCAT(COALESCE(ii.medium,''), COALESCE(ii.def,''), COALESCE(ii.batch_url,'')) = '' THEN 0 ELSE 1 END)
                     
                     FROM {$type}s s
-                    LEFT JOIN taxonomy tsbj ON s.`id` = tsbj.`entity_id` AND tsbj.`entity_type` = '{$type}' AND tsbj.taxonomy_type = 'subject'
+                    LEFT JOIN taxonomy tsbj ON s.`id` = tsbj.`entity_id`  AND tsbj.taxonomy_type = 'subject'
                     LEFT JOIN `subjects` sbj on sbj.`id` = tsbj.`taxonomy_id` 
                     
-                    LEFT JOIN taxonomy tobj ON s.`id` = tobj.`entity_id` AND tobj.`entity_type` = '{$type}' AND tobj.taxonomy_type = 'object'
+                    LEFT JOIN taxonomy tobj ON s.`id` = tobj.`entity_id` AND tobj.taxonomy_type = 'object'
                     LEFT JOIN `objects` obj on obj.`id` = tobj.`taxonomy_id`
                     
-                    LEFT JOIN taxonomy tp ON s.`id` = tp.`entity_id` AND tp.`entity_type` = '{$type}' AND tp.taxonomy_type = 'period'
+                    LEFT JOIN taxonomy tp ON s.`id` = tp.`entity_id`  AND tp.taxonomy_type = 'period'
                     LEFT JOIN `periods` p on p.`id` = tp.`taxonomy_id`
                     
-                    LEFT JOIN taxonomy tsc ON s.`id` = tsc.`entity_id` AND tsc.`entity_type` = '{$type}' AND tsc.taxonomy_type = 'school'
+                    LEFT JOIN taxonomy tsc ON s.`id` = tsc.`entity_id`  AND tsc.taxonomy_type = 'school'
                     LEFT JOIN `schools` sc on sc.`id` = tsc.`taxonomy_id`
                     
-                    LEFT JOIN taxonomy tcom ON s.`id` = tcom.`entity_id` AND tcom.`entity_type` = '{$type}' AND tcom.taxonomy_type = 'community'
+                    LEFT JOIN taxonomy tcom ON s.`id` = tcom.`entity_id`  AND tcom.taxonomy_type = 'community'
                     LEFT JOIN `communities` com on com.`id` = tcom.`taxonomy_id`
                     
-                    LEFT JOIN taxonomy tcol ON s.`id` = tcol.`entity_id` AND tcol.`entity_type` = '{$type}' AND tcol.taxonomy_type = 'collection'
+                    LEFT JOIN taxonomy tcol ON s.`id` = tcol.`entity_id`  AND tcol.taxonomy_type = 'collection'
                     LEFT JOIN `collections` col on col.`id` = tcol.`taxonomy_id`
                     
-                    LEFT JOIN taxonomy tper ON s.`id` = tper.`entity_id` AND tper.`entity_type` = '{$type}' AND tper.taxonomy_type = 'period'
+                    LEFT JOIN taxonomy tper ON s.`id` = tper.`entity_id`  AND tper.taxonomy_type = 'period'
                     LEFT JOIN `periods` per on per.`id` = tper.`taxonomy_id`
                     
                     LEFT JOIN `dates` on s.`date` = dates.`id`
                     
-                    LEFT JOIN taxonomy tsite ON s.`id` = tsite.`entity_id` AND tsite.`entity_type` = '{$type}' AND tsite.taxonomy_type = 'site'
+                    LEFT JOIN taxonomy tsite ON s.`id` = tsite.`entity_id`  AND tsite.taxonomy_type = 'site'
                     LEFT JOIN `sites` site on site.`id` = tsite.`taxonomy_id`
-                    LEFT JOIN taxonomy tm ON s.`id` = tm.`entity_id` AND tm.`entity_type` = '{$type}' AND tm.taxonomy_type = 'maker'
+                    LEFT JOIN taxonomy tm ON s.`id` = tm.`entity_id`  AND tm.taxonomy_type = 'maker'
                     LEFT JOIN `makers` m on m.`id` = tm.`taxonomy_id`
                     LEFT JOIN artists on artists.id = m.maker_name_id
                     LEFT JOIN professions on professions.id = m.maker_profession_id
                     
-                    LEFT JOIN taxonomy tors ON s.`id` = tors.`entity_id` AND tors.`entity_type` = '{$type}' AND tors.taxonomy_type = 'origin'
+                    LEFT JOIN taxonomy tors ON s.`id` = tors.`entity_id`  AND tors.taxonomy_type = 'origin'
                     LEFT JOIN `origins` ors on ors.`id` = tors.`taxonomy_id`
                     LEFT JOIN `origins` ors2 on ors._rgt  between ors2.`_lft` and ors2.`_rgt` 
                     
-                    LEFT JOIN taxonomy thors ON s.`id` = thors.`entity_id` AND thors.`entity_type` = '{$type}' AND thors.taxonomy_type = 'historical_origin'
+                    LEFT JOIN taxonomy thors ON s.`id` = thors.`entity_id`  AND thors.taxonomy_type = 'historical_origin'
                     LEFT JOIN `historical_origins` hors on hors.`id` = thors.`taxonomy_id`
                     LEFT JOIN `historical_origins` hors2 on hors._rgt  between hors2.`_lft` and hors2.`_rgt` 
                     
-                    LEFT JOIN taxonomy tl ON s.`id` = tl.`entity_id` AND tl.`entity_type` = '{$type}' AND tl.taxonomy_type = 'location'
+                    LEFT JOIN taxonomy tl ON s.`id` = tl.`entity_id`  AND tl.taxonomy_type = 'location'
                     LEFT JOIN `locations` l on l.`id` = tl.`taxonomy_id`
                     LEFT JOIN `locations` l2 on l._rgt  between l2.`_lft` and l2.`_rgt` 
                     
-                    LEFT JOIN entity_properties ep ON s.id = ep.entity_id AND ep.`entity_type` = '{$type}'
+                    LEFT JOIN entity_properties ep ON s.id = ep.entity_id 
                     
-                    LEFT JOIN entity_images ei on ei.entity_id = s.id AND ei.entity_type = '{$type}'
+                    LEFT JOIN entity_images ei on ei.entity_id = s.id
                     LEFT JOIN images ii on ei.image_id = ii.id
+                    LEFT JOIN projects proj ON proj.taggable_id = s.id AND proj.taggable_type = '{$type}'
                     WHERE s.id in ({$ids})
                     GROUP BY s.id
                   
                     ");
 
-// TODO : add category, projects, title fields
+// TODO : add  title fields ?
+            // add localname
             // TODO add collection details to collection and  other details for all taxonomies
-        // TODO:   add id to text (include id in fulltext search)
             // TODO: renae maker to artist and remove profession and unknown value
             // TODO: add photo info (photographer)
             /*
@@ -555,7 +583,7 @@ INNER JOIN entity_images ei ON ei.image_id = i.id AND ei.entity_type = 'set' whe
             update search set set_id = (select set_id  from items where items.id = search.id) where type='item'
 
             */
-          //  dd(DB::getQueryLog());
+
             if(($i+$step) <= $count){
                 $incr = $step;
             } else {

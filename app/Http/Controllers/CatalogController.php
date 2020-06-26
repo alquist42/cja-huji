@@ -2,15 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Set;
-use App\Models\Item;
-use App\Models\Origin;
-use App\Models\Category;
-use Illuminate\Http\Request;
-use App\Services\Search;
-use App\Services\Pagination;
-use Illuminate\Support\Facades\Gate;
 use App\Exceptions\UserHasNoPermissions;
+use App\Models\Category;
+use App\Models\Item;
+use App\Services\Search;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class CatalogController extends Controller
 {
@@ -38,12 +35,12 @@ class CatalogController extends Controller
     public function __construct(Search $search)
     {
         $this->search = $search;
-        $this->middleware('revalidate')->only(['show', 'showItem']);
+        $this->middleware('revalidate')->only(['show']);
     }
 
     public function index(Request $request, $project)
     {
-        $all_categories = Category::select("slug", "name")->where("in_search","=",1)->get();
+        $all_categories = Category::select("slug", "name")->where("in_search", "=", 1)->get();
 
         $page = $request->get('page');
         $search = $request->get('search');
@@ -51,9 +48,9 @@ class CatalogController extends Controller
         $categories = $request->get('categories');
 
 
-        if(!empty($categories)){
-            foreach ($all_categories as $category){
-                if(in_array($category->slug, $categories)){
+        if (! empty($categories)) {
+            foreach ($all_categories as $category) {
+                if (in_array($category->slug, $categories)) {
                     $category->selected = true;
                 }
             }
@@ -62,19 +59,18 @@ class CatalogController extends Controller
                 $category->selected = true;
                 return $category;
             });
-
         }
 
-        $filters = collect($request->only($this->allowed_filters))->filter(function($value) {
+        $filters = collect($request->only($this->allowed_filters))->filter(function ($value) {
             return null !== $value;
-        })->map(function($value) {
+        })->map(function ($value) {
             return is_array($value) ? $value : [$value];
         })->toArray();
-       // dd($page);
+        // dd($page);
         if (Gate::allows('has-account')) {
-        //    dd('yes');
+            //    dd('yes');
         } else {
-         //   dd('no');
+            //   dd('no');
         }
 
         $selected = [];
@@ -82,15 +78,15 @@ class CatalogController extends Controller
             $model = '\\App\\Models\\Taxonomy\\' . ucfirst(str_singular($type));
             $selected[$type] = $model::select("id", "name")->find($values);
         }
-        if(is_array($categories) && count($all_categories) == count($categories)){
-			 $categories = null;
+        if (is_array($categories) && count($all_categories) == count($categories)) {
+            $categories = null;
         }
         $data = $this->search->find($selected, $search, $text, $categories);
         $items = $data['collection'];
         $pagination =  $data['pagination'];
-           // ->paginate(50);
-          //  ->appends($page);
-   //     $links = Pagination::makeLengthAware($items, 158, 50,$_GET);
+        // ->paginate(50);
+        //  ->appends($page);
+        //     $links = Pagination::makeLengthAware($items, 158, 50,$_GET);
 
 
         return view('index', [
@@ -99,31 +95,19 @@ class CatalogController extends Controller
             "categories" => $all_categories,/*"links"=>$links ,*/
             'pagination' => $pagination,
             'setsCount' => $data['setsCount'],
-            'itemsCount' => $data['itemsCount']
+            'itemsCount' => $data['itemsCount'],
         ]);
     }
 
     public function show($project, $id)
     {
-        $item = Set::findOrFail($id);
-        if (!Gate::allows('has-account') && !$item->published()){
-            throw new UserHasNoPermissions();
-        }
-
-        $item->load(Set::$relationships);
-
-        return view('item', compact('item'));
-    }
-
-    public function showItem($project, $id)
-    {
         $item = Item::findOrFail($id);
-        if (!Gate::allows('has-account') && !$item->published()){
-            throw new UserHasNoPermissions();
+        if (! Gate::allows('has-account') && !$item->published()) {
+            throw new UserHasNoPermissions;
         }
 
         $item->load(Item::$relationships);
 
-        return view('img', compact('item'));
+        return view('item', ['item' => $item]);
     }
 }

@@ -1,36 +1,37 @@
-import $ from 'jquery';
-import 'select2';
-import 'bootstrap';
+import $ from 'jquery'
+import 'select2'
+import 'bootstrap'
+import './bootstrap'
 
 $(document).ready(function () {
-    window.project = document.getElementById('app').dataset.project;
+    window.project = document.getElementById('app').dataset.project
 
     const images = document.querySelector('.images-gallery')
     if (images) {
-        new window.Viewer(images, {});
+        new window.Viewer(images, {})
     }
 
-    $('#select_categories').click(function(e) {
-        $('#categories').find('option').prop('selected', 'selected');
-        $('#categories').trigger("change");
-        e.preventDefault();
-    });
-    $('#clear_categories').click(function(e) {
-        $('#categories').find('option').prop('selected', false);
-        $('#categories').trigger("change");
-        e.preventDefault();
-    });
+    $('#select_categories').click(function (e) {
+        $('#categories').find('option').prop('selected', 'selected')
+        $('#categories').trigger('change')
+        e.preventDefault()
+    })
+    $('#clear_categories').click(function (e) {
+        $('#categories').find('option').prop('selected', false)
+        $('#categories').trigger('change')
+        e.preventDefault()
+    })
 
-    $('.select2').select2();
-    $('.select2-tags').select2({tags: true});
-    $('#flash-overlay-modal').modal();
+    $('.select2').select2()
+    $('.select2-tags').select2({ tags: true })
+    $('#flash-overlay-modal').modal()
     $('#categories').select2({
         allowClear: true,
-        placeholder: "Select a category"
-    });
+        placeholder: 'Select a category',
+    })
     $('#origins, #names, #collections, #communities, #schools, #objects, #locations, #subjects, #artists, #dates')
         .each(function () {
-            var $this = $(this);
+            var $this = $(this)
 
             $this.select2({
                 // placeholder: "Choose origin...",
@@ -42,7 +43,7 @@ $(document).ready(function () {
                         return {
                             term: $.trim(params.term),
                             type: $this.attr('id'),
-                            project: window.project
+                            project: window.project,
                         }
                     },
                     delay: 250,
@@ -51,80 +52,80 @@ $(document).ready(function () {
                             results: $.map(data, function (item) {
                                 return {
                                     text: item.name,
-                                    id: item.id
+                                    id: item.id,
                                 }
-                            })
-                        };
+                            }),
+                        }
                     },
-                    cache: true
-                }
-            });
+                    cache: true,
+                },
+            })
         })
-});
+})
 
 var laravel = {
-   initialize: function() {
-     this.methodLinks = $('a[data-method]');
-     this.token = $('a[data-token]');
-     this.registerEvents();
+   initialize: function () {
+     this.methodLinks = $('a[data-method]')
+     this.token = $('a[data-token]')
+     this.registerEvents()
    },
 
-   registerEvents: function() {
-     this.methodLinks.on('click', this.handleMethod);
+   registerEvents: function () {
+     this.methodLinks.on('click', this.handleMethod)
    },
 
-   handleMethod: function(e) {
-     var link = $(this);
-     var httpMethod = link.data('method').toUpperCase();
-     var form;
+   handleMethod: function (e) {
+     var link = $(this)
+     var httpMethod = link.data('method').toUpperCase()
+     var form
 
      // If the data-method attribute is not PUT or DELETE,
      // then we don't know what to do. Just ignore.
-     if ( $.inArray(httpMethod, ['PUT', 'DELETE']) === - 1 ) {
-       return;
+     if ($.inArray(httpMethod, ['PUT', 'DELETE']) === -1) {
+       return
      }
 
      // Allow user to optionally provide data-confirm="Are you sure?"
-     if ( link.data('confirm') ) {
-       if ( ! laravel.verifyConfirm(link) ) {
-         return false;
+     if (link.data('confirm')) {
+       if (!laravel.verifyConfirm(link)) {
+         return false
        }
      }
 
-     form = laravel.createForm(link);
-     form.submit();
+     form = laravel.createForm(link)
+     form.submit()
 
-     e.preventDefault();
+     e.preventDefault()
    },
 
-   verifyConfirm: function(link) {
-     return confirm(link.data('confirm'));
+   verifyConfirm: function (link) {
+     return confirm(link.data('confirm'))
    },
 
-   createForm: function(link) {
+   createForm: function (link) {
      var form =
      $('<form>', {
-       'method': 'POST',
-       'action': link.attr('href')
-     });
+       method: 'POST',
+       action: link.attr('href'),
+     })
 
      var token =
      $('<input>', {
-       'type': 'hidden',
-       'name': '_token',
-       'value': link.data('token')
-       });
+       type: 'hidden',
+       name: '_token',
+       value: link.data('token'),
+       })
 
      var hiddenInput =
      $('<input>', {
-       'name': '_method',
-       'type': 'hidden',
-       'value': link.data('method')
-     });
+       name: '_method',
+       type: 'hidden',
+       value: link.data('method'),
+     })
 
      return form.append(token, hiddenInput)
-                .appendTo('body');
-   }
- };
+                .appendTo('body')
+   },
+ }
 
- laravel.initialize();
+ laravel.initialize()

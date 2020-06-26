@@ -2,8 +2,8 @@
 
 namespace App\Http\Middleware;
 
-use Closure;
 use App\Models\Tenant;
+use Closure;
 
 class CurrentProject
 {
@@ -17,18 +17,14 @@ class CurrentProject
     public function handle($request, Closure $next)
     {
         $project = null;
-		$tenant = app()->make(Tenant::class);
+        $tenant = app()->make(Tenant::class);
 
         if (!empty($request->route('project'))) {
             $project = $request->route('project');
-			$tenant->setProjectByURL($project);
-		}
-        else {
+        } else {
             $project = $request->get('project');
-            $tenant->setProject($project);
         }
-
+        $tenant->setProjectByURL($project);
         return $next($request);
     }
 }
-

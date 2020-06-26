@@ -1,5 +1,6 @@
 <?php
 namespace App\Exceptions;
+
 /**
  * Class ResourceRelationUpdateException
  */

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use DB;
 use App\Services\Search;
+use App\Models\Tenant;
 class TaxonomyController extends Controller
 {
 
@@ -29,26 +30,41 @@ class TaxonomyController extends Controller
     {
         DB::enableQueryLog();
 
-        $model = $this->nameSpace . ucfirst(str_singular($type));
+        $type_plural = $type;
+        $type = str_singular($type);
+        $model = $this->nameSpace . ucfirst($type);
+        $project = app()->make(Tenant::class)->slug();
         if (!class_exists($model)) {
             return response()->json([ 'error' => 400, 'message' => 'Missing or unsupported type' ], 400);
         }
         if(request()->get('as_tree')){
-            $elements = $model::where('id', '!=', '-1')
-                ->where(function ($q)  {
-                    $q->whereHas('sets', function($q) {
-                        $q->join('projects', 'sets.id', '=', 'projects.taggable_id');
-                    });
-                    $q->orWhereHas('items', function($q) {
-                        $q->join('projects', 'items.id', '=', 'projects.taggable_id');
+        //    $elements = $model::where($type_plural.'.id', '!=', '-1')
+            $elements = $model::select($type_plural.".*")
+                ->join('taxonomy', function ($join) use ($type,$type_plural){
+                    $join->on('taxonomy.taxonomy_id', '=', $type_plural . '.id')->
+                    where('taxonomy.taxonomy_type', $type);
+
+                })
+                ->join('sets', function ($join) use ($type,$type_plural){
+                    $join->on('sets.id', '=', 'taxonomy.entity_id');
+                      //  ->where('taxonomy.entity_type', '=', 'set');
+                })
+
+                ->when($project != 'CJA', function ($q) use ($type,$type_plural,$project) {
+                    $q->join('projects', function ($join) use ($type,$type_plural,$project){
+                        $join->on('sets.id', '=', 'projects.taggable_id')->
+                        where('projects.taggable_type', '=', 'set')
+                            ->where('projects.tag_slug', $project);
                     });
                 })
-            //    ->orderBy('id')
+                ->where('sets.publish_state', '>', 0)
+                ->where($type_plural.'.id', '!=', '-1')
+                ->distinct()
                 ->get();
 
 
             $elements = $this->search->findMissedParents($elements,$model);
-            $elements = $elements->sortBy('name')->values()->toTree()->toArray();
+            $elements = $elements->sortBy('name')->values()->toTree();
 
 //            ini_set('xdebug.var_display_max_depth', 90);
 //            ini_set('xdebug.var_display_max_children', 2545);
@@ -87,10 +103,14 @@ class TaxonomyController extends Controller
      */
     public function search(Request $request)
     {
-
+        DB::enableQueryLog();
+        $type_plural = $request->get('type');
         $type = str_singular($request->get('type'));
         $model = $this->nameSpace . ucfirst($type);
 
+//        if($type == 'object'){
+//            $model = $this->nameSpace . 'IObject';
+//        }
         $search = $request->get('term');
 
         if (!class_exists($model)) {
@@ -101,10 +121,38 @@ class TaxonomyController extends Controller
             return response()->json([ 'error' => 400, 'message' => 'Missing query term' ], 400);
         }
 
-        $data = $model::select("id", "name")
-            ->where('name', 'LIKE', "%$search%")
-            ->get();
+        $project = app()->make(Tenant::class)->slug();
 
+        if ($type_plural === 'artists' || $type_plural === 'professions') {
+            return response()->json($model::select($type_plural.".id", $type_plural.".name")->where($type_plural.'.name','LIKE',"%$search%")
+                ->distinct()
+                ->get());
+        }
+
+    $data = $model::select($type_plural.".id", $type_plural.".name")
+        ->join('taxonomy', function ($join) use ($type,$type_plural){
+            $join->on('taxonomy.taxonomy_id', '=', $type_plural . '.id')->
+            where('taxonomy.taxonomy_type', $type);
+
+        })
+        ->join('sets', function ($join) use ($type,$type_plural){
+            $join->on('sets.id', '=', 'taxonomy.entity_id');
+              //  ->where('taxonomy.entity_type', '=', 'set');
+        })
+
+        ->when($project != 'CJA', function ($q) use ($type,$type_plural,$project) {
+                $q->join('projects', function ($join) use ($type,$type_plural,$project){
+                    $join->on('sets.id', '=', 'projects.taggable_id')->
+                    where('projects.taggable_type', '=', 'set')
+                        ->where('projects.tag_slug', $project);
+                });
+        })
+        ->where('sets.publish_state', '>', 0)
+        ->where($type_plural.'.name','LIKE',"%$search%")
+        ->distinct()
+        ->get();
+
+   //     dd(DB::getQueryLog());
 
         return response()->json($data);
     }

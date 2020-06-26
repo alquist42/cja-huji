@@ -7,5 +7,4 @@ namespace App\Exceptions;
  */
 class FileNotFoundException extends ImporterException
 {
-
 }
