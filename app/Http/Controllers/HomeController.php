@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
-use App\Models\Location;
+use App\Models\Taxonomy\Location;
 use App\Models\Tenant;
 
 class HomeController extends Controller

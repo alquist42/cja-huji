@@ -56,38 +56,7 @@
             <base-material-card class="px-5 py-3">
               <template v-slot:heading>
                 <div class="display-2 font-weight-light">
-                  Base Fields
-                </div>
-              </template>
-              <v-card-text>
-                <template
-                  v-for="field in fields"
-                >
-                  <v-text-field
-                    :key="field"
-                    v-model="item[field]"
-                    outlined
-                    :label="field"
-                  />
-                </template>
-              </v-card-text>
-            </base-material-card>
-
-            <base-material-card class="px-5 py-3">
-              <template v-slot:heading>
-                <div class="display-2 font-weight-light">
-                  Item's Composition
-                </div>
-              </template>
-              <v-card-text>
-                <v-treeview :items="item.leaf" />
-              </v-card-text>
-            </base-material-card>
-
-            <base-material-card class="px-5 py-3">
-              <template v-slot:heading>
-                <div class="display-2 font-weight-light">
-                  Taxonomy
+                  Attributes
                 </div>
               </template>
               <v-card-text>
@@ -185,17 +154,11 @@
                     />
                   </v-col>
                 </v-row>
-              </v-card-text>
-            </base-material-card>
 
-            <base-material-card class="px-5 py-3">
-              <template v-slot:heading>
-                <div class="display-2 font-weight-light">
-                  Properties
-                </div>
-              </template>
-              <v-card-text>
-                <v-expansion-panels>
+                <v-expansion-panels
+                  v-model="panel"
+                  multiple
+                >
                   <v-expansion-panel
                     v-for="(categ, i) in Object.keys(propers)"
                     :key="i"
@@ -291,6 +254,37 @@
             <base-material-card class="px-5 py-3">
               <template v-slot:heading>
                 <div class="display-2 font-weight-light">
+                  Base Fields
+                </div>
+              </template>
+              <v-card-text>
+                <template
+                  v-for="field in fields"
+                >
+                  <v-text-field
+                    :key="field"
+                    v-model="item[field]"
+                    outlined
+                    :label="field"
+                  />
+                </template>
+              </v-card-text>
+            </base-material-card>
+
+            <base-material-card class="px-5 py-3">
+              <template v-slot:heading>
+                <div class="display-2 font-weight-light">
+                  Item's Composition
+                </div>
+              </template>
+              <v-card-text>
+                <v-treeview :items="item.leaf" />
+              </v-card-text>
+            </base-material-card>
+
+            <base-material-card class="px-5 py-3">
+              <template v-slot:heading>
+                <div class="display-2 font-weight-light">
                   Map
                 </div>
               </template>
@@ -374,6 +368,8 @@
       isLoading: false,
       type: 'origins',
       item: {},
+
+      panel: [],
 
       taxonomy: {
         locations: [],
@@ -510,6 +506,19 @@
       this.taxons.concat(['artists', 'professions']).map(taxon => this.$watch(`search.${taxon}`, debounce(function (query) { this.autocomplete(query, taxon) }, 300)))
       const response = await this.$http.get('/api/items/' + this.id + '?project=catalogue')
       this.item = response.data
+
+      Object.keys(this.propers).forEach((categ, i) => {
+        this.propers[categ].forEach((prop) => {
+          const pr = this.item.properties.find(p => {
+            return p.prop_name === prop.prop_name
+          })
+          console.log(categ, pr, prop.prop_name, i)
+          if (pr) {
+            this.panel.push(i)
+          }
+        })
+      })
+
       console.log(this.item)
     },
     methods: {
@@ -542,7 +551,7 @@
             value: t.pivot.value,
           }
         })
-        await this.$http.post('/api/items/' + this.id + '?project=slovenia', { item: this.item, taxonomy: this.taxonomy })
+        await this.$http.put('/api/items/' + this.id + '?project=slovenia', { item: this.item, taxonomy: this.taxonomy })
         console.log(this.item, this.taxonomy)
       },
     },
