@@ -33,6 +33,13 @@ class TaxonomyController extends Controller
         $type_plural = $type;
         $type = str_singular($type);
         $model = $this->nameSpace . ucfirst($type);
+
+
+        if($type == 'artist'){
+            $type = 'maker';
+            $type_plural = 'makers';
+            $model = $this->nameSpace . 'Artist';
+        }
         $project = app()->make(Tenant::class)->slug();
         if (!class_exists($model)) {
             return response()->json([ 'error' => 400, 'message' => 'Missing or unsupported type' ], 400);
@@ -40,6 +47,14 @@ class TaxonomyController extends Controller
         if(request()->get('as_tree')){
         //    $elements = $model::where($type_plural.'.id', '!=', '-1')
             $elements = $model::select($type_plural.".*")
+                ->when($type == 'maker', function ($q) use ($type,$type_plural,$project) {
+                    $q->select("artists.*");
+                })
+                ->when($type == 'maker', function ($q) use ($type,$type_plural,$project) {
+                    $q->join('makers', function ($join) use ($type,$type_plural,$project){
+                        $join->on('makers.maker_name_id', '=', 'artists.id');
+                    });
+                })
                 ->join('taxonomy', function ($join) use ($type,$type_plural){
                     $join->on('taxonomy.taxonomy_id', '=', $type_plural . '.id')->
                     where('taxonomy.taxonomy_type', $type);
@@ -61,6 +76,7 @@ class TaxonomyController extends Controller
                 ->where($type_plural.'.id', '!=', '-1')
                 ->distinct()
                 ->get();
+          //  dd($elements);
 
 
             $elements = $this->search->findMissedParents($elements,$model);
@@ -74,7 +90,7 @@ class TaxonomyController extends Controller
             $elements =  $model::paginate();
         }
 
-      //  dd(DB::getQueryLog());
+        dd(DB::getQueryLog());
         return response()->json($elements);
     }
 

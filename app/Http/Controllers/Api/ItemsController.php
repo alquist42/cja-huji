@@ -23,6 +23,7 @@ class ItemsController extends Controller
         'historical_origins',
         'locations',
         'makers',
+        'artists',
         'professions',
         'objects',
         'periods',
