@@ -241,9 +241,10 @@
                 <v-select
                   :items = possibleCategories
                   label="Category"
-                  v-model="item.category"
+                  v-model="item.category_object"
                   item-text="name"
                   item-value="slug"
+                  return-object
                   outlined
                 />
                 <v-select
@@ -466,7 +467,6 @@
         // 'name',
 
         // 'ntl',
-        'category_object',
         'creation_date',
         'copyright_id',
         'remarks',
@@ -659,6 +659,7 @@
         this.isLoading = false
         this.queryItems = data || []
       },
+
       async save () {
         Object.keys(this.item).forEach(field => {
           if (this.taxons.includes(field)) {
@@ -678,7 +679,11 @@
             value: t.pivot.value,
           }
         })
-        await this.$http.put('/api/items/' + this.id + '?project=slovenia', { item: this.item, taxonomy: this.taxonomy })
+        const item = {
+          ...this.item,
+          category: this.item.category_object.slug,
+        }
+        await this.$http.put('/api/items/' + this.id + '?project=slovenia', { item: item, taxonomy: this.taxonomy })
         console.log(this.item, this.taxonomy)
       },
     },
