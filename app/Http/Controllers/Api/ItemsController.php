@@ -86,7 +86,7 @@ class ItemsController extends Controller
     }
 
     public function update(Request $request, Item $item) {
-        $item->fill($request->all());
+        $item->update($request->get('item'));
 //        $this->sync($request, $item);
 //
 //        $item->load(Item::$relationships);
