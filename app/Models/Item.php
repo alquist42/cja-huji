@@ -54,6 +54,7 @@ class Item extends Classifiable
         'ntl_localname',
 
         'date',
+        'reconstruction_dates',
 
         'remarks',
     ];

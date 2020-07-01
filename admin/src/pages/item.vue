@@ -278,6 +278,17 @@
                   outlined
                   :loading="isLoadingDates"
                 />
+                <v-combobox
+                  v-model="item.reconstruction_dates"
+                  :items="reconstructionDates"
+                  :search-input.sync="searchReconstructionDates"
+                  item-value="id"
+                  item-text="name"
+                  label="Reconstruction dates"
+                  placeholder="Start typing to search"
+                  outlined
+                  :loading="isLoadingReconstructionDates"
+                />
                 <v-text-field
                   v-for="field in fields"
                   :key="field"
@@ -444,7 +455,6 @@
         // 'name',
 
         // 'ntl',
-        'reconstruction_dates',
         'activity_dates',
         'category_object',
         'creation_date',
@@ -494,6 +504,9 @@
       dates: [],
       searchDate: null,
       isLoadingDates: false,
+      reconstructionDates: [],
+      searchReconstructionDates: null,
+      isLoadingReconstructionDates: false,
     }),
 
     computed: {
@@ -569,11 +582,25 @@
           this.isLoadingDates = false
         }
       },
+
+      async searchReconstructionDates (val) {
+        if (this.isLoadingReconstructionDates) return
+
+        this.isLoadingReconstructionDates = true
+        try {
+          const response = await this.$http.get(`/api/dates?project=catalogue&search=${val}`)
+          this.reconstructionDates = response.data
+        } catch (e) {
+          console.log(e)
+        } finally {
+          this.isLoadingReconstructionDates = false
+        }
+      },
     },
 
     async mounted () {
       this.taxons.concat(['artists', 'professions']).map(taxon => this.$watch(`search.${taxon}`, debounce(function (query) { this.autocomplete(query, taxon) }, 300)))
-      let response = await this.$http.get(`/api/items/${this.id}?project=catalogue&with=date`)
+      let response = await this.$http.get(`/api/items/${this.id}?project=catalogue&with[]=date&with[]=reconstruction_dates`)
       this.item = response.data
 
       response = await this.$http.get('/api/categories?project=catalogue')
