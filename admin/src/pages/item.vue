@@ -269,12 +269,12 @@
               </template>
               <v-card-text>
                 <v-combobox
-                  v-model="item.date"
+                  v-model="item.creation_date"
                   :items="dates"
                   :search-input.sync="searchDate"
                   item-value="id"
                   item-text="name"
-                  label="Date"
+                  label="Creation date"
                   placeholder="Start typing to search"
                   outlined
                   :loading="isLoadingDates"
@@ -467,7 +467,6 @@
         // 'name',
 
         // 'ntl',
-        'creation_date',
         'copyright_id',
         'remarks',
         // 'description',
@@ -627,7 +626,7 @@
 
     async mounted () {
       this.taxons.concat(['artists', 'professions']).map(taxon => this.$watch(`search.${taxon}`, debounce(function (query) { this.autocomplete(query, taxon) }, 300)))
-      let response = await this.$http.get(`/api/items/${this.id}?project=catalogue&with[]=date&with[]=reconstruction_dates&with[]=activity_dates`)
+      let response = await this.$http.get(`/api/items/${this.id}?project=catalogue&with[]=reconstruction_dates&with[]=activity_dates`)
       this.item = response.data
 
       response = await this.$http.get('/api/categories?project=catalogue')

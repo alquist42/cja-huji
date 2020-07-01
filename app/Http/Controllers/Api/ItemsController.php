@@ -69,9 +69,6 @@ class ItemsController extends Controller
     public function show(Item $item, Request $request)
     {
         $item->load(Item::$relationships);
-        if (in_array('date', $request->query('with'))) {
-            $item->date = Date::find($item->date);
-        }
         if (in_array('reconstruction_dates', $request->query('with'))) {
             $item->reconstruction_dates = Date::find($item->reconstruction_dates);
         }
@@ -98,11 +95,13 @@ class ItemsController extends Controller
     public function update(Request $request, Item $item) {
         $itemData = $request->get('item');
 
-        if (is_array($itemData['date'])) {
-            $itemData['date'] = $itemData['date']['id'];
-        } elseif (is_string($itemData['date'])) {
-            $date = Date::create(['name' => $itemData['date']]);
+        if (is_array($itemData['creation_date'])) {
+            $itemData['date'] = $itemData['creation_date']['id'];
+        } elseif (is_string($itemData['creation_date'])) {
+            $date = Date::firstOrCreate(['name' => $itemData['creation_date']]);
             $itemData['date'] = $date->id;
+        } else {
+            $itemData['date'] = null;
         }
 
         if (is_array($itemData['reconstruction_dates'])) {
