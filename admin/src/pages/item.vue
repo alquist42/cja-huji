@@ -319,6 +319,11 @@
                   counter="200"
                   no-resize
                 />
+                <v-switch
+                  v-model="item.artifact_at_risk"
+                  label="Artifact at risk"
+                  inset
+                />
                 <v-text-field
                   v-for="field in fields"
                   :key="field"
@@ -487,7 +492,6 @@
         // 'ntl',
         // 'description',
         // 'addenda',
-        'artifact_at_risk',
 
         // '_lft',
         // '_rgt',
