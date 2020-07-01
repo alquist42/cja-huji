@@ -289,6 +289,17 @@
                   outlined
                   :loading="isLoadingReconstructionDates"
                 />
+                <v-combobox
+                  v-model="item.activity_dates"
+                  :items="activityDates"
+                  :search-input.sync="searchActivityDates"
+                  item-value="id"
+                  item-text="name"
+                  label="Activity dates"
+                  placeholder="Start typing to search"
+                  outlined
+                  :loading="isLoadingActivityDates"
+                />
                 <v-text-field
                   v-for="field in fields"
                   :key="field"
@@ -455,7 +466,6 @@
         // 'name',
 
         // 'ntl',
-        'activity_dates',
         'category_object',
         'creation_date',
         'copyright_id',
@@ -507,6 +517,9 @@
       reconstructionDates: [],
       searchReconstructionDates: null,
       isLoadingReconstructionDates: false,
+      activityDates: [],
+      searchActivityDates: null,
+      isLoadingActivityDates: false,
     }),
 
     computed: {
@@ -596,11 +609,25 @@
           this.isLoadingReconstructionDates = false
         }
       },
+
+      async searchActivityDates (val) {
+        if (this.isLoadingActivityDates) return
+
+        this.isLoadingActivityDates = true
+        try {
+          const response = await this.$http.get(`/api/dates?project=catalogue&search=${val}`)
+          this.activityDates = response.data
+        } catch (e) {
+          console.log(e)
+        } finally {
+          this.isLoadingActivityDates = false
+        }
+      },
     },
 
     async mounted () {
       this.taxons.concat(['artists', 'professions']).map(taxon => this.$watch(`search.${taxon}`, debounce(function (query) { this.autocomplete(query, taxon) }, 300)))
-      let response = await this.$http.get(`/api/items/${this.id}?project=catalogue&with[]=date&with[]=reconstruction_dates`)
+      let response = await this.$http.get(`/api/items/${this.id}?project=catalogue&with[]=date&with[]=reconstruction_dates&with[]=activity_dates`)
       this.item = response.data
 
       response = await this.$http.get('/api/categories?project=catalogue')

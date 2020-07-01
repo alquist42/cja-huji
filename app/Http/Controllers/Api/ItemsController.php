@@ -75,6 +75,9 @@ class ItemsController extends Controller
         if (in_array('reconstruction_dates', $request->query('with'))) {
             $item->reconstruction_dates = Date::find($item->reconstruction_dates);
         }
+        if (in_array('activity_dates', $request->query('with'))) {
+            $item->activity_dates = Date::find($item->activity_dates);
+        }
         $item->leaf = $item->leaf();
         $item->parent = $item->parent()->get();
         $item->parent->load(Item::$relationships);
@@ -107,6 +110,13 @@ class ItemsController extends Controller
         } elseif (is_string($itemData['reconstruction_dates'])) {
             $date = Date::create(['name' => $itemData['reconstruction_dates']]);
             $itemData['reconstruction_dates'] = $date->id;
+        }
+
+        if (is_array($itemData['activity_dates'])) {
+            $itemData['activity_dates'] = $itemData['activity_dates']['id'];
+        } elseif (is_string($itemData['activity_dates'])) {
+            $date = Date::create(['name' => $itemData['activity_dates']]);
+            $itemData['activity_dates'] = $date->id;
         }
 
         $item->update($itemData);
