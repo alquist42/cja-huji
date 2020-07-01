@@ -9,6 +9,10 @@ class Item extends Classifiable
 {
     use NodeTrait;
 
+    const PUBLISH_STATE_NOT_PUBLISHED = 0;
+    const PUBLISH_STATE_PREPARED_FOR_PUBLISHING = 1;
+    const PUBLISH_STATE_PUBLISHED = 2;
+
     public $timestamps = false;
 
     /**
