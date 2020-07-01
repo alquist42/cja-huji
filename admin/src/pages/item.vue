@@ -312,6 +312,13 @@
                   outlined
                   :loading="isLoadingCopyright"
                 />
+                <v-textarea
+                  v-model="item.remarks"
+                  label="Remarks"
+                  outlined
+                  counter="200"
+                  no-resize
+                />
                 <v-text-field
                   v-for="field in fields"
                   :key="field"
@@ -478,7 +485,6 @@
         // 'name',
 
         // 'ntl',
-        'remarks',
         // 'description',
         // 'addenda',
         'artifact_at_risk',
