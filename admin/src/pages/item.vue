@@ -280,7 +280,7 @@
                   :loading="isLoadingDates"
                 />
                 <v-combobox
-                  v-model="item.reconstruction_dates"
+                  v-model="item.reconstruction_dates_object"
                   :items="reconstructionDates"
                   :search-input.sync="searchReconstructionDates"
                   item-value="id"
@@ -291,7 +291,7 @@
                   :loading="isLoadingReconstructionDates"
                 />
                 <v-combobox
-                  v-model="item.activity_dates"
+                  v-model="item.activity_dates_object"
                   :items="activityDates"
                   :search-input.sync="searchActivityDates"
                   item-value="id"
@@ -626,7 +626,7 @@
 
     async mounted () {
       this.taxons.concat(['artists', 'professions']).map(taxon => this.$watch(`search.${taxon}`, debounce(function (query) { this.autocomplete(query, taxon) }, 300)))
-      let response = await this.$http.get(`/api/items/${this.id}?project=catalogue&with[]=reconstruction_dates&with[]=activity_dates`)
+      let response = await this.$http.get(`/api/items/${this.id}?project=catalogue`)
       this.item = response.data
 
       response = await this.$http.get('/api/categories?project=catalogue')

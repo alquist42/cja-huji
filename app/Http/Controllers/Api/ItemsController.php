@@ -69,12 +69,6 @@ class ItemsController extends Controller
     public function show(Item $item, Request $request)
     {
         $item->load(Item::$relationships);
-        if (in_array('reconstruction_dates', $request->query('with'))) {
-            $item->reconstruction_dates = Date::find($item->reconstruction_dates);
-        }
-        if (in_array('activity_dates', $request->query('with'))) {
-            $item->activity_dates = Date::find($item->activity_dates);
-        }
         $item->leaf = $item->leaf();
         $item->parent = $item->parent()->get();
         $item->parent->load(Item::$relationships);
@@ -104,18 +98,22 @@ class ItemsController extends Controller
             $itemData['date'] = null;
         }
 
-        if (is_array($itemData['reconstruction_dates'])) {
-            $itemData['reconstruction_dates'] = $itemData['reconstruction_dates']['id'];
-        } elseif (is_string($itemData['reconstruction_dates'])) {
-            $date = Date::create(['name' => $itemData['reconstruction_dates']]);
+        if (is_array($itemData['reconstruction_dates_object'])) {
+            $itemData['reconstruction_dates'] = $itemData['reconstruction_dates_object']['id'];
+        } elseif (is_string($itemData['reconstruction_dates_object'])) {
+            $date = Date::firstOrCreate(['name' => $itemData['reconstruction_dates_object']]);
             $itemData['reconstruction_dates'] = $date->id;
+        } else {
+            $itemData['reconstruction_dates'] = null;
         }
 
-        if (is_array($itemData['activity_dates'])) {
-            $itemData['activity_dates'] = $itemData['activity_dates']['id'];
-        } elseif (is_string($itemData['activity_dates'])) {
-            $date = Date::create(['name' => $itemData['activity_dates']]);
+        if (is_array($itemData['activity_dates_object'])) {
+            $itemData['activity_dates'] = $itemData['activity_dates_object']['id'];
+        } elseif (is_string($itemData['activity_dates_object'])) {
+            $date = Date::firstOrCreate(['name' => $itemData['activity_dates_object']]);
             $itemData['activity_dates'] = $date->id;
+        } else {
+            $itemData['activity_dates'] = null;
         }
 
         $item->update($itemData);

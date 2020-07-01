@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Kalnoy\Nestedset\NodeTrait;
 
 class Item extends Classifiable
@@ -93,6 +94,8 @@ class Item extends Classifiable
         'makers.profession',
 
         'creation_date',
+        'reconstruction_dates_object',
+        'activity_dates_object',
         'category_object',
         'copyright',
 
@@ -108,6 +111,22 @@ class Item extends Classifiable
         'ancestors',
         'descendants'
     ];
+
+    /**
+     * @return HasOne
+     */
+    public function reconstruction_dates_object()
+    {
+        return $this->hasOne(Date::class, 'id', 'reconstruction_dates');
+    }
+
+    /**
+     * @return HasOne
+     */
+    public function activity_dates_object()
+    {
+        return $this->hasOne(Date::class, 'id', 'activity_dates');
+    }
 
     /**
      * @return HasMany
