@@ -301,6 +301,17 @@
                   outlined
                   :loading="isLoadingActivityDates"
                 />
+                <v-combobox
+                  v-model="item.copyright"
+                  :items="copyrights"
+                  :search-input.sync="searchCopyright"
+                  item-value="id"
+                  item-text="name"
+                  label="Copyright"
+                  placeholder="Start typing to search"
+                  outlined
+                  :loading="isLoadingCopyright"
+                />
                 <v-text-field
                   v-for="field in fields"
                   :key="field"
@@ -467,7 +478,6 @@
         // 'name',
 
         // 'ntl',
-        'copyright_id',
         'remarks',
         // 'description',
         // 'addenda',
@@ -519,6 +529,9 @@
       activityDates: [],
       searchActivityDates: null,
       isLoadingActivityDates: false,
+      copyrights: [],
+      searchCopyright: null,
+      isLoadingCopyright: false,
     }),
 
     computed: {
@@ -620,6 +633,20 @@
           console.log(e)
         } finally {
           this.isLoadingActivityDates = false
+        }
+      },
+
+      async searchCopyright (val) {
+        if (this.isLoadingCopyright) return
+
+        this.isLoadingCopyright = true
+        try {
+          const response = await this.$http.get(`/api/copyrights?project=catalogue&search=${val}`)
+          this.copyrights = response.data
+        } catch (e) {
+          console.log(e)
+        } finally {
+          this.isLoadingCopyright = false
         }
       },
     },

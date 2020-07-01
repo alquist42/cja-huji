@@ -57,6 +57,7 @@ class Item extends Classifiable
         'date',
         'reconstruction_dates',
         'activity_dates',
+        'copyright_id',
 
         'remarks',
     ];

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Copyright;
 use App\Models\Date;
 use App\Models\Item;
 use App\Services\Search;
@@ -114,6 +115,15 @@ class ItemsController extends Controller
             $itemData['activity_dates'] = $date->id;
         } else {
             $itemData['activity_dates'] = null;
+        }
+
+        if (is_array($itemData['copyright'])) {
+            $itemData['copyright_id'] = $itemData['copyright']['id'];
+        } elseif (is_string($itemData['copyright'])) {
+            $date = Copyright::firstOrCreate(['name' => $itemData['copyright']]);
+            $itemData['copyright_id'] = $date->id;
+        } else {
+            $itemData['copyright_id'] = null;
         }
 
         $item->update($itemData);
