@@ -267,16 +267,24 @@
                 </div>
               </template>
               <v-card-text>
-                <template
+                <v-combobox
+                  v-model="item.date"
+                  :items="dates"
+                  :search-input.sync="searchDate"
+                  item-value="id"
+                  item-text="name"
+                  label="Date"
+                  placeholder="Start typing to search"
+                  outlined
+                  :loading="isLoadingDates"
+                />
+                <v-text-field
                   v-for="field in fields"
-                >
-                  <v-text-field
-                    :key="field"
-                    v-model="item[field]"
-                    outlined
-                    :label="field"
-                  />
-                </template>
+                  :key="field"
+                  v-model="item[field]"
+                  outlined
+                  :label="field"
+                />
               </v-card-text>
             </base-material-card>
 
@@ -436,7 +444,6 @@
         // 'name',
 
         // 'ntl',
-        'date',
         'reconstruction_dates',
         'activity_dates',
         'category_object',
@@ -484,6 +491,9 @@
       ],
 
       categories: [],
+      dates: [],
+      searchDate: null,
+      isLoadingDates: false,
     }),
 
     computed: {
@@ -545,9 +555,25 @@
       },
     },
 
+    watch: {
+      async searchDate (val) {
+        if (this.isLoadingDates) return
+
+        this.isLoadingDates = true
+        try {
+          const response = await this.$http.get(`/api/dates?project=catalogue&search=${val}`)
+          this.dates = response.data
+        } catch (e) {
+          console.log(e)
+        } finally {
+          this.isLoadingDates = false
+        }
+      },
+    },
+
     async mounted () {
       this.taxons.concat(['artists', 'professions']).map(taxon => this.$watch(`search.${taxon}`, debounce(function (query) { this.autocomplete(query, taxon) }, 300)))
-      let response = await this.$http.get('/api/items/' + this.id + '?project=catalogue')
+      let response = await this.$http.get(`/api/items/${this.id}?project=catalogue&with=date`)
       this.item = response.data
 
       response = await this.$http.get('/api/categories?project=catalogue')

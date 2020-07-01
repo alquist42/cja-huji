@@ -19,6 +19,7 @@ Route::group(['namespace' => 'Api'], function () {
         Route::get('/autocomplete', 'TaxonomyController@search');
 
         Route::get('/categories', 'CategoriesController@index');
+        Route::get('/dates', 'DatesController@index');
     });
 
     Route::group(['namespace' => 'MHS', 'prefix' => 'mhs'], function () {

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Date;
 use App\Models\Item;
 use App\Services\Search;
 use Illuminate\Http\Request;
@@ -65,9 +66,12 @@ class ItemsController extends Controller
 //        ]);
     }
 
-    public function show(Item $item)
+    public function show(Item $item, Request $request)
     {
         $item->load(Item::$relationships);
+        if ($request->query('with') === 'date') {
+            $item->date = Date::find($item->date);
+        }
         $item->leaf = $item->leaf();
         $item->parent = $item->parent()->get();
         $item->parent->load(Item::$relationships);
@@ -86,11 +90,20 @@ class ItemsController extends Controller
     }
 
     public function update(Request $request, Item $item) {
-        $item->update($request->get('item'));
+        $itemData = $request->get('item');
+
+        if (is_array($itemData['date'])) {
+            $itemData['date'] = $itemData['date']['id'];
+        } elseif (is_string($itemData['date'])) {
+            $date = Date::create(['name' => $itemData['date']]);
+            $itemData['date'] = $date->id;
+        }
+
+        $item->update($itemData);
 //        $this->sync($request, $item);
 //
 //        $item->load(Item::$relationships);
-        return response()->json($item);
+        return $item;
     }
 
     protected function sync(Request $request, Item $item) {
