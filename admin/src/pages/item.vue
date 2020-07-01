@@ -240,7 +240,7 @@
               <v-card-text>
                 <v-select
                   :items = possibleCategories
-                  label="Categories"
+                  label="Category"
                   v-model="item.category"
                   item-text="name"
                   item-value="slug"
