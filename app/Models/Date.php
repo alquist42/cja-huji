@@ -12,4 +12,8 @@ class Date extends Model
      * @var string
      */
     protected $table = 'dates';
+
+    protected $fillable = ['name'];
+
+    public $timestamps = false;
 }
