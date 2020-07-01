@@ -238,16 +238,25 @@
                 </div>
               </template>
               <v-card-text>
-                <template
-                  v-for="field in settings"
-                >
-                  <v-text-field
-                    :key="field"
-                    v-model="item[field]"
-                    outlined
-                    :label="field"
-                  />
-                </template>
+                <v-select
+                  :items = possibleCategories
+                  label="Categories"
+                  v-model="item.category"
+                  item-text="name"
+                  item-value="slug"
+                  outlined
+                />
+                <v-select
+                  :items = possiblePublishStates
+                  label="Publish state"
+                  v-model="item.publish_state"
+                  outlined
+                />
+                <v-text-field
+                  label="Publish state reason"
+                  v-model="item.publish_state_reason"
+                  outlined
+                />
               </v-card-text>
             </base-material-card>
 
@@ -317,6 +326,10 @@
   import { singular } from 'pluralize'
   import { TiptapVuetify, Heading, Bold, Italic, Strike, Underline, Code, Paragraph, BulletList, OrderedList, ListItem, Link, Blockquote, HardBreak, HorizontalRule, History } from 'tiptap-vuetify'
 
+  const PUBLISH_STATE_NOT_PUBLISHED = 0
+  const PUBLISH_STATE_PREPARED_FOR_PUBLISHING = 1
+  const PUBLISH_STATE_PUBLISHED = 2
+
   function debounce (func, wait, immediate) {
     let timeout
 
@@ -362,7 +375,6 @@
     ],
 
     data: () => ({
-
       queryItems: [],
       search: {},
       isLoading: false,
@@ -418,13 +430,6 @@
         'geo_options',
       ],
 
-      settings: [
-        'category',
-        'publish_state',
-        'publish_state_reason',
-
-      ],
-
       fields: [
         // 'id',
         // 'parent_id',
@@ -477,7 +482,10 @@
         Paragraph,
         HardBreak,
       ],
+
+      categories: [],
     }),
+
     computed: {
       propers () {
         return groupBy(this.properties, 'categ_name')
@@ -500,12 +508,50 @@
           return this.item[field] && this.item[field][0] && this.item[field][0].details
         }
       },
+
+      possiblePublishStates () {
+        return [
+          {
+            value: PUBLISH_STATE_NOT_PUBLISHED,
+            text: 'Not published',
+          },
+          {
+            value: PUBLISH_STATE_PREPARED_FOR_PUBLISHING,
+            text: 'Prepared for publishing',
+          },
+          {
+            value: PUBLISH_STATE_PUBLISHED,
+            text: 'Published',
+          },
+        ]
+      },
+
+      possibleCategories () {
+        const sortedCategories = this.categories.slice(0).sort((a, b) => {
+          if (a.name === b.name) {
+            return 0
+          }
+
+          return (a.name > b.name) ? 1 : -1
+        })
+
+        return [
+          {
+            slug: null,
+            name: 'None',
+          },
+          ...sortedCategories,
+        ]
+      },
     },
 
     async mounted () {
       this.taxons.concat(['artists', 'professions']).map(taxon => this.$watch(`search.${taxon}`, debounce(function (query) { this.autocomplete(query, taxon) }, 300)))
-      const response = await this.$http.get('/api/items/' + this.id + '?project=catalogue')
+      let response = await this.$http.get('/api/items/' + this.id + '?project=catalogue')
       this.item = response.data
+
+      response = await this.$http.get('/api/categories?project=catalogue')
+      this.categories = response.data
 
       Object.keys(this.propers).forEach((categ, i) => {
         this.propers[categ].forEach((prop) => {
@@ -521,6 +567,7 @@
 
       console.log(this.item)
     },
+
     methods: {
       async autocomplete (query, type) {
         console.log(query)
