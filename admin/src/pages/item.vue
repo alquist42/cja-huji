@@ -12,7 +12,11 @@
       >
         <v-row>
           <v-col cols="12">
-            <v-btn @click="save">
+            <v-btn
+              @click="save"
+              :loading="isSaving"
+              :disabled="isSaving"
+            >
               Save
             </v-btn>
           </v-col>
@@ -432,6 +436,7 @@
       queryItems: [],
       search: {},
       isLoading: false,
+      isSaving: false,
       type: 'origins',
       item: {},
 
@@ -719,8 +724,16 @@
           ...this.item,
           category: this.item.category_object.slug,
         }
-        await this.$http.put('/api/items/' + this.id + '?project=slovenia', { item: item, taxonomy: this.taxonomy })
-        console.log(this.item, this.taxonomy)
+
+        this.isSaving = true
+        try {
+          await this.$http.put('/api/items/' + this.id + '?project=slovenia', { item: item, taxonomy: this.taxonomy })
+          console.log(this.item, this.taxonomy)
+        } catch (e) {
+          console.log(e)
+        } finally {
+          this.isSaving = false
+        }
       },
     },
   }
