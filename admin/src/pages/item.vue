@@ -52,7 +52,6 @@
                 >
                   <v-text-field
                     v-model="item.name"
-                    :counter="10"
                     label="Name"
                     required
                     outlined
@@ -372,6 +371,18 @@
                 </div>
               </template>
               <v-card-text>
+                <v-text-field
+                  label="Latitude"
+                  v-model="item.geo_lat"
+                  type="number"
+                  outlined
+                />
+                <v-text-field
+                  label="Longitude"
+                  v-model="item.geo_lng"
+                  type="number"
+                  outlined
+                />
                 <template
                   v-for="field in map"
                 >
@@ -503,8 +514,6 @@
       ],
 
       map: [
-        'geo_lat',
-        'geo_lng',
         'geo_options',
       ],
 

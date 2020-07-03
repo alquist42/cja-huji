@@ -39,8 +39,8 @@ class Item extends Classifiable
 
         'category',
 
-        'lat',
-        'lon',
+        'geo_lat',
+        'geo_lng',
         'geo_options',
 
         'order',
