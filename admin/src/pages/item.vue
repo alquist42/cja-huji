@@ -1,5 +1,22 @@
 <template>
   <v-app>
+    <v-snackbar
+      v-model="snackbar"
+      :color="snackbarColor"
+      top
+    >
+      {{ snackbarText }}
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          dark
+          text
+          v-bind="attrs"
+          @click="snackbar = false"
+        >
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
     <dashboard-core-app-bar />
 
     <dashboard-core-drawer />
@@ -418,7 +435,7 @@
   }
 
   export default {
-    name: 'DashboardIndex',
+    name: 'Item',
 
     components: {
       TiptapVuetify,
@@ -437,6 +454,9 @@
       search: {},
       isLoading: false,
       isSaving: false,
+      snackbar: false,
+      snackbarText: '',
+      snackbarColor: '',
       type: 'origins',
       item: {},
 
@@ -728,12 +748,20 @@
         this.isSaving = true
         try {
           await this.$http.put('/api/items/' + this.id + '?project=slovenia', { item: item, taxonomy: this.taxonomy })
+          this.showSnackbar('success', 'Item has been saved')
           console.log(this.item, this.taxonomy)
         } catch (e) {
+          this.showSnackbar('error', 'An error occurred')
           console.log(e)
         } finally {
           this.isSaving = false
         }
+      },
+
+      showSnackbar (color, text) {
+        this.snackbarColor = color
+        this.snackbarText = text
+        this.snackbar = true
       },
     },
   }
