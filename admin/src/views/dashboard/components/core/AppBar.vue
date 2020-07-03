@@ -1,17 +1,13 @@
 <template>
   <v-app-bar
     id="app-bar"
-    absolute
+    fixed
     app
-    color="transparent"
-    flat
     height="75"
   >
     <v-btn
       class="mr-3"
-      elevation="1"
-      fab
-      small
+      icon
       @click="setDrawer(!drawer)"
     >
       <v-icon v-if="value">
@@ -23,6 +19,8 @@
       </v-icon>
     </v-btn>
 
+    <slot></slot>
+
     <v-toolbar-title
       v-if="$route"
       class="hidden-sm-and-down font-weight-light"
@@ -32,8 +30,7 @@
     <v-spacer />
 
     <v-text-field
-      label="search"
-      color="secondary"
+      label="Search"
       hide-details
     >
       <template
@@ -41,10 +38,8 @@
         v-slot:append-outer
       >
         <v-btn
+          icon
           class="mt-n2"
-          elevation="1"
-          fab
-          small
         >
           <v-icon>mdi-magnify</v-icon>
         </v-btn>

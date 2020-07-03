@@ -17,7 +17,17 @@
         </v-btn>
       </template>
     </v-snackbar>
-    <dashboard-core-app-bar />
+
+    <dashboard-core-app-bar>
+      <v-btn
+        outlined
+        @click="save"
+        :loading="isSaving"
+        :disabled="isSaving"
+      >
+        Save
+      </v-btn>
+    </dashboard-core-app-bar>
 
     <dashboard-core-drawer />
 
@@ -27,17 +37,6 @@
         fluid
         tag="section"
       >
-        <v-row>
-          <v-col cols="12">
-            <v-btn
-              @click="save"
-              :loading="isSaving"
-              :disabled="isSaving"
-            >
-              Save
-            </v-btn>
-          </v-col>
-        </v-row>
         <v-row>
           <v-col cols="8">
             <base-material-card class="px-5 py-3">
