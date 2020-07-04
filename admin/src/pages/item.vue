@@ -21,9 +21,9 @@
     <dashboard-core-app-bar>
       <v-btn
         outlined
-        @click="save"
         :loading="isSaving"
         :disabled="isSaving"
+        @click="save"
       >
         Save
       </v-btn>
@@ -79,55 +79,56 @@
                 </div>
               </template>
               <v-card-text>
-                <template
+                <v-row
                   v-for="taxon in taxons"
+                  :key="taxon"
+                  no-gutters
+                  class="mb-2"
                 >
-                  <v-row :key="taxon">
+                  <v-col
+                    cols="12"
+                    class="pb-0"
+                  >
+                    <span class="overline">
+                      {{ taxon }}
+                    </span>
+                    <taxon-modal
+                      :taxon="taxon"
+                      :value="item[taxon]"
+                      @input="updateTaxon(taxon, $event)"
+                    />
+                  </v-col>
+                  <v-row no-gutters>
                     <v-col
                       v-if="item[taxon] && item[taxon].length"
-                      cols="6"
                     >
-                      <template v-for="obj in item[taxon]">
-                        <v-chip :key="obj.id">
-                          {{ obj.name }}
-                        </v-chip>
-                      </template>
+                      <v-chip
+                        v-for="obj in item[taxon]"
+                        :key="obj.id"
+                        class="mb-1 mr-1"
+                        close
+                        @click:close="removeTaxonItem(taxon, obj.id)"
+                      >
+                        {{ obj.name }}
+                      </v-chip>
                       ({{ details(taxon) }})
                     </v-col>
+<!--                    TODO: allow to work with a parent taxonomy too-->
                     <v-col
                       v-if="item.parent && item.parent[0]"
                       cols="6"
                     >
-                      <template v-for="obj in item.parent[0][taxon]">
-                        <v-chip :key="obj.id">
-                          {{ obj.name }}
-                        </v-chip>
-                      </template>
+                      <v-chip
+                        v-for="obj in item.parent[0][taxon]"
+                        :key="obj.id"
+                        class="mb-1 mr-1"
+                      >
+                        {{ obj.name }}
+                      </v-chip>
                       <!--                      ({{ details(taxon) }})-->
                     </v-col>
-                    <v-col
-                      cols="6"
-                    >
-                      <v-autocomplete
-                        v-model="item[taxon]"
-                        :disabled="item[taxon] && item[taxon].length === 0"
-                        :items="queryItems"
-                        :loading="isLoading"
-                        :search-input.sync="search[taxon]"
-                        color="primary"
-                        item-text="name"
-                        item-value="id"
-                        :label="taxon"
-                        placeholder="Start typing to Search"
-                        return-object
-                        multiple
-                        chips
-                        outlined
-                        @click="type = taxon"
-                      />
-                    </v-col>
                   </v-row>
-                </template>
+                </v-row>
                 <v-row>
                   <v-col cols="6">
                     <template v-for="obj in item.makers">
@@ -453,6 +454,7 @@
       DashboardCoreDrawer: () => import('../views/dashboard/components/core/Drawer'),
       // DashboardCoreSettings: () => import('./components/core/Settings'),
       // DashboardCoreView: () => import('../components/core/View'),
+      TaxonModal: () => import('../components/TaxonModal'),
     },
 
     props: [
@@ -770,6 +772,16 @@
         this.snackbarColor = color
         this.snackbarText = text
         this.snackbar = true
+      },
+
+      updateTaxon (taxonName, taxonItems) {
+        this.item[taxonName] = []
+
+        taxonItems.forEach(taxonItem => this.item[taxonName].push(taxonItem))
+      },
+
+      removeTaxonItem (taxonName, itemId) {
+        this.item[taxonName] = this.item[taxonName].filter(taxonItem => taxonItem.id !== itemId)
       },
     },
   }
