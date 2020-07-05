@@ -94,7 +94,7 @@
                     </span>
                     <taxon-modal
                       :taxon="taxon"
-                      :value="item[taxon]"
+                      :value="item[taxon] || []"
                       @input="updateTaxon(taxon, $event)"
                     />
                   </v-col>
@@ -113,7 +113,7 @@
                       </v-chip>
                       ({{ details(taxon) }})
                     </v-col>
-<!--                    TODO: allow to work with a parent taxonomy too-->
+                    <!--TODO: allow to work with a parent taxonomy too-->
                     <v-col
                       v-if="item.parent && item.parent[0]"
                       cols="6"
@@ -159,20 +159,21 @@
                   multiple
                 >
                   <v-expansion-panel
-                    v-for="(categ, i) in Object.keys(propers)"
-                    :key="i"
+                    v-for="categName in Object.keys(propers)"
+                    :key="categName"
                   >
-                    <v-expansion-panel-header>{{ categ }}</v-expansion-panel-header>
+                    <v-expansion-panel-header>
+                      <span class="overline">{{ categName.replace('_', ' ') }}</span>
+                    </v-expansion-panel-header>
                     <v-expansion-panel-content>
-                      <template
-                        v-for="(prop, i) in propers[categ]"
-                      >
+                      <template v-for="(prop, i) in propers[categName]">
                         <v-text-field
                           v-if="prop.type === 'text'"
                           :key="prop.id"
-                          v-model="itemProp(prop.prop_name).pivot.value"
                           :label="prop.verbose_name"
                           outlined
+                          :value="getItemPropValue(prop.prop_name)"
+                          @input="setItemPropValue(prop, $event)"
                         >
                           <template v-slot:prepend>
                             <v-badge :content="i+1" />
@@ -181,25 +182,28 @@
                         <v-textarea
                           v-if="prop.type === 'textarea' && prop.content_type === 'plain'"
                           :key="prop.id"
-                          v-model="itemProp(prop.prop_name).pivot.value"
                           :label="prop.verbose_name"
                           outlined
+                          :value="getItemPropValue(prop.prop_name)"
+                          @input="setItemPropValue(prop, $event)"
                         />
                         <tiptap-vuetify
                           v-if="prop.type === 'textarea' && prop.content_type === 'htmle'"
                           :key="prop.id"
-                          v-model="itemProp(prop.prop_name).pivot.value"
                           :placeholder="prop.verbose_name"
                           :extensions="extensions"
+                          :value="getItemPropValue(prop.prop_name)"
+                          @input="setItemPropValue(prop, $event)"
                         />
                         <v-select
                           v-if="prop.type === 'select'"
                           :key="prop.id"
-                          v-model="itemProp(prop.prop_name).pivot.value"
                           :items="prop.allowed_vals.split(' | ')"
                           chips
                           :label="prop.verbose_name"
                           outlined
+                          :value="getItemPropValue(prop.prop_name)"
+                          @input="setItemPropValue(prop, $event)"
                         />
                       </template>
                     </v-expansion-panel-content>
@@ -238,23 +242,23 @@
               </template>
               <v-card-text>
                 <v-select
-                  :items = possibleCategories
-                  label="Category"
                   v-model="item.category_object"
+                  :items="possibleCategories"
+                  label="Category"
                   item-text="name"
                   item-value="slug"
                   return-object
                   outlined
                 />
                 <v-select
-                  :items = possiblePublishStates
-                  label="Publish state"
                   v-model="item.publish_state"
+                  :items="possiblePublishStates"
+                  label="Publish state"
                   outlined
                 />
                 <v-text-field
-                  label="Publish state reason"
                   v-model="item.publish_state_reason"
+                  label="Publish state reason"
                   outlined
                 />
               </v-card-text>
@@ -352,14 +356,14 @@
               </template>
               <v-card-text>
                 <v-text-field
-                  label="Latitude"
                   v-model="item.geo_lat"
+                  label="Latitude"
                   type="number"
                   outlined
                 />
                 <v-text-field
-                  label="Longitude"
                   v-model="item.geo_lng"
+                  label="Longitude"
                   type="number"
                   outlined
                 />
@@ -385,6 +389,7 @@
 
   import { singular } from 'pluralize'
   import { TiptapVuetify, Heading, Bold, Italic, Strike, Underline, Code, Paragraph, BulletList, OrderedList, ListItem, Link, Blockquote, HardBreak, HorizontalRule, History } from 'tiptap-vuetify'
+  import _sortBy from 'lodash/sortBy'
 
   const PUBLISH_STATE_NOT_PUBLISHED = 0
   const PUBLISH_STATE_PREPARED_FOR_PUBLISHING = 1
@@ -525,20 +530,16 @@
 
     computed: {
       propers () {
-        return groupBy(this.properties, 'categ_name')
+        const sortedProperties = _sortBy(this.properties, 'categ_name')
+
+        return groupBy(sortedProperties, 'categ_name')
       },
+
       // origins () {
       //   const self = this.item.origins
       //   const parent = this.item.parent.origins
       // },
-      itemProp () {
-        return (name) => {
-          const p = this.item.properties && this.item.properties.find(p => {
-            return p.prop_name === name
-          })
-          return p || { pivot: { value: '' } }
-        }
-      },
+
       details () {
         return (name) => {
           const field = `${singular(name)}_details`
@@ -564,13 +565,7 @@
       },
 
       possibleCategories () {
-        const sortedCategories = this.categories.slice(0).sort((a, b) => {
-          if (a.name === b.name) {
-            return 0
-          }
-
-          return (a.name > b.name) ? 1 : -1
-        })
+        const sortedCategories = _sortBy(this.categories, 'name')
 
         return [
           {
@@ -647,14 +642,12 @@
       response = await this.$http.get('/api/categories?project=catalogue')
       this.categories = response.data
 
-      Object.keys(this.propers).forEach((categ, i) => {
-        this.propers[categ].forEach((prop) => {
-          const pr = this.item.properties.find(p => {
-            return p.prop_name === prop.prop_name
-          })
-          console.log(categ, pr, prop.prop_name, i)
+      Object.keys(this.propers).forEach((categName, categIndex) => {
+        this.propers[categName].forEach((prop) => {
+          const pr = this.item.properties.find(p => p.prop_name === prop.prop_name)
+          console.log(categName, pr, prop.prop_name, categIndex)
           if (pr) {
-            this.panel.push(i)
+            this.panel.push(categIndex)
           }
         })
       })
@@ -726,6 +719,29 @@
 
       addMaker (maker) {
         this.item.makers.push(maker)
+      },
+
+      getItemPropValue (propName) {
+        const p = this.item.properties && this.item.properties.find(p => p.prop_name === propName)
+
+        return p ? p.pivot.value : ''
+      },
+
+      setItemPropValue (prop, newValue) {
+        const propIndex = this.item.properties.findIndex(p => p.prop_name === prop.prop_name)
+
+        if (propIndex !== -1) {
+          this.item.properties[propIndex].pivot.value = newValue
+
+          return
+        }
+
+        this.item.properties.push({
+          ...prop,
+          pivot: {
+            value: newValue,
+          },
+        })
       },
     },
   }
