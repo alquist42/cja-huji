@@ -3,9 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Copyright;
-use App\Models\Date;
 use App\Models\Item;
+use App\Services\ItemService;
 use App\Services\Search;
 use Illuminate\Http\Request;
 
@@ -32,6 +31,11 @@ class ItemsController extends Controller
         'schools',
     ];
 
+    /**
+     * @var Search
+     */
+    private $search;
+
     public function __construct(Search $search)
     {
         $this->search = $search;
@@ -39,7 +43,7 @@ class ItemsController extends Controller
 
     public function index(Request $request)
     {
-        $page = $request->get('page');
+//        $page = $request->get('page');
 
         $filters = collect($request->only($this->allowed_filters))->filter(function ($value) {
             return null !== $value;
@@ -67,7 +71,7 @@ class ItemsController extends Controller
 //        ]);
     }
 
-    public function show(Item $item, Request $request)
+    public function show(Item $item)
     {
         $item->load(Item::$relationships);
         $item->leaf = $item->leaf();
@@ -88,49 +92,7 @@ class ItemsController extends Controller
     }
 
     public function update(Request $request, Item $item) {
-        $itemData = $request->get('item');
-
-        if (is_array($itemData['creation_date'])) {
-            $itemData['date'] = $itemData['creation_date']['id'];
-        } elseif (is_string($itemData['creation_date'])) {
-            $date = Date::firstOrCreate(['name' => $itemData['creation_date']]);
-            $itemData['date'] = $date->id;
-        } else {
-            $itemData['date'] = null;
-        }
-
-        if (is_array($itemData['reconstruction_dates_object'])) {
-            $itemData['reconstruction_dates'] = $itemData['reconstruction_dates_object']['id'];
-        } elseif (is_string($itemData['reconstruction_dates_object'])) {
-            $date = Date::firstOrCreate(['name' => $itemData['reconstruction_dates_object']]);
-            $itemData['reconstruction_dates'] = $date->id;
-        } else {
-            $itemData['reconstruction_dates'] = null;
-        }
-
-        if (is_array($itemData['activity_dates_object'])) {
-            $itemData['activity_dates'] = $itemData['activity_dates_object']['id'];
-        } elseif (is_string($itemData['activity_dates_object'])) {
-            $date = Date::firstOrCreate(['name' => $itemData['activity_dates_object']]);
-            $itemData['activity_dates'] = $date->id;
-        } else {
-            $itemData['activity_dates'] = null;
-        }
-
-        if (is_array($itemData['copyright'])) {
-            $itemData['copyright_id'] = $itemData['copyright']['id'];
-        } elseif (is_string($itemData['copyright'])) {
-            $date = Copyright::firstOrCreate(['name' => $itemData['copyright']]);
-            $itemData['copyright_id'] = $date->id;
-        } else {
-            $itemData['copyright_id'] = null;
-        }
-
-        $item->update($itemData);
-//        $this->sync($request, $item);
-//
-//        $item->load(Item::$relationships);
-        return $item;
+        return (new ItemService($item))->saveItem($request->all());
     }
 
     protected function sync(Request $request, Item $item) {

@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Tenant;
 use App\Services\Search;
 use DB;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -21,6 +20,11 @@ class TaxonomyController extends Controller
     protected $model = null;
     protected $nameSpace = '\\App\\Models\\Taxonomy\\';
 
+    /**
+     * @var Search
+     */
+    private $search;
+
     public function __construct(Search $search)
     {
         $this->search = $search;
@@ -31,7 +35,7 @@ class TaxonomyController extends Controller
      */
     public function index($type)
     {
-        DB::enableQueryLog();
+//        DB::enableQueryLog();
 
         $type_plural = $type;
         $type = str_singular($type);
@@ -106,7 +110,8 @@ class TaxonomyController extends Controller
      */
     public function search(Request $request)
     {
-        DB::enableQueryLog();
+//        DB::enableQueryLog();
+
         $type_plural = $request->get('type');
         $type = str_singular($request->get('type'));
         $model = $this->nameSpace . Str::studly($type);
@@ -127,7 +132,8 @@ class TaxonomyController extends Controller
         $project = app()->make(Tenant::class)->slug();
 
         if ($type_plural === 'artists' || $type_plural === 'professions') {
-            return response()->json($model::select($type_plural.".id", $type_plural.".name")->where($type_plural.'.name','LIKE',"%$search%")
+            return response()->json($model::select($type_plural.".id", $type_plural.".name")
+                ->where($type_plural.'.name','LIKE',"%$search%")
                 ->distinct()
                 ->get());
         }
