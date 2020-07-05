@@ -3,7 +3,7 @@
 
 namespace App\Models\Taxonomy;
 
-class HistoricOrigin extends Taxonomy
+class HistoricalOrigin extends Taxonomy
 {
     /**
      * DB Table name

@@ -10,7 +10,7 @@ use App\Models\Taxonomy\Artist;
 use App\Models\Taxonomy\Collection;
 use App\Models\Taxonomy\Community;
 use App\Models\Taxonomy\Details;
-use App\Models\Taxonomy\HistoricOrigin;
+use App\Models\Taxonomy\HistoricalOrigin;
 use App\Models\Taxonomy\Location;
 use App\Models\Taxonomy\Maker;
 use App\Models\Taxonomy\Origin;
@@ -33,7 +33,7 @@ class AdminController extends Controller
 //        $schools = School::get()->sortBy('name')->values()->toTree();
         $properties = Property::get()->sortBy('name')->values();
 //        $subjects = Subject::get()->sortBy('name')->values()->toTree();
-//        $historic_origins = HistoricOrigin::get()->sortBy('name')->values()->toTree();
+//        $historical_origins = HistoricalOrigin::get()->sortBy('name')->values()->toTree();
 //        $periods = Period::get()->sortBy('name')->values()->toTree();
 //        $collections = Collection::get()->sortBy('name')->values()->toTree();
 //        $communities =  Community::get()->sortBy('name')->values()->toTree();
@@ -56,7 +56,7 @@ class AdminController extends Controller
 //            'schools' => $schools,
             'properties' =>  $properties,
 //            'subjects' => $subjects,
-//            'historic_origins' => $historic_origins,
+//            'historical_origins' => $historical_origins,
 //            'periods' => $periods,
             //'collections' => $collections,
             //'communities' => $communities,

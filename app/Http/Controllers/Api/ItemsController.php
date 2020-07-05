@@ -141,7 +141,7 @@ class ItemsController extends Controller
         $item->locations()->sync($request->get('item')->locations);
         $item->collections()->sync($request->get('item')->collections);
         $item->communities()->sync($request->get('item')->communities);
-        $item->historic_origins()->sync($request->get('item')->historic_origins);
+        $item->historical_origins()->sync($request->get('item')->historical_origins);
         $item->periods()->sync($request->get('item')->periods);
         $item->schools()->sync($request->get('item')->schools);
         $item->sites()->sync($request->get('item')->sites);
@@ -154,7 +154,7 @@ class ItemsController extends Controller
 //        $item->location_details()->sync($request->get('location_details'));
 //        $item->collection_details()->sync($request->get('collection_details'));
 //        $item->community_details()->sync($request->get('community_details'));
-//        $item->historic_origin_details()->sync($request->get('historic_origin_details'));
+//        $item->historical_origin_details()->sync($request->get('historical_origin_details'));
 //        $item->period_details()->sync($request->get('period_details'));
 //        $item->school_details()->sync($request->get('school_details'));
 //        $item->site_details()->sync($request->get('site_details'));

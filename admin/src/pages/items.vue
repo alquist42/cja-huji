@@ -171,17 +171,17 @@
                   </v-chip>
                 </template>
               </template>
-              <template v-slot:item.historic_origins="{ item }">
+              <template v-slot:item.historical_origins="{ item }">
                 <template
-                  v-for="historic_origin in item.historic_origins"
+                  v-for="historical_origin in item.historical_origins"
                 >
                   <v-chip
-                    :key="historic_origin.id"
+                    :key="historical_origin.id"
                     color="primary"
                     label
                     small
                   >
-                    {{ historic_origin.name }}
+                    {{ historical_origin.name }}
                   </v-chip>
                 </template>
               </template>
@@ -312,8 +312,8 @@
           text: 'Subjects', value: 'subjects',
         },
         {
-          text: 'Historic Origins',
-          value: 'historic_origins',
+          text: 'Historical Origins',
+          value: 'historical_origins',
           class: 'text-no-wrap',
         },
         {

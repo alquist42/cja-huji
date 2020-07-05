@@ -399,7 +399,7 @@
 <!--              :multiple="true"-->
 <!--              :normalizer="normalizer"-->
 <!--              :show-count="true"-->
-<!--              :options="historic_origins"-->
+<!--              :options="historical_origins"-->
 <!--            />-->
 <!--            <treeselect-->
 <!--              :multiple="true"-->
@@ -510,7 +510,7 @@
       'schools',
       'properties',
       'subjects',
-      'historic_origins',
+      'historical_origins',
       'periods',
       'collections',
       'communities',

@@ -6,7 +6,7 @@ use App\Models\Taxonomy\Collection;
 use App\Models\Taxonomy\Community;
 use App\Models\Taxonomy\Congregation;
 use App\Models\Taxonomy\Details;
-use App\Models\Taxonomy\HistoricOrigin;
+use App\Models\Taxonomy\HistoricalOrigin;
 use App\Models\Taxonomy\Location;
 use App\Models\Taxonomy\Maker;
 use App\Models\Taxonomy\Object  as TaxonomyObject;
@@ -81,9 +81,9 @@ class Classifiable extends Model
     /**
      * @return BelongsToMany
      */
-    public function historic_origins()
+    public function historical_origins()
     {
-        return $this->morphedByMany(HistoricOrigin::class, 'taxonomy','taxonomy','entity_id', 'taxonomy_id');
+        return $this->morphedByMany(HistoricalOrigin::class, 'taxonomy','taxonomy','entity_id', 'taxonomy_id');
     }
 
     /**
