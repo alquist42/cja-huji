@@ -6,6 +6,7 @@ namespace App\Services;
 use App\Models\Copyright;
 use App\Models\Date;
 use App\Models\Item;
+use App\Models\Taxonomy\Maker;
 use Illuminate\Database\Eloquent\Model;
 
 class ItemService
@@ -87,12 +88,42 @@ class ItemService
     }
 
     /**
+     *  Convert data used in the 'makers' taxon.
+     *
+     * @param array $data
+     * @return array
+     */
+    private function processMakersTaxon(array $data)
+    {
+        $makersData = $data['makers'];
+        $makers = [];
+
+        foreach ($makersData as $makerData) {
+            if (isset($makerData['id'])) {
+                $makers[] = ['id' => $makerData['id']];
+            } else {
+                $maker = Maker::firstOrCreate([
+                    'maker_name_id' => $makerData['artist']['id'],
+                    'maker_profession_id' => $makerData['profession']['id'],
+                ]);
+                $makers[] = ['id' => $maker->id];
+            }
+        }
+
+        $data['makers'] = $makers;
+
+        return $data;
+    }
+
+    /**
      * Sync taxonomy items.
      *
      * @param array $data
      */
     private function updateTaxonomy(array $data)
     {
+        $data = $this->processMakersTaxon($data);
+
         $taxons = [
             'locations',
             'origins',
@@ -104,6 +135,7 @@ class ItemService
             'collections',
             'communities',
             'sites',
+            'makers',
         ];
 
         foreach ($taxons as $taxon) {

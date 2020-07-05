@@ -12,6 +12,16 @@ class Maker extends Taxonomy
      */
     protected $table = 'makers';
 
+    protected $fillable = [
+        'maker_name_id',
+        'maker_profession_id',
+    ];
+
+    public static function bootNodeTrait()
+    {
+        // Override the trait's method as Maker doesn't use a hierarchy
+    }
+
     public function artist()
     {
         return $this->belongsTo(Artist::class, 'maker_name_id');

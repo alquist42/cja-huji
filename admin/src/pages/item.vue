@@ -129,49 +129,28 @@
                     </v-col>
                   </v-row>
                 </v-row>
-                <v-row>
-                  <v-col cols="6">
-                    <template v-for="obj in item.makers">
-                      <v-chip :key="obj.id">
-                        {{ obj.artist.name }} ({{ obj.profession.name }})
-                      </v-chip>
-                    </template>
-                    ({{ details('makers') }})
+                <v-row
+                  no-gutters
+                  class="mb-2"
+                >
+                  <v-col
+                    cols="12"
+                    class="pb-0"
+                  >
+                    <span class="overline">Makers</span>
+                    <taxon-maker-modal @input="addMaker" />
                   </v-col>
-                  <v-col cols="6">
-                    <v-autocomplete
-                      v-model="item['artists']"
-                      :items="queryItems"
-                      :loading="isLoading"
-                      :search-input.sync="search['artists']"
-                      color="primary"
-                      item-text="name"
-                      item-value="id"
-                      label="Artists"
-                      placeholder="Start typing to Search"
-                      return-object
-                      multiple
-                      chips
-                      outlined
-                      @click="type = 'artists'"
-                    />
-
-                    <v-autocomplete
-                      v-model="item['professions']"
-                      :items="queryItems"
-                      :loading="isLoading"
-                      :search-input.sync="search['professions']"
-                      color="primary"
-                      item-text="name"
-                      item-value="id"
-                      label="Professions"
-                      placeholder="Start typing to Search"
-                      return-object
-                      multiple
-                      chips
-                      outlined
-                      @click="type = 'professions'"
-                    />
+                  <v-col cols="12">
+                    <v-chip
+                      v-for="obj in item.makers"
+                      :key="obj.id"
+                      class="mb-1 mr-1"
+                      close
+                      @click:close="removeTaxonItem('makers', obj.id)"
+                    >
+                      {{ obj.artist.name }} ({{ obj.profession.name }})
+                    </v-chip>
+                    ({{ details('makers') }})
                   </v-col>
                 </v-row>
 
@@ -384,16 +363,11 @@
                   type="number"
                   outlined
                 />
-                <template
-                  v-for="field in map"
-                >
-                  <v-text-field
-                    :key="field"
-                    v-model="item[field]"
-                    outlined
-                    :label="field"
-                  />
-                </template>
+                <v-text-field
+                  v-model="item.geo_options"
+                  outlined
+                  label="Geolocation options"
+                />
               </v-card-text>
             </base-material-card>
           </v-col>
@@ -416,28 +390,6 @@
   const PUBLISH_STATE_PREPARED_FOR_PUBLISHING = 1
   const PUBLISH_STATE_PUBLISHED = 2
 
-  function debounce (func, wait, immediate) {
-    let timeout
-
-    return function executedFunction () {
-      const context = this
-      const args = arguments
-
-      const later = function () {
-        timeout = null
-        if (!immediate) func.apply(context, args)
-      }
-
-      const callNow = immediate && !timeout
-
-      clearTimeout(timeout)
-
-      timeout = setTimeout(later, wait)
-
-      if (callNow) func.apply(context, args)
-    }
-  }
-
   const groupBy = function (xs, key) {
     return xs.reduce(function (rv, x) {
       (rv[x[key]] = rv[x[key]] || []).push(x)
@@ -455,6 +407,7 @@
       // DashboardCoreSettings: () => import('./components/core/Settings'),
       // DashboardCoreView: () => import('../components/core/View'),
       TaxonModal: () => import('../components/TaxonModal'),
+      TaxonMakerModal: () => import('../components/TaxonMakerModal'),
     },
 
     props: [
@@ -462,14 +415,10 @@
     ],
 
     data: () => ({
-      queryItems: [],
-      search: {},
-      isLoading: false,
       isSaving: false,
       snackbar: false,
       snackbarText: '',
       snackbarColor: '',
-      type: 'origins',
       item: {},
 
       panel: [],
@@ -485,6 +434,7 @@
         collections: [],
         communities: [],
         sites: [],
+        makers: [],
         properties: [],
       },
 
@@ -500,23 +450,17 @@
         // 'congregations',
         'communities',
         'sites',
-        // 'makers',
         // 'location_details',
         // 'origin_details',
         // 'school_details',
         // 'object_details',
         // 'subject_details',
-        //        'historical_origin_details',
+        // 'historical_origin_details',
         // 'period_details',
-        //        'site_details',
-        //        'congregation_details',
+        // 'site_details',
+        // 'congregation_details',
         // 'collection_details',
         // 'community_details',
-        // 'maker_details',
-      ],
-
-      map: [
-        'geo_options',
       ],
 
       fields: [
@@ -697,7 +641,6 @@
     },
 
     async mounted () {
-      this.taxons.concat(['artists', 'professions']).map(taxon => this.$watch(`search.${taxon}`, debounce(function (query) { this.autocomplete(query, taxon) }, 300)))
       let response = await this.$http.get(`/api/items/${this.id}?project=catalogue`)
       this.item = response.data
 
@@ -720,17 +663,6 @@
     },
 
     methods: {
-      async autocomplete (query, type) {
-        console.log(query)
-        if (!query || query.length < 2) {
-          return
-        }
-        this.isLoading = true
-        const { data } = await this.$http.get(`/api/autocomplete/?type=${type}&project=catalogue&term=${query}`)
-        this.isLoading = false
-        this.queryItems = data || []
-      },
-
       async save () {
         Object.keys(this.item).forEach(field => {
           if (this.taxons.includes(field)) {
@@ -744,6 +676,14 @@
             })
           }
         })
+
+        this.taxonomy.makers = this.item.makers.map(maker => {
+          return {
+            ...maker,
+            details: this.item.maker_details && this.item.maker_details[0] && this.item.maker_details[0].details,
+          }
+        })
+
         this.taxonomy.properties = this.item.properties.map(t => {
           return {
             property_id: t.pivot.property_id,
@@ -782,6 +722,10 @@
 
       removeTaxonItem (taxonName, itemId) {
         this.item[taxonName] = this.item[taxonName].filter(taxonItem => taxonItem.id !== itemId)
+      },
+
+      addMaker (maker) {
+        this.item.makers.push(maker)
       },
     },
   }
