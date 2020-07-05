@@ -90,7 +90,7 @@
                     class="pb-0"
                   >
                     <span class="overline">
-                      {{ taxon }}
+                      {{ taxon.replace('_', ' ') }}
                     </span>
                     <taxon-modal
                       :taxon="taxon"
