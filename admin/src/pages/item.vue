@@ -8,7 +8,6 @@
       {{ snackbarText }}
       <template v-slot:action="{ attrs }">
         <v-btn
-          dark
           text
           v-bind="attrs"
           @click="snackbar = false"
@@ -107,6 +106,7 @@
                         :key="obj.id"
                         class="mb-1 mr-1"
                         close
+                        color="green lighten-2"
                         @click:close="removeTaxonItem(taxon, obj.id)"
                       >
                         {{ obj.name }}
@@ -146,6 +146,7 @@
                       :key="obj.id"
                       class="mb-1 mr-1"
                       close
+                      color="green lighten-2"
                       @click:close="removeTaxonItem('makers', obj.id)"
                     >
                       {{ obj.artist.name }} ({{ obj.profession.name }})
