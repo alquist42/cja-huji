@@ -154,6 +154,8 @@
                   </v-col>
                 </v-row>
 
+                <v-divider class="mt-6" />
+                <div class="overline my-2">Properties</div>
                 <v-expansion-panels
                   v-model="panel"
                   multiple
@@ -739,6 +741,7 @@
         this.item.properties.push({
           ...prop,
           pivot: {
+            property_id: prop.id,
             value: newValue,
           },
         })

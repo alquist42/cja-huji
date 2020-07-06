@@ -31,6 +31,7 @@ class ItemService
     {
         $this->item->update($this->prepareHasOneRelations($data['item']));
         $this->updateTaxonomy($data['taxonomy']);
+        $this->updateProperties($data['taxonomy']['properties']);
 
         return $this->item;
     }
@@ -146,5 +147,20 @@ class ItemService
 
             $this->item->$taxon()->sync($items);
         }
+    }
+
+    private function updateProperties(array $data)
+    {
+        $properties = [];
+
+        foreach ($data as $propertyData) {
+            $properties[$propertyData['property_id']] = [
+                'value'       => $propertyData['value'],
+                'entity_type' => 'set',
+                'prop_flags'  => false,
+            ];
+        }
+
+        $this->item->properties()->sync($properties);
     }
 }
