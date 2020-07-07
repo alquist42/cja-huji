@@ -224,16 +224,18 @@
                 </div>
               </template>
               <v-card-text>
-                <template
-                  v-for="image in item.images"
-                >
-                  <v-img
+                <v-carousel height="250">
+                  <v-carousel-item
+                    v-for="image in item.images"
                     :key="image.id"
-                    aspect-ratio="1.7"
-                    max-height="250px"
-                    :src="`http://cja.huji.ac.il/${image.small || image.medium || image.def || image.batch_url}`"
-                  />
-                </template>
+                  >
+                    <v-img
+                      :src="`http://cja.huji.ac.il/${image.small || image.medium || image.def || image.batch_url}`"
+                      max-height="250px"
+                      contain
+                    />
+                  </v-carousel-item>
+                </v-carousel>
               </v-card-text>
             </base-material-card>
 
