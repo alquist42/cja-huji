@@ -219,9 +219,22 @@
           <v-col cols="4">
             <base-material-card class="px-5 py-3">
               <template v-slot:heading>
-                <div class="display-2 font-weight-light">
-                  Images: {{ item.images ? item.images.length : '0' }}
-                </div>
+                <v-row no-gutters>
+                  <v-col class="flex-grow-1 display-2 font-weight-light">
+                    Images: {{ item.images ? item.images.length : '0' }}
+                  </v-col>
+                  <v-col
+                    cols="auto"
+                    class="d-flex align-center"
+                  >
+                    <v-btn
+                      icon
+                      @click="openMediaManagerModal"
+                    >
+                      <v-icon>mdi-pencil</v-icon>
+                    </v-btn>
+                  </v-col>
+                </v-row>
               </template>
               <v-card-text>
                 <v-carousel height="250">
@@ -748,6 +761,10 @@
             value: newValue,
           },
         })
+      },
+
+      openMediaManagerModal () {
+        //
       },
     },
   }
