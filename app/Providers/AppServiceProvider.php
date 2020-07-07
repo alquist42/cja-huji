@@ -9,6 +9,7 @@ use App\Models\Taxonomy\Community;
 use App\Models\Taxonomy\HistoricalOrigin;
 use App\Models\Taxonomy\Location;
 use App\Models\Taxonomy\Maker;
+use App\Models\Taxonomy\Bibliography;
 use App\Models\Taxonomy\Object as TaxonomyObject;
 use App\Models\Taxonomy\Origin;
 use App\Models\Taxonomy\Period;
@@ -61,6 +62,7 @@ class AppServiceProvider extends ServiceProvider
             'item' => Item::class,
             'image' => Image::class,
             'maker' => Maker::class,
+            'bibliography' => Bibliography::class,
         ]);
 //
 //        ViewFactory::macro('component', function ($name, $viewData = [], $componentData = []) {

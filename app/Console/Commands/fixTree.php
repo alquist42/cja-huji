@@ -12,6 +12,7 @@ use App\Models\Taxonomy\Origin;
 use App\Models\Taxonomy\Period;
 use App\Models\Taxonomy\School;
 use App\Models\Taxonomy\Site;
+use App\Models\Taxonomy\Artist;
 use App\Models\Taxonomy\Subject;
 use Illuminate\Console\Command;
 
@@ -59,6 +60,7 @@ class FixTree extends Command
             Community::fixTree();
             Collection::fixTree();
             Site::fixTree();
+            Artist::fixTree();
             Item::fixTree();
         } catch (Exception $e) {
             $this->error($e->getMessage());
