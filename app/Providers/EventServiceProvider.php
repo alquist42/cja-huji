@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\Image;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Event;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -26,7 +28,12 @@ class EventServiceProvider extends ServiceProvider
     {
         parent::boot();
 
-        //
+        Event::listen('MMFileUploaded', function ($file_path, $mime_type, $options) {
+            Image::create([
+                'def' => 'images_db/'.$file_path,
+                'rights' => '111',
+            ]);
+        });
     }
 
     /**
