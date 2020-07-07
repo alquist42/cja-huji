@@ -11,6 +11,8 @@ class Image extends Classifiable
      */
     protected $table = 'images';
 
+    public $timestamps = false;
+
     protected $fillable = [
         'id',
         'item_id',
@@ -23,6 +25,7 @@ class Image extends Classifiable
         'remarks',
         'visual_regions',
 
+        'def',
         'original',
         'big',
         'medium',
@@ -33,6 +36,7 @@ class Image extends Classifiable
 
         'nli_pickname',
 
+        'rights',
 
         'copyright_id',
         'photographer_id',
