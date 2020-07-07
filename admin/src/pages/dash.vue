@@ -4,7 +4,7 @@
 
     <dashboard-core-drawer />
 
-    <v-content>
+    <v-main>
       <v-container
         id="user-profile"
         fluid
@@ -470,7 +470,7 @@
       </v-container>
 
       <dashboard-core-footer />
-    </v-content>
+    </v-main>
 
     <!--    <dashboard-core-settings />-->
   </v-app>
