@@ -220,7 +220,7 @@
             <base-material-card class="px-5 py-3">
               <template v-slot:heading>
                 <div class="display-2 font-weight-light">
-                  Images
+                  Images: {{ item.images ? item.images.length : '0' }}
                 </div>
               </template>
               <v-card-text>
