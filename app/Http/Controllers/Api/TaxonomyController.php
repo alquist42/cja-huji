@@ -90,7 +90,7 @@ class TaxonomyController extends Controller
             $elements =  $model::paginate();
         }
 
-        dd(DB::getQueryLog());
+   //     dd(DB::getQueryLog());
         return response()->json($elements);
     }
 
