@@ -12,4 +12,8 @@ class Copyright extends Model
      * @var string
      */
     protected $table = 'copyright';
+
+    protected $fillable = ['name'];
+
+    public $timestamps = false;
 }

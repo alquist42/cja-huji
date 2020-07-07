@@ -6,7 +6,7 @@ use App\Models\Image;
 use App\Models\Item;
 use App\Models\Taxonomy\Collection;
 use App\Models\Taxonomy\Community;
-use App\Models\Taxonomy\HistoricOrigin;
+use App\Models\Taxonomy\HistoricalOrigin;
 use App\Models\Taxonomy\Location;
 use App\Models\Taxonomy\Maker;
 use App\Models\Taxonomy\Object as TaxonomyObject;
@@ -50,7 +50,7 @@ class AppServiceProvider extends ServiceProvider
             'subject' => Subject::class,
             'collection' => Collection::class,
             'community' => Community::class,
-            'historical_origin' => HistoricOrigin::class,
+            'historical_origin' => HistoricalOrigin::class,
             'location' => Location::class,
             'object' => TaxonomyObject::class,
             'origin' => Origin::class,

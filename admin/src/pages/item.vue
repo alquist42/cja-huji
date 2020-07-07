@@ -1,22 +1,41 @@
 <template>
   <v-app>
-    <dashboard-core-app-bar />
+    <v-snackbar
+      v-model="snackbar"
+      :color="snackbarColor"
+      top
+    >
+      {{ snackbarText }}
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          text
+          v-bind="attrs"
+          @click="snackbar = false"
+        >
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
+
+    <dashboard-core-app-bar>
+      <v-btn
+        outlined
+        :loading="isSaving"
+        :disabled="isSaving"
+        @click="save"
+      >
+        Save
+      </v-btn>
+    </dashboard-core-app-bar>
 
     <dashboard-core-drawer />
 
-    <v-content>
+    <v-main>
       <v-container
         id="user-profile"
         fluid
         tag="section"
       >
-        <v-row>
-          <v-col cols="12">
-            <v-btn @click="save">
-              Save
-            </v-btn>
-          </v-col>
-        </v-row>
         <v-row>
           <v-col cols="8">
             <base-material-card class="px-5 py-3">
@@ -32,7 +51,6 @@
                 >
                   <v-text-field
                     v-model="item.name"
-                    :counter="10"
                     label="Name"
                     required
                     outlined
@@ -60,120 +78,105 @@
                 </div>
               </template>
               <v-card-text>
-                <template
+                <v-row
                   v-for="taxon in taxons"
+                  :key="taxon"
+                  no-gutters
+                  class="mb-2"
                 >
-                  <v-row :key="taxon">
+                  <v-col
+                    cols="12"
+                    class="pb-0"
+                  >
+                    <span class="overline">
+                      {{ taxon.replace('_', ' ') }}
+                    </span>
+                    <taxon-modal
+                      :taxon="taxon"
+                      :value="item[taxon] || []"
+                      @input="updateTaxon(taxon, $event)"
+                    />
+                  </v-col>
+                  <v-row no-gutters>
                     <v-col
                       v-if="item[taxon] && item[taxon].length"
-                      cols="6"
                     >
-                      <template v-for="obj in item[taxon]">
-                        <v-chip :key="obj.id">
-                          {{ obj.name }}
-                        </v-chip>
-                      </template>
+                      <v-chip
+                        v-for="obj in item[taxon]"
+                        :key="obj.id"
+                        class="mb-1 mr-1"
+                        close
+                        color="green lighten-2"
+                        @click:close="removeTaxonItem(taxon, obj.id)"
+                      >
+                        {{ obj.name }}
+                      </v-chip>
                       ({{ details(taxon) }})
                     </v-col>
+                    <!--TODO: allow to work with a parent taxonomy too-->
                     <v-col
                       v-if="item.parent && item.parent[0]"
                       cols="6"
                     >
-                      <template v-for="obj in item.parent[0][taxon]">
-                        <v-chip :key="obj.id">
-                          {{ obj.name }}
-                        </v-chip>
-                      </template>
+                      <v-chip
+                        v-for="obj in item.parent[0][taxon]"
+                        :key="obj.id"
+                        class="mb-1 mr-1"
+                      >
+                        {{ obj.name }}
+                      </v-chip>
                       <!--                      ({{ details(taxon) }})-->
                     </v-col>
-                    <v-col
-                      cols="6"
-                    >
-                      <v-autocomplete
-                        v-model="item[taxon]"
-                        :disabled="item[taxon] && item[taxon].length === 0"
-                        :items="queryItems"
-                        :loading="isLoading"
-                        :search-input.sync="search[taxon]"
-                        color="primary"
-                        item-text="name"
-                        item-value="id"
-                        :label="taxon"
-                        placeholder="Start typing to Search"
-                        return-object
-                        multiple
-                        chips
-                        outlined
-                        @click="type = taxon"
-                      />
-                    </v-col>
                   </v-row>
-                </template>
-                <v-row>
-                  <v-col cols="6">
-                    <template v-for="obj in item.makers">
-                      <v-chip :key="obj.id">
-                        {{ obj.artist.name }} ({{ obj.profession.name }})
-                      </v-chip>
-                    </template>
-                    ({{ details('makers') }})
+                </v-row>
+                <v-row
+                  no-gutters
+                  class="mb-2"
+                >
+                  <v-col
+                    cols="12"
+                    class="pb-0"
+                  >
+                    <span class="overline">Makers</span>
+                    <taxon-maker-modal @input="addMaker" />
                   </v-col>
-                  <v-col cols="6">
-                    <v-autocomplete
-                      v-model="item['artists']"
-                      :items="queryItems"
-                      :loading="isLoading"
-                      :search-input.sync="search['artists']"
-                      color="primary"
-                      item-text="name"
-                      item-value="id"
-                      label="Artists"
-                      placeholder="Start typing to Search"
-                      return-object
-                      multiple
-                      chips
-                      outlined
-                      @click="type = 'artists'"
-                    />
-
-                    <v-autocomplete
-                      v-model="item['professions']"
-                      :items="queryItems"
-                      :loading="isLoading"
-                      :search-input.sync="search['professions']"
-                      color="primary"
-                      item-text="name"
-                      item-value="id"
-                      label="Professions"
-                      placeholder="Start typing to Search"
-                      return-object
-                      multiple
-                      chips
-                      outlined
-                      @click="type = 'professions'"
-                    />
+                  <v-col cols="12">
+                    <v-chip
+                      v-for="obj in item.makers"
+                      :key="obj.id"
+                      class="mb-1 mr-1"
+                      close
+                      color="green lighten-2"
+                      @click:close="removeTaxonItem('makers', obj.id)"
+                    >
+                      {{ obj.artist.name }} ({{ obj.profession.name }})
+                    </v-chip>
+                    ({{ details('makers') }})
                   </v-col>
                 </v-row>
 
+                <v-divider class="mt-6" />
+                <div class="overline my-2">Properties</div>
                 <v-expansion-panels
                   v-model="panel"
                   multiple
                 >
                   <v-expansion-panel
-                    v-for="(categ, i) in Object.keys(propers)"
-                    :key="i"
+                    v-for="categName in Object.keys(propers)"
+                    :key="categName"
                   >
-                    <v-expansion-panel-header>{{ categ }}</v-expansion-panel-header>
+                    <v-expansion-panel-header>
+                      <span class="overline">{{ categName.replace('_', ' ') }}</span>
+                    </v-expansion-panel-header>
                     <v-expansion-panel-content>
-                      <template
-                        v-for="(prop, i) in propers[categ]"
-                      >
+                      <template v-for="(prop, i) in propers[categName]">
                         <v-text-field
                           v-if="prop.type === 'text'"
                           :key="prop.id"
-                          v-model="itemProp(prop.prop_name).pivot.value"
                           :label="prop.verbose_name"
                           outlined
+                          :value="getItemPropValue(prop.prop_name)"
+                          @input="setItemPropValue(prop, $event)"
                         >
                           <template v-slot:prepend>
                             <v-badge :content="i+1" />
@@ -182,25 +185,28 @@
                         <v-textarea
                           v-if="prop.type === 'textarea' && prop.content_type === 'plain'"
                           :key="prop.id"
-                          v-model="itemProp(prop.prop_name).pivot.value"
                           :label="prop.verbose_name"
                           outlined
+                          :value="getItemPropValue(prop.prop_name)"
+                          @input="setItemPropValue(prop, $event)"
                         />
                         <tiptap-vuetify
                           v-if="prop.type === 'textarea' && prop.content_type === 'htmle'"
                           :key="prop.id"
-                          v-model="itemProp(prop.prop_name).pivot.value"
                           :placeholder="prop.verbose_name"
                           :extensions="extensions"
+                          :value="getItemPropValue(prop.prop_name)"
+                          @input="setItemPropValue(prop, $event)"
                         />
                         <v-select
                           v-if="prop.type === 'select'"
                           :key="prop.id"
-                          v-model="itemProp(prop.prop_name).pivot.value"
                           :items="prop.allowed_vals.split(' | ')"
                           chips
                           :label="prop.verbose_name"
                           outlined
+                          :value="getItemPropValue(prop.prop_name)"
+                          @input="setItemPropValue(prop, $event)"
                         />
                       </template>
                     </v-expansion-panel-content>
@@ -238,16 +244,26 @@
                 </div>
               </template>
               <v-card-text>
-                <template
-                  v-for="field in settings"
-                >
-                  <v-text-field
-                    :key="field"
-                    v-model="item[field]"
-                    outlined
-                    :label="field"
-                  />
-                </template>
+                <v-select
+                  v-model="item.category_object"
+                  :items="possibleCategories"
+                  label="Category"
+                  item-text="name"
+                  item-value="slug"
+                  return-object
+                  outlined
+                />
+                <v-select
+                  v-model="item.publish_state"
+                  :items="possiblePublishStates"
+                  label="Publish state"
+                  outlined
+                />
+                <v-text-field
+                  v-model="item.publish_state_reason"
+                  label="Publish state reason"
+                  outlined
+                />
               </v-card-text>
             </base-material-card>
 
@@ -258,16 +274,69 @@
                 </div>
               </template>
               <v-card-text>
-                <template
+                <v-combobox
+                  v-model="item.creation_date"
+                  :items="dates"
+                  :search-input.sync="searchDate"
+                  item-value="id"
+                  item-text="name"
+                  label="Creation date"
+                  placeholder="Start typing to search"
+                  outlined
+                  :loading="isLoadingDates"
+                />
+                <v-combobox
+                  v-model="item.reconstruction_dates_object"
+                  :items="reconstructionDates"
+                  :search-input.sync="searchReconstructionDates"
+                  item-value="id"
+                  item-text="name"
+                  label="Reconstruction dates"
+                  placeholder="Start typing to search"
+                  outlined
+                  :loading="isLoadingReconstructionDates"
+                />
+                <v-combobox
+                  v-model="item.activity_dates_object"
+                  :items="activityDates"
+                  :search-input.sync="searchActivityDates"
+                  item-value="id"
+                  item-text="name"
+                  label="Activity dates"
+                  placeholder="Start typing to search"
+                  outlined
+                  :loading="isLoadingActivityDates"
+                />
+                <v-combobox
+                  v-model="item.copyright"
+                  :items="copyrights"
+                  :search-input.sync="searchCopyright"
+                  item-value="id"
+                  item-text="name"
+                  label="Copyright"
+                  placeholder="Start typing to search"
+                  outlined
+                  :loading="isLoadingCopyright"
+                />
+                <v-textarea
+                  v-model="item.remarks"
+                  label="Remarks"
+                  outlined
+                  counter="200"
+                  no-resize
+                />
+                <v-switch
+                  v-model="item.artifact_at_risk"
+                  label="Artifact at risk"
+                  inset
+                />
+                <v-text-field
                   v-for="field in fields"
-                >
-                  <v-text-field
-                    :key="field"
-                    v-model="item[field]"
-                    outlined
-                    :label="field"
-                  />
-                </template>
+                  :key="field"
+                  v-model="item[field]"
+                  outlined
+                  :label="field"
+                />
               </v-card-text>
             </base-material-card>
 
@@ -289,16 +358,23 @@
                 </div>
               </template>
               <v-card-text>
-                <template
-                  v-for="field in map"
-                >
-                  <v-text-field
-                    :key="field"
-                    v-model="item[field]"
-                    outlined
-                    :label="field"
-                  />
-                </template>
+                <v-text-field
+                  v-model="item.geo_lat"
+                  label="Latitude"
+                  type="number"
+                  outlined
+                />
+                <v-text-field
+                  v-model="item.geo_lng"
+                  label="Longitude"
+                  type="number"
+                  outlined
+                />
+                <v-text-field
+                  v-model="item.geo_options"
+                  outlined
+                  label="Geolocation options"
+                />
               </v-card-text>
             </base-material-card>
           </v-col>
@@ -306,7 +382,7 @@
       </v-container>
 
       <!--      <dashboard-core-footer />-->
-    </v-content>
+    </v-main>
 
     <!--    <dashboard-core-settings />-->
   </v-app>
@@ -316,28 +392,11 @@
 
   import { singular } from 'pluralize'
   import { TiptapVuetify, Heading, Bold, Italic, Strike, Underline, Code, Paragraph, BulletList, OrderedList, ListItem, Link, Blockquote, HardBreak, HorizontalRule, History } from 'tiptap-vuetify'
+  import _sortBy from 'lodash/sortBy'
 
-  function debounce (func, wait, immediate) {
-    let timeout
-
-    return function executedFunction () {
-      const context = this
-      const args = arguments
-
-      const later = function () {
-        timeout = null
-        if (!immediate) func.apply(context, args)
-      }
-
-      const callNow = immediate && !timeout
-
-      clearTimeout(timeout)
-
-      timeout = setTimeout(later, wait)
-
-      if (callNow) func.apply(context, args)
-    }
-  }
+  const PUBLISH_STATE_NOT_PUBLISHED = 0
+  const PUBLISH_STATE_PREPARED_FOR_PUBLISHING = 1
+  const PUBLISH_STATE_PUBLISHED = 2
 
   const groupBy = function (xs, key) {
     return xs.reduce(function (rv, x) {
@@ -347,7 +406,7 @@
   }
 
   export default {
-    name: 'DashboardIndex',
+    name: 'Item',
 
     components: {
       TiptapVuetify,
@@ -355,6 +414,8 @@
       DashboardCoreDrawer: () => import('../views/dashboard/components/core/Drawer'),
       // DashboardCoreSettings: () => import('./components/core/Settings'),
       // DashboardCoreView: () => import('../components/core/View'),
+      TaxonModal: () => import('../components/TaxonModal'),
+      TaxonMakerModal: () => import('../components/TaxonMakerModal'),
     },
 
     props: [
@@ -362,11 +423,10 @@
     ],
 
     data: () => ({
-
-      queryItems: [],
-      search: {},
-      isLoading: false,
-      type: 'origins',
+      isSaving: false,
+      snackbar: false,
+      snackbarText: '',
+      snackbarColor: '',
       item: {},
 
       panel: [],
@@ -377,11 +437,12 @@
         schools: [],
         subjects: [],
         objects: [],
-        historic_origins: [],
+        historical_origins: [],
         periods: [],
         collections: [],
         communities: [],
         sites: [],
+        makers: [],
         properties: [],
       },
 
@@ -391,38 +452,23 @@
         'schools',
         'subjects',
         'objects',
-        'historic_origins',
+        'historical_origins',
         'periods',
         'collections',
         // 'congregations',
         'communities',
         'sites',
-        // 'makers',
         // 'location_details',
         // 'origin_details',
         // 'school_details',
         // 'object_details',
         // 'subject_details',
-        //        'historic_origin_details',
+        // 'historical_origin_details',
         // 'period_details',
-        //        'site_details',
-        //        'congregation_details',
+        // 'site_details',
+        // 'congregation_details',
         // 'collection_details',
         // 'community_details',
-        // 'maker_details',
-      ],
-
-      map: [
-        'geo_lat',
-        'geo_lng',
-        'geo_options',
-      ],
-
-      settings: [
-        'category',
-        'publish_state',
-        'publish_state_reason',
-
       ],
 
       fields: [
@@ -431,16 +477,8 @@
         // 'name',
 
         // 'ntl',
-        'date',
-        'reconstruction_dates',
-        'activity_dates',
-        'category_object',
-        'creation_date',
-        'copyright_id',
-        'remarks',
         // 'description',
         // 'addenda',
-        'artifact_at_risk',
 
         // '_lft',
         // '_rgt',
@@ -477,61 +515,150 @@
         Paragraph,
         HardBreak,
       ],
+
+      categories: [],
+      dates: [],
+      searchDate: null,
+      isLoadingDates: false,
+      reconstructionDates: [],
+      searchReconstructionDates: null,
+      isLoadingReconstructionDates: false,
+      activityDates: [],
+      searchActivityDates: null,
+      isLoadingActivityDates: false,
+      copyrights: [],
+      searchCopyright: null,
+      isLoadingCopyright: false,
     }),
+
     computed: {
       propers () {
-        return groupBy(this.properties, 'categ_name')
+        const sortedProperties = _sortBy(this.properties, 'categ_name')
+
+        return groupBy(sortedProperties, 'categ_name')
       },
+
       // origins () {
       //   const self = this.item.origins
       //   const parent = this.item.parent.origins
       // },
-      itemProp () {
-        return (name) => {
-          const p = this.item.properties && this.item.properties.find(p => {
-            return p.prop_name === name
-          })
-          return p || { pivot: { value: '' } }
-        }
-      },
+
       details () {
         return (name) => {
           const field = `${singular(name)}_details`
           return this.item[field] && this.item[field][0] && this.item[field][0].details
         }
       },
+
+      possiblePublishStates () {
+        return [
+          {
+            value: PUBLISH_STATE_NOT_PUBLISHED,
+            text: 'Not published',
+          },
+          {
+            value: PUBLISH_STATE_PREPARED_FOR_PUBLISHING,
+            text: 'Prepared for publishing',
+          },
+          {
+            value: PUBLISH_STATE_PUBLISHED,
+            text: 'Published',
+          },
+        ]
+      },
+
+      possibleCategories () {
+        const sortedCategories = _sortBy(this.categories, 'name')
+
+        return [
+          {
+            slug: null,
+            name: 'None',
+          },
+          ...sortedCategories,
+        ]
+      },
+    },
+
+    watch: {
+      async searchDate (val) {
+        if (this.isLoadingDates) return
+
+        this.isLoadingDates = true
+        try {
+          const response = await this.$http.get(`/api/dates?project=catalogue&search=${val}`)
+          this.dates = response.data
+        } catch (e) {
+          console.log(e)
+        } finally {
+          this.isLoadingDates = false
+        }
+      },
+
+      async searchReconstructionDates (val) {
+        if (this.isLoadingReconstructionDates) return
+
+        this.isLoadingReconstructionDates = true
+        try {
+          const response = await this.$http.get(`/api/dates?project=catalogue&search=${val}`)
+          this.reconstructionDates = response.data
+        } catch (e) {
+          console.log(e)
+        } finally {
+          this.isLoadingReconstructionDates = false
+        }
+      },
+
+      async searchActivityDates (val) {
+        if (this.isLoadingActivityDates) return
+
+        this.isLoadingActivityDates = true
+        try {
+          const response = await this.$http.get(`/api/dates?project=catalogue&search=${val}`)
+          this.activityDates = response.data
+        } catch (e) {
+          console.log(e)
+        } finally {
+          this.isLoadingActivityDates = false
+        }
+      },
+
+      async searchCopyright (val) {
+        if (this.isLoadingCopyright) return
+
+        this.isLoadingCopyright = true
+        try {
+          const response = await this.$http.get(`/api/copyrights?project=catalogue&search=${val}`)
+          this.copyrights = response.data
+        } catch (e) {
+          console.log(e)
+        } finally {
+          this.isLoadingCopyright = false
+        }
+      },
     },
 
     async mounted () {
-      this.taxons.concat(['artists', 'professions']).map(taxon => this.$watch(`search.${taxon}`, debounce(function (query) { this.autocomplete(query, taxon) }, 300)))
-      const response = await this.$http.get('/api/items/' + this.id + '?project=catalogue')
+      let response = await this.$http.get(`/api/items/${this.id}?project=catalogue`)
       this.item = response.data
 
-      Object.keys(this.propers).forEach((categ, i) => {
-        this.propers[categ].forEach((prop) => {
-          const pr = this.item.properties.find(p => {
-            return p.prop_name === prop.prop_name
-          })
-          console.log(categ, pr, prop.prop_name, i)
+      response = await this.$http.get('/api/categories?project=catalogue')
+      this.categories = response.data
+
+      Object.keys(this.propers).forEach((categName, categIndex) => {
+        this.propers[categName].forEach((prop) => {
+          const pr = this.item.properties.find(p => p.prop_name === prop.prop_name)
+          console.log(categName, pr, prop.prop_name, categIndex)
           if (pr) {
-            this.panel.push(i)
+            this.panel.push(categIndex)
           }
         })
       })
 
       console.log(this.item)
     },
+
     methods: {
-      async autocomplete (query, type) {
-        console.log(query)
-        if (!query || query.length < 2) {
-          return
-        }
-        this.isLoading = true
-        const { data } = await this.$http.get(`/api/autocomplete/?type=${type}&project=catalogue&term=${query}`)
-        this.isLoading = false
-        this.queryItems = data || []
-      },
       async save () {
         Object.keys(this.item).forEach(field => {
           if (this.taxons.includes(field)) {
@@ -545,14 +672,80 @@
             })
           }
         })
+
+        this.taxonomy.makers = this.item.makers.map(maker => {
+          return {
+            ...maker,
+            details: this.item.maker_details && this.item.maker_details[0] && this.item.maker_details[0].details,
+          }
+        })
+
         this.taxonomy.properties = this.item.properties.map(t => {
           return {
             property_id: t.pivot.property_id,
             value: t.pivot.value,
           }
         })
-        await this.$http.put('/api/items/' + this.id + '?project=slovenia', { item: this.item, taxonomy: this.taxonomy })
-        console.log(this.item, this.taxonomy)
+        const item = {
+          ...this.item,
+          category: this.item.category_object.slug,
+        }
+
+        this.isSaving = true
+        try {
+          await this.$http.put('/api/items/' + this.id + '?project=slovenia', { item: item, taxonomy: this.taxonomy })
+          this.showSnackbar('success', 'Item has been saved')
+          console.log(this.item, this.taxonomy)
+        } catch (e) {
+          this.showSnackbar('error', 'An error occurred')
+          console.log(e)
+        } finally {
+          this.isSaving = false
+        }
+      },
+
+      showSnackbar (color, text) {
+        this.snackbarColor = color
+        this.snackbarText = text
+        this.snackbar = true
+      },
+
+      updateTaxon (taxonName, taxonItems) {
+        this.item[taxonName] = []
+
+        taxonItems.forEach(taxonItem => this.item[taxonName].push(taxonItem))
+      },
+
+      removeTaxonItem (taxonName, itemId) {
+        this.item[taxonName] = this.item[taxonName].filter(taxonItem => taxonItem.id !== itemId)
+      },
+
+      addMaker (maker) {
+        this.item.makers.push(maker)
+      },
+
+      getItemPropValue (propName) {
+        const p = this.item.properties && this.item.properties.find(p => p.prop_name === propName)
+
+        return p ? p.pivot.value : ''
+      },
+
+      setItemPropValue (prop, newValue) {
+        const propIndex = this.item.properties.findIndex(p => p.prop_name === prop.prop_name)
+
+        if (propIndex !== -1) {
+          this.item.properties[propIndex].pivot.value = newValue
+
+          return
+        }
+
+        this.item.properties.push({
+          ...prop,
+          pivot: {
+            property_id: prop.id,
+            value: newValue,
+          },
+        })
       },
     },
   }

@@ -4,7 +4,7 @@
 
     <dashboard-core-drawer />
 
-    <v-content>
+    <v-main>
       <v-container
         id="user-profile"
         fluid
@@ -399,7 +399,7 @@
 <!--              :multiple="true"-->
 <!--              :normalizer="normalizer"-->
 <!--              :show-count="true"-->
-<!--              :options="historic_origins"-->
+<!--              :options="historical_origins"-->
 <!--            />-->
 <!--            <treeselect-->
 <!--              :multiple="true"-->
@@ -470,7 +470,7 @@
       </v-container>
 
       <dashboard-core-footer />
-    </v-content>
+    </v-main>
 
     <!--    <dashboard-core-settings />-->
   </v-app>
@@ -510,7 +510,7 @@
       'schools',
       'properties',
       'subjects',
-      'historic_origins',
+      'historical_origins',
       'periods',
       'collections',
       'communities',

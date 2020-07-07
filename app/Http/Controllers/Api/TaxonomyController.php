@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use DB;
-use App\Services\Search;
 use App\Models\Tenant;
+use App\Services\Search;
+use DB;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+
 class TaxonomyController extends Controller
 {
 
@@ -18,6 +20,11 @@ class TaxonomyController extends Controller
     protected $model = null;
     protected $nameSpace = '\\App\\Models\\Taxonomy\\';
 
+    /**
+     * @var Search
+     */
+    private $search;
+
     public function __construct(Search $search)
     {
         $this->search = $search;
@@ -28,7 +35,7 @@ class TaxonomyController extends Controller
      */
     public function index($type)
     {
-        DB::enableQueryLog();
+//        DB::enableQueryLog();
 
         $type_plural = $type;
         $type = str_singular($type);
@@ -103,10 +110,11 @@ class TaxonomyController extends Controller
      */
     public function search(Request $request)
     {
-        DB::enableQueryLog();
+//        DB::enableQueryLog();
+
         $type_plural = $request->get('type');
         $type = str_singular($request->get('type'));
-        $model = $this->nameSpace . ucfirst($type);
+        $model = $this->nameSpace . Str::studly($type);
 
 //        if($type == 'object'){
 //            $model = $this->nameSpace . 'IObject';
@@ -124,33 +132,33 @@ class TaxonomyController extends Controller
         $project = app()->make(Tenant::class)->slug();
 
         if ($type_plural === 'artists' || $type_plural === 'professions') {
-            return response()->json($model::select($type_plural.".id", $type_plural.".name")->where($type_plural.'.name','LIKE',"%$search%")
+            return response()->json($model::select($type_plural.".id", $type_plural.".name")
+                ->where($type_plural.'.name','LIKE',"%$search%")
                 ->distinct()
                 ->get());
         }
 
-    $data = $model::select($type_plural.".id", $type_plural.".name")
-        ->join('taxonomy', function ($join) use ($type,$type_plural){
-            $join->on('taxonomy.taxonomy_id', '=', $type_plural . '.id')->
-            where('taxonomy.taxonomy_type', $type);
+        $data = $model::select($type_plural.".id", $type_plural.".name")
+            ->join('taxonomy', function ($join) use ($type, $type_plural) {
+                $join->on('taxonomy.taxonomy_id', '=', $type_plural.'.id')
+                    ->where('taxonomy.taxonomy_type', $type);
 
-        })
-        ->join('sets', function ($join) use ($type,$type_plural){
-            $join->on('sets.id', '=', 'taxonomy.entity_id');
-              //  ->where('taxonomy.entity_type', '=', 'set');
-        })
-
-        ->when($project != 'CJA', function ($q) use ($type,$type_plural,$project) {
-                $q->join('projects', function ($join) use ($type,$type_plural,$project){
-                    $join->on('sets.id', '=', 'projects.taggable_id')->
-                    where('projects.taggable_type', '=', 'set')
+            })
+            ->join('sets', function ($join) {
+                $join->on('sets.id', '=', 'taxonomy.entity_id');
+                //  ->where('taxonomy.entity_type', '=', 'set');
+            })
+            ->when($project != 'CJA', function ($q) use ($project) {
+                $q->join('projects', function ($join) use ($project) {
+                    $join->on('sets.id', '=', 'projects.taggable_id')
+                        ->where('projects.taggable_type', '=', 'set')
                         ->where('projects.tag_slug', $project);
                 });
-        })
-        ->where('sets.publish_state', '>', 0)
-        ->where($type_plural.'.name','LIKE',"%$search%")
-        ->distinct()
-        ->get();
+            })
+            ->where('sets.publish_state', '>', 0)
+            ->where($type_plural.'.name', 'LIKE', "%$search%")
+            ->distinct()
+            ->get();
 
    //     dd(DB::getQueryLog());
 

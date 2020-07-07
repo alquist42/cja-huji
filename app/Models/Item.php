@@ -3,11 +3,16 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Kalnoy\Nestedset\NodeTrait;
 
 class Item extends Classifiable
 {
     use NodeTrait;
+
+    const PUBLISH_STATE_NOT_PUBLISHED = 0;
+    const PUBLISH_STATE_PREPARED_FOR_PUBLISHING = 1;
+    const PUBLISH_STATE_PUBLISHED = 2;
 
     public $timestamps = false;
 
@@ -34,8 +39,8 @@ class Item extends Classifiable
 
         'category',
 
-        'lat',
-        'lon',
+        'geo_lat',
+        'geo_lng',
         'geo_options',
 
         'order',
@@ -50,6 +55,9 @@ class Item extends Classifiable
         'ntl_localname',
 
         'date',
+        'reconstruction_dates',
+        'activity_dates',
+        'copyright_id',
 
         'remarks',
     ];
@@ -60,7 +68,7 @@ class Item extends Classifiable
         'schools',
         'objects',
         'subjects',
-        'historic_origins',
+        'historical_origins',
         'periods',
         'sites',
 //        'congregations',
@@ -74,7 +82,7 @@ class Item extends Classifiable
         'school_details',
         'object_details',
         'subject_details',
-//        'historic_origin_details',
+//        'historical_origin_details',
         'period_details',
 //        'site_details',
 //        'congregation_details',
@@ -87,6 +95,8 @@ class Item extends Classifiable
         'makers.profession',
 
         'creation_date',
+        'reconstruction_dates_object',
+        'activity_dates_object',
         'category_object',
         'copyright',
 
@@ -102,6 +112,22 @@ class Item extends Classifiable
         'ancestors',
         'descendants'
     ];
+
+    /**
+     * @return HasOne
+     */
+    public function reconstruction_dates_object()
+    {
+        return $this->hasOne(Date::class, 'id', 'reconstruction_dates');
+    }
+
+    /**
+     * @return HasOne
+     */
+    public function activity_dates_object()
+    {
+        return $this->hasOne(Date::class, 'id', 'activity_dates');
+    }
 
     /**
      * @return HasMany

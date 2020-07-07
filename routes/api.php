@@ -17,6 +17,10 @@ Route::group(['namespace' => 'Api'], function () {
         Route::get('/taxonomy/{type}', 'TaxonomyController@index');
         Route::get('/taxonomy/{type}/{id}', 'TaxonomyController@show');
         Route::get('/autocomplete', 'TaxonomyController@search');
+
+        Route::get('/categories', 'CategoriesController@index');
+        Route::get('/dates', 'DatesController@index');
+        Route::get('/copyrights', 'CopyrightsController@index');
     });
 
     Route::group(['namespace' => 'MHS', 'prefix' => 'mhs'], function () {

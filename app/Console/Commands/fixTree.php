@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use App\Models\Item;
 use App\Models\Taxonomy\Collection;
 use App\Models\Taxonomy\Community;
-use App\Models\Taxonomy\HistoricOrigin;
+use App\Models\Taxonomy\HistoricalOrigin;
 use App\Models\Taxonomy\Location;
 use App\Models\Taxonomy\Object as TaxonomyObject;
 use App\Models\Taxonomy\Origin;
@@ -52,7 +52,7 @@ class FixTree extends Command
             Location::fixTree();
             Subject::fixTree();
             TaxonomyObject::fixTree();
-            HistoricOrigin::fixTree();
+            HistoricalOrigin::fixTree();
             Origin::fixTree();
             School::fixTree();
             Period::fixTree();
