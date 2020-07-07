@@ -72,21 +72,28 @@ class Search
                 })->get();
                 $taxonomyIds = array_map(function ($u) {return $u['id'];}, $descendants->toArray());
             }
+            break;
         }
-       // dd(DB::getQueryLog());
+
+        if($type == 'artists'){
+            $makers = DB::table('makers')
+                ->select('id')
+                ->whereIn('maker_name_id', $taxonomyIds)
+                ->get();
+            $taxonomyIds = array_map(function ($u) {return $u->id;}, $makers->toArray());
+            $type = 'makers';
+        }
+
+
+
+     //   if($)
 
         $result = DB::table('taxonomy')
             ->select('sets.id as set'/*,'items.id as item'*/)
             ->leftJoin('sets', function ($join) {
                 $join->on('sets.id', '=', 'taxonomy.entity_id')->
-              //  where('taxonomy.entity_type', '=', 'set')->
                 where('sets.publish_state', '>', 0);
             })
-            /*->leftJoin('items', function ($join) {
-                $join->on('items.id', '=', 'taxonomy.entity_id')->
-                where('taxonomy.entity_type', '=', 'item')->
-                where('items.publish_state', '>', 0);
-            })*/
             ->where('taxonomy.taxonomy_type', '=', str_singular($type))
             ->whereIn('taxonomy.taxonomy_id', $taxonomyIds)
             ->when($project != 'CJA', function ($q) use ($project) {
@@ -109,7 +116,7 @@ class Search
                 });
             })
             ->paginate(20);
-
+     //   dd(DB::getQueryLog());
         $total = $result->total();
         $data = $result->toArray()['data'];
         $setObjects= array_filter($data, function($v) {
