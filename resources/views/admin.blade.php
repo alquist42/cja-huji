@@ -27,6 +27,7 @@
     <link href="{{ vuecli('dash.js') }}" rel=preload as=script>
     <link href="{{ vuecli('chunk-vendors.css') }}" rel=stylesheet>
     <link href="{{ vuecli('dash.css') }}" rel=stylesheet>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
     <link rel="stylesheet" href="{{ asset('assets/vendor/MediaManager/style.css') }}"/>
     <link rel="icon" href="http://cja.huji.ac.il/favicon.ico" type="image/x-icon" />
 
