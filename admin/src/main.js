@@ -11,7 +11,6 @@
 //
 // * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
-import Vue from 'vue'
 // import App from './App.vue'
 // import router from './router'
 import store from './store'
@@ -32,6 +31,8 @@ import { TiptapVuetifyPlugin } from 'tiptap-vuetify'
 // don't forget to import CSS styles
 import 'tiptap-vuetify/dist/main.css'
 
+window.Vue = require('vue')
+/* global Vue */
 Vue.use(VueExcelEditor)
 Vue.use(VueTreeList)
 Vue.use(FileManager, { store })
@@ -50,6 +51,7 @@ Vue.prototype.$http = axios
 Vue.prototype.$http.defaults.headers.common['X-CSRF-TOKEN'] = root.dataset.csrfToken
 Vue.prototype.$http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
 Vue.prototype.$route = window.route
+Vue.prototype.$eventBus = new Vue()
 
 Vue.config.productionTip = false
 
@@ -59,10 +61,13 @@ Vue.component('Dash', Dash)
 Vue.component('Items', Items)
 Vue.component('Item', Item)
 
+Vue.component('MediaManagerModal', require('./components/MediaManagerModal.vue').default)
+require('../../resources/assets/vendor/MediaManager/js/manager')
+
 new Vue({
   // router,
   store,
   vuetify,
   // i18n,
-  render: h => h(Vue.component(root.dataset.vueComponent), { props: JSON.parse(root.dataset.vueProps) }),
+  // render: h => h(Vue.component(root.dataset.vueComponent), { props: JSON.parse(root.dataset.vueProps) }),
 }).$mount(root)

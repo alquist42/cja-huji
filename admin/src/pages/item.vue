@@ -1,5 +1,6 @@
 <template>
   <v-app>
+
     <v-snackbar
       v-model="snackbar"
       :color="snackbarColor"
@@ -36,6 +37,7 @@
         fluid
         tag="section"
       >
+        <slot name="media-manager-modal" />
         <v-row>
           <v-col cols="8">
             <base-material-card class="px-5 py-3">
@@ -156,7 +158,9 @@
                 </v-row>
 
                 <v-divider class="mt-6" />
-                <div class="overline my-2">Properties</div>
+                <div class="overline my-2">
+                  Properties
+                </div>
                 <v-expansion-panels
                   v-model="panel"
                   multiple
@@ -433,9 +437,16 @@
       TaxonMakerModal: () => import('../components/TaxonMakerModal'),
     },
 
-    props: [
-      'id', 'properties',
-    ],
+    props: {
+      id: {
+        type: String,
+        required: true,
+      },
+      properties: {
+        type: Array,
+        required: true,
+      },
+    },
 
     data: () => ({
       isSaving: false,
@@ -764,7 +775,7 @@
       },
 
       openMediaManagerModal () {
-        //
+        this.$eventBus.$emit('open-media-manager-modal')
       },
     },
   }
