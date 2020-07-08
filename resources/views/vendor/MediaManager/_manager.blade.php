@@ -305,6 +305,17 @@
                                     <span>{{ trans('MediaManager::messages.select.bulk') }}</span>
                                 </button>
                             </div>
+
+                            {{-- create item --}}
+                            <div class="control">
+                                <button @click.stop="createNewItem({ test: 'test' })"
+                                    class="button"
+                                    v-if="searchItemsCount > 0 || allItemsCount || !isLoading"
+                                    v-tippy>
+                                    <span class="icon"><icon name="plus"></icon></span>
+                                    <span>Create Item</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
 

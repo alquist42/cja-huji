@@ -775,7 +775,8 @@
       },
 
       openMediaManagerModal () {
-        this.$eventBus.$emit('open-media-manager-modal')
+        // eslint-disable-next-line
+        EventHub.fire('open-media-manager-modal')
       },
     },
   }

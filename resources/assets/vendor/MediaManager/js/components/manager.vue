@@ -516,6 +516,9 @@ export default {
         },
         createNewFolder() {
             this.toggleModal('new_folder_modal')
+        },
+        createNewItem(data) {
+            EventHub.fire('create-item', data)
         }
     },
     render() {}

@@ -51,7 +51,6 @@ Vue.prototype.$http = axios
 Vue.prototype.$http.defaults.headers.common['X-CSRF-TOKEN'] = root.dataset.csrfToken
 Vue.prototype.$http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
 Vue.prototype.$route = window.route
-Vue.prototype.$eventBus = new Vue()
 
 Vue.config.productionTip = false
 
