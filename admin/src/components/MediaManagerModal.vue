@@ -13,13 +13,12 @@
     },
 
     created () {
-      /* eslint-disable */
+      /* global EventHub */
       EventHub.listen('open-media-manager-modal', () => this.openModal())
 
-      EventHub.listen('create-item', (data) => {
-        console.log('create-item Event', data)
+      EventHub.listen('create-new-item', (data) => {
+        console.log('create-new-item Event', data)
       })
-      /* eslint-enable */
     },
 
     beforeDestroy () {

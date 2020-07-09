@@ -305,17 +305,6 @@
                                     <span>{{ trans('MediaManager::messages.select.bulk') }}</span>
                                 </button>
                             </div>
-
-                            {{-- create item --}}
-                            <div class="control">
-                                <button @click.stop="createNewItem({ test: 'test' })"
-                                    class="button"
-                                    v-if="searchItemsCount > 0 || allItemsCount || !isLoading"
-                                    v-tippy>
-                                    <span class="icon"><icon name="plus"></icon></span>
-                                    <span>Create Item</span>
-                                </button>
-                            </div>
                         </div>
                     </div>
 
@@ -378,6 +367,53 @@
                             </div>
                         </div>
                     </template>
+                </div>
+
+                {{-- ====================================================================== --}}
+
+                {{-- injected toolbar --}}
+                <div class="level-injected">
+                    {{-- first --}}
+                    <div class="level-item">
+                        <div class="field has-addons">
+                            {{-- create item --}}
+                            <div class="control">
+                                <button class="button is-info"
+                                        ref="createNewItem"
+                                        :disabled="ops_btn_disable"
+                                        v-tippy
+                                        @click.stop="createNewItem()">
+                                    <span class="icon"><icon name="file-text-o"></icon></span>
+                                    <span>Create New Item</span>
+                                </button>
+                            </div>
+
+                            {{-- include image(s) in item --}}
+                            <div class="control">
+                                <button class="button is-success"
+                                        ref="includeImagesInItem"
+                                        :disabled="ops_btn_disable"
+                                        v-tippy
+                                        @click.stop="includeImagesInItem()">
+                                    <span class="icon"><icon name="plus"></icon></span>
+                                    <span>Include Image(s)</span>
+                                </button>
+                            </div>
+
+                            {{-- exclude image(s) from item --}}
+                            <div class="control">
+                                <button class="button is-warning"
+                                        ref="excludeImagesFromItem"
+                                        :disabled="ops_btn_disable"
+                                        v-tippy
+                                        @click.stop="excludeImagesFromItem()">
+                                    <span class="icon"><icon name="minus"></icon></span>
+                                    <span>Exclude Image(s)</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </nav>
         </transition>

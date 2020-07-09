@@ -517,8 +517,35 @@ export default {
         createNewFolder() {
             this.toggleModal('new_folder_modal')
         },
-        createNewItem(data) {
-            EventHub.fire('create-item', data)
+
+        createNewItem() {
+            this.$nextTick(() => {
+                if (!this.globalSearchPanelIsVisible) {
+                    if (this.$refs.createNewItem.disabled) return
+                }
+
+                EventHub.fire('create-new-item', {})
+            })
+        },
+
+        includeImagesInItem() {
+            this.$nextTick(() => {
+                if (!this.globalSearchPanelIsVisible) {
+                    if (this.$refs.includeImagesInItem.disabled) return
+                }
+
+                EventHub.fire('include-images-in-item', {})
+            })
+        },
+
+        excludeImagesFromItem() {
+            this.$nextTick(() => {
+                if (!this.globalSearchPanelIsVisible) {
+                    if (this.$refs.excludeImagesFromItem.disabled) return
+                }
+
+                EventHub.fire('exclude-images-from-item', {})
+            })
         }
     },
     render() {}
