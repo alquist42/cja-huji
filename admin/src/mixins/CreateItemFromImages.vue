@@ -13,9 +13,17 @@
     methods: {
       async createItemFromImages (images) {
         try {
-          const { data } = await this.$http.post('/api/items?project=catalogue', {
+          // eslint-disable-next-line
+          let payload = {
             images: images,
-          })
+          }
+          if (this.id) {
+            payload.item = {
+              parent_id: this.id,
+            }
+          }
+
+          const { data } = await this.$http.post('/api/items?project=catalogue', payload)
 
           window.location.href = `/staff/items/${data.id}`
         } catch (e) {

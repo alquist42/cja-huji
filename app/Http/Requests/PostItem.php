@@ -31,21 +31,22 @@ class PostItem extends FormRequest
 
     protected function prepareForValidation()
     {
-        if (!$this->has('item')) {
-            $this->merge([
-                'item' => [
-                    'name' => '',
-                    'ntl' => '',
-                    'description' => '',
-                    'addenda' => '',
-                    'publish_state' => Item::PUBLISH_STATE_NOT_PUBLISHED,
-                    'artifact_at_risk' => false,
-                    'creation_date' => null,
-                    'reconstruction_dates_object' => null,
-                    'activity_dates_object' => null,
-                    'copyright' => null,
-                ]
-            ]);
-        }
+        $defaultItem = [
+            'name' => '',
+            'ntl' => '',
+            'description' => '',
+            'addenda' => '',
+            'publish_state' => Item::PUBLISH_STATE_NOT_PUBLISHED,
+            'artifact_at_risk' => false,
+            'creation_date' => null,
+            'reconstruction_dates_object' => null,
+            'activity_dates_object' => null,
+            'copyright' => null,
+        ];
+
+        $data = $this->all();
+        $data['item'] = isset($data['item']) ? array_merge($defaultItem, $data['item']) : $defaultItem;
+
+        $this->replace($data);
     }
 }
