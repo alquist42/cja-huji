@@ -58,7 +58,7 @@ class ItemService
             if (isset($imageData['id'])) {
                 $image = $imageData;
             } else {
-                $image = Image::where('def', 'images_db/' . $imageData['storage_path'])
+                $image = Image::where('def', $imageData['storage_path'])
                     ->firstOrFail()
                     ->toArray();
             }
