@@ -552,7 +552,15 @@ export default {
                     if (this.$refs.excludeImagesFromItem.disabled) return
                 }
 
-                EventHub.fire('MediaManagerModal-exclude-images-from-item', {})
+              let selectedImages = []
+
+              if (this.isBulkSelecting()) {
+                selectedImages = this.bulkList
+              } else {
+                selectedImages.push(this.selectedFile)
+              }
+
+                EventHub.fire('MediaManagerModal-exclude-images-from-item', selectedImages)
             })
         }
     },

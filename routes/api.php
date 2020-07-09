@@ -10,8 +10,7 @@ Route::group(['namespace' => 'Api'], function () {
         Route::get('/items/{item}', 'ItemsController@show');
         Route::put('/items/{item}', 'ItemsController@update');
         Route::post('/items/{item}', 'ItemsController@store');
-
-        Route::post('/item_images', 'ItemImagesController@store');
+        Route::put('/items/{item}/images', 'ItemImagesController@update');
 
         //   Route::get('/images', 'ImagesController@index');
         //  Route::get('/images/{image}', 'ImagesController@show');

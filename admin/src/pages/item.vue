@@ -666,7 +666,8 @@
 
     created () {
       EventHub.listen('show-snackbar', (options) => this.showSnackbar(options.color, options.text))
-      EventHub.listen('MediaManagerModal-images-were-included', (images) => this.updateImages(images))
+      EventHub.listen('MediaManagerModal-include-images-in-item', (images) => this.includeImages(images))
+      EventHub.listen('MediaManagerModal-exclude-images-from-item', (images) => this.excludeImages(images))
     },
 
     async mounted () {
@@ -692,7 +693,8 @@
     beforeDestroy () {
       EventHub.removeListenersFrom([
         'show-snackbar',
-        'MediaManagerModal-images-were-included',
+        'MediaManagerModal-include-images-in-item',
+        'MediaManagerModal-exclude-images-from-item',
       ])
     },
 
@@ -732,10 +734,10 @@
         this.isSaving = true
         try {
           await this.$http.put('/api/items/' + this.id + '?project=slovenia', { item: item, taxonomy: this.taxonomy })
-          this.showSnackbar('success', 'Item has been saved')
+          this.showSnackbarSuccess('Item has been saved')
           console.log(this.item, this.taxonomy)
         } catch (e) {
-          this.showSnackbar('error', 'An error occurred')
+          this.showSnackbarError('An error occurred')
           console.log(e)
         } finally {
           this.isSaving = false
@@ -747,6 +749,16 @@
         this.snackbarColor = color
         this.snackbarText = text
         this.snackbar = true
+      },
+
+      showSnackbarSuccess (text) {
+        // TODO: after switching to a real SPA move this into the header component
+        this.showSnackbar('success', text)
+      },
+
+      showSnackbarError (text = 'An error occurred') {
+        // TODO: after switching to a real SPA move this into the header component
+        this.showSnackbar('error', text)
       },
 
       updateTaxon (taxonName, taxonItems) {
@@ -791,9 +803,50 @@
         EventHub.fire('MediaManagerModal-show')
       },
 
-      updateImages (images) {
-        this.item.images = images
-        this.showSnackbar('success', 'Images have been included')
+      async includeImages (images) {
+        // eslint-disable-next-line
+        let itemImages = this.item.images.slice(0)
+
+        images.forEach(image => {
+          if (!this.item.images.find(img => img.def === `images_db/${image.storage_path}`)) {
+            itemImages.push(image)
+          }
+        })
+
+        try {
+          const { data } = await this.$http.put(`/api/items/${this.id}/images?project=catalogue`, {
+            images: itemImages,
+          })
+
+          this.item.images = data
+          this.showSnackbarSuccess('Images have been included')
+        } catch (e) {
+          this.showSnackbarError()
+        }
+      },
+
+      async excludeImages (images) {
+        // eslint-disable-next-line
+        let itemImages = this.item.images.slice(0)
+
+        images.forEach(image => {
+          const index = this.item.images.findIndex(img => img.def === `images_db/${image.storage_path}`)
+
+          if (index !== -1) {
+            itemImages.splice(index, 1)
+          }
+        })
+
+        try {
+          const { data } = await this.$http.put(`/api/items/${this.id}/images?project=catalogue`, {
+            images: itemImages,
+          })
+
+          this.item.images = data
+          this.showSnackbarSuccess('Images have been excluded')
+        } catch (e) {
+          this.showSnackbarError()
+        }
       },
     },
   }
