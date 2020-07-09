@@ -61,6 +61,18 @@ export default {
                 !this.allItemsCount ||
                 !this.isBulkSelecting() && this.selectedFileIs('folder') ||
                 this.isBulkSelecting() && !this.bulkItemsCount
-        }
+        },
+
+        selectedFiles() {
+            let selectedFiles = []
+
+            if (this.isBulkSelecting()) {
+              selectedFiles = this.bulkList
+            } else {
+              selectedFiles.push(this.selectedFile)
+            }
+
+            return selectedFiles
+        },
     }
 }

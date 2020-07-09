@@ -91,4 +91,11 @@ class AdminController extends Controller
             ]
         ]);
     }
+
+    public function media() {
+        return view('admin', [
+            'name' => 'Media',
+            'data' => [],
+        ]);
+    }
 }

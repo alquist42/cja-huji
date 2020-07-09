@@ -27,6 +27,7 @@ import InstantSearch from 'vue-instantsearch'
 import Dash from './pages/dash'
 import Items from './pages/items'
 import Item from './pages/item'
+import Media from './pages/media'
 import { TiptapVuetifyPlugin } from 'tiptap-vuetify'
 // don't forget to import CSS styles
 import 'tiptap-vuetify/dist/main.css'
@@ -59,6 +60,7 @@ files.keys().map(key => Vue.component(key.split('/').slice(-1)[0].split('.')[0],
 Vue.component('Dash', Dash)
 Vue.component('Items', Items)
 Vue.component('Item', Item)
+Vue.component('Media', Media)
 
 Vue.component('MediaManagerModal', require('./components/MediaManagerModal.vue').default)
 require('../../resources/assets/vendor/MediaManager/js/manager')
