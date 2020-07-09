@@ -36,6 +36,7 @@
         fluid
         tag="section"
       >
+        <slot name="media-manager-modal" />
         <v-row>
           <v-col cols="8">
             <base-material-card class="px-5 py-3">
@@ -156,7 +157,9 @@
                 </v-row>
 
                 <v-divider class="mt-6" />
-                <div class="overline my-2">Properties</div>
+                <div class="overline my-2">
+                  Properties
+                </div>
                 <v-expansion-panels
                   v-model="panel"
                   multiple
@@ -219,21 +222,36 @@
           <v-col cols="4">
             <base-material-card class="px-5 py-3">
               <template v-slot:heading>
-                <div class="display-2 font-weight-light">
-                  Images
-                </div>
+                <v-row no-gutters>
+                  <v-col class="flex-grow-1 display-2 font-weight-light">
+                    Images: {{ item.images ? item.images.length : '0' }}
+                  </v-col>
+                  <v-col
+                    cols="auto"
+                    class="d-flex align-center"
+                  >
+                    <v-btn
+                      icon
+                      @click="openMediaManagerModal"
+                    >
+                      <v-icon>mdi-pencil</v-icon>
+                    </v-btn>
+                  </v-col>
+                </v-row>
               </template>
               <v-card-text>
-                <template
-                  v-for="image in item.images"
-                >
-                  <v-img
+                <v-carousel height="250">
+                  <v-carousel-item
+                    v-for="image in item.images"
                     :key="image.id"
-                    aspect-ratio="1.7"
-                    max-height="250px"
-                    :src="`http://cja.huji.ac.il/${image.small || image.medium || image.def || image.batch_url}`"
-                  />
-                </template>
+                  >
+                    <v-img
+                      :src="`http://cja.huji.ac.il/${image.small || image.medium || image.def || image.batch_url}`"
+                      max-height="250px"
+                      contain
+                    />
+                  </v-carousel-item>
+                </v-carousel>
               </v-card-text>
             </base-material-card>
 
@@ -389,6 +407,7 @@
 </template>
 
 <script>
+  /* global EventHub */
 
   import { singular } from 'pluralize'
   import { TiptapVuetify, Heading, Bold, Italic, Strike, Underline, Code, Paragraph, BulletList, OrderedList, ListItem, Link, Blockquote, HardBreak, HorizontalRule, History } from 'tiptap-vuetify'
@@ -418,9 +437,16 @@
       TaxonMakerModal: () => import('../components/TaxonMakerModal'),
     },
 
-    props: [
-      'id', 'properties',
-    ],
+    props: {
+      id: {
+        type: String,
+        required: true,
+      },
+      properties: {
+        type: Array,
+        required: true,
+      },
+    },
 
     data: () => ({
       isSaving: false,
@@ -638,6 +664,12 @@
       },
     },
 
+    created () {
+      EventHub.listen('show-snackbar', (options) => this.showSnackbar(options.color, options.text))
+      EventHub.listen('MediaManagerModal-include-images-in-item', (images) => this.includeImages(images))
+      EventHub.listen('MediaManagerModal-exclude-images-from-item', (images) => this.excludeImages(images))
+    },
+
     async mounted () {
       let response = await this.$http.get(`/api/items/${this.id}?project=catalogue`)
       this.item = response.data
@@ -656,6 +688,14 @@
       })
 
       console.log(this.item)
+    },
+
+    beforeDestroy () {
+      EventHub.removeListenersFrom([
+        'show-snackbar',
+        'MediaManagerModal-include-images-in-item',
+        'MediaManagerModal-exclude-images-from-item',
+      ])
     },
 
     methods: {
@@ -694,10 +734,10 @@
         this.isSaving = true
         try {
           await this.$http.put('/api/items/' + this.id + '?project=slovenia', { item: item, taxonomy: this.taxonomy })
-          this.showSnackbar('success', 'Item has been saved')
+          this.showSnackbarSuccess('Item has been saved')
           console.log(this.item, this.taxonomy)
         } catch (e) {
-          this.showSnackbar('error', 'An error occurred')
+          this.showSnackbarError('An error occurred')
           console.log(e)
         } finally {
           this.isSaving = false
@@ -705,9 +745,20 @@
       },
 
       showSnackbar (color, text) {
+        // TODO: after switching to a real SPA move this into the header component
         this.snackbarColor = color
         this.snackbarText = text
         this.snackbar = true
+      },
+
+      showSnackbarSuccess (text) {
+        // TODO: after switching to a real SPA move this into the header component
+        this.showSnackbar('success', text)
+      },
+
+      showSnackbarError (text = 'An error occurred') {
+        // TODO: after switching to a real SPA move this into the header component
+        this.showSnackbar('error', text)
       },
 
       updateTaxon (taxonName, taxonItems) {
@@ -746,6 +797,56 @@
             value: newValue,
           },
         })
+      },
+
+      openMediaManagerModal () {
+        EventHub.fire('MediaManagerModal-show')
+      },
+
+      async includeImages (images) {
+        // eslint-disable-next-line
+        let itemImages = this.item.images.slice(0)
+
+        images.forEach(image => {
+          if (!this.item.images.find(img => img.def === `images_db/${image.storage_path}`)) {
+            itemImages.push(image)
+          }
+        })
+
+        try {
+          const { data } = await this.$http.put(`/api/items/${this.id}/images?project=catalogue`, {
+            images: itemImages,
+          })
+
+          this.item.images = data
+          this.showSnackbarSuccess('Images have been included')
+        } catch (e) {
+          this.showSnackbarError()
+        }
+      },
+
+      async excludeImages (images) {
+        // eslint-disable-next-line
+        let itemImages = this.item.images.slice(0)
+
+        images.forEach(image => {
+          const index = this.item.images.findIndex(img => img.def === `images_db/${image.storage_path}`)
+
+          if (index !== -1) {
+            itemImages.splice(index, 1)
+          }
+        })
+
+        try {
+          const { data } = await this.$http.put(`/api/items/${this.id}/images?project=catalogue`, {
+            images: itemImages,
+          })
+
+          this.item.images = data
+          this.showSnackbarSuccess('Images have been excluded')
+        } catch (e) {
+          this.showSnackbarError()
+        }
       },
     },
   }

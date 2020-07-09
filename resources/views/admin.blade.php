@@ -27,6 +27,8 @@
     <link href="{{ vuecli('dash.js') }}" rel=preload as=script>
     <link href="{{ vuecli('chunk-vendors.css') }}" rel=stylesheet>
     <link href="{{ vuecli('dash.css') }}" rel=stylesheet>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+    <link rel="stylesheet" href="{{ asset('assets/vendor/MediaManager/style.css') }}"/>
     <link rel="icon" href="http://cja.huji.ac.il/favicon.ico" type="image/x-icon" />
 
     <!-- Scripts -->
@@ -37,11 +39,28 @@
 <body>
 
 <div id="app"
-     data-vue-component="{{ $name }}"
-     data-vue-props="{{ json_encode($data) }}"
+{{--     data-vue-component="{{ $name }}"--}}
+{{--     data-vue-props="{{ json_encode($data) }}"--}}
      data-csrf-token="{{ csrf_token() }}"
 {{--     data-auth="{{ json_encode(['user' => Auth::user() ? Auth::user()->only('id', 'first_name', 'last_name') : null]) }}"--}}
-></div>
+>
+    <component
+            is="{{ $name }}"
+            v-bind='{!! json_encode($data, JSON_PRETTY_PRINT) !!}'
+    >
+        <template #media-manager-modal>
+            <media-manager-modal inline-template item-id="{{ $data['id'] }}">
+                <div>
+                    <div v-if="inputName">@include('MediaManager::extras.modal')</div>
+
+                    <media-modal item="images" :name="inputName" :multi="true"></media-modal>
+
+                    <input type="hidden" name="images" :value="images" />
+                </div>
+            </media-manager-modal>
+        </template>
+    </component>
+</div>
 
 <!-- Scripts -->
 <script src="{{ vuecli('chunk-vendors.js') }}"></script>

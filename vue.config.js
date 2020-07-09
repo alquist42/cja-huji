@@ -12,6 +12,7 @@ module.exports = {
     resolve: {
       alias: {
         '@': path.resolve(__dirname, 'admin/src/'),
+        'vue$': 'vue/dist/vue.common.js',
       },
     },
   },

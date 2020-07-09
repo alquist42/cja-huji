@@ -516,6 +516,52 @@ export default {
         },
         createNewFolder() {
             this.toggleModal('new_folder_modal')
+        },
+
+        createNewItem() {
+            this.$nextTick(() => {
+                if (!this.globalSearchPanelIsVisible) {
+                    if (this.$refs.createNewItem.disabled) return
+                }
+
+                EventHub.fire('MediaManagerModal-create-new-item', {})
+            })
+        },
+
+        includeImagesInItem() {
+            this.$nextTick(() => {
+                if (!this.globalSearchPanelIsVisible) {
+                    if (this.$refs.includeImagesInItem.disabled) return
+                }
+
+                let selectedImages = []
+
+                if (this.isBulkSelecting()) {
+                  selectedImages = this.bulkList
+                } else {
+                  selectedImages.push(this.selectedFile)
+                }
+
+                EventHub.fire('MediaManagerModal-include-images-in-item', selectedImages)
+            })
+        },
+
+        excludeImagesFromItem() {
+            this.$nextTick(() => {
+                if (!this.globalSearchPanelIsVisible) {
+                    if (this.$refs.excludeImagesFromItem.disabled) return
+                }
+
+              let selectedImages = []
+
+              if (this.isBulkSelecting()) {
+                selectedImages = this.bulkList
+              } else {
+                selectedImages.push(this.selectedFile)
+              }
+
+                EventHub.fire('MediaManagerModal-exclude-images-from-item', selectedImages)
+            })
         }
     },
     render() {}
