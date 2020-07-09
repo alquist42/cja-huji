@@ -87,7 +87,15 @@
       },
 
       async createItemFromImages (images) {
-        //
+        try {
+          const { data } = await this.$http.post('/api/items?project=catalogue', {
+            images: images,
+          })
+
+          window.location.href = `/staff/items/${data.id}`
+        } catch (e) {
+          this.showSnackbarError()
+        }
       },
     },
   }

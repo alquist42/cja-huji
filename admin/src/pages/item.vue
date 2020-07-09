@@ -662,6 +662,12 @@
           this.isLoadingCopyright = false
         }
       },
+
+      'item.category_object' (val) {
+        if (val) {
+          this.item.category = val.slug
+        }
+      },
     },
 
     created () {
@@ -726,14 +732,10 @@
             value: t.pivot.value,
           }
         })
-        const item = {
-          ...this.item,
-          category: this.item.category_object.slug,
-        }
 
         this.isSaving = true
         try {
-          await this.$http.put('/api/items/' + this.id + '?project=slovenia', { item: item, taxonomy: this.taxonomy })
+          await this.$http.put('/api/items/' + this.id + '?project=slovenia', { item: this.item, taxonomy: this.taxonomy })
           this.showSnackbarSuccess('Item has been saved')
           console.log(this.item, this.taxonomy)
         } catch (e) {
