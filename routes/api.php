@@ -11,6 +11,8 @@ Route::group(['namespace' => 'Api'], function () {
         Route::put('/items/{item}', 'ItemsController@update');
         Route::post('/items/{item}', 'ItemsController@store');
 
+        Route::post('/item_images', 'ItemImagesController@store');
+
         //   Route::get('/images', 'ImagesController@index');
         //  Route::get('/images/{image}', 'ImagesController@show');
 

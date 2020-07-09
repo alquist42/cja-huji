@@ -49,7 +49,7 @@
             v-bind='{!! json_encode($data, JSON_PRETTY_PRINT) !!}'
     >
         <template #media-manager-modal>
-            <media-manager-modal inline-template>
+            <media-manager-modal inline-template item-id="{{ $data['id'] }}">
                 <div>
                     <div v-if="inputName">@include('MediaManager::extras.modal')</div>
 

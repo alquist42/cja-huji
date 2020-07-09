@@ -407,6 +407,7 @@
 </template>
 
 <script>
+  /* global EventHub */
 
   import { singular } from 'pluralize'
   import { TiptapVuetify, Heading, Bold, Italic, Strike, Underline, Code, Paragraph, BulletList, OrderedList, ListItem, Link, Blockquote, HardBreak, HorizontalRule, History } from 'tiptap-vuetify'
@@ -663,6 +664,11 @@
       },
     },
 
+    created () {
+      EventHub.listen('show-snackbar', (options) => this.showSnackbar(options.color, options.text))
+      EventHub.listen('MediaManagerModal-images-were-included', (images) => this.updateImages(images))
+    },
+
     async mounted () {
       let response = await this.$http.get(`/api/items/${this.id}?project=catalogue`)
       this.item = response.data
@@ -681,6 +687,13 @@
       })
 
       console.log(this.item)
+    },
+
+    beforeDestroy () {
+      EventHub.removeListenersFrom([
+        'show-snackbar',
+        'MediaManagerModal-images-were-included',
+      ])
     },
 
     methods: {
@@ -730,6 +743,7 @@
       },
 
       showSnackbar (color, text) {
+        // TODO: after switching to a real SPA move this into the header component
         this.snackbarColor = color
         this.snackbarText = text
         this.snackbar = true
@@ -774,8 +788,12 @@
       },
 
       openMediaManagerModal () {
-        // eslint-disable-next-line
-        EventHub.fire('open-media-manager-modal')
+        EventHub.fire('MediaManagerModal-show')
+      },
+
+      updateImages (images) {
+        this.item.images = images
+        this.showSnackbar('success', 'Images have been included')
       },
     },
   }

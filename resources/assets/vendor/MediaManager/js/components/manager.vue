@@ -524,7 +524,7 @@ export default {
                     if (this.$refs.createNewItem.disabled) return
                 }
 
-                EventHub.fire('create-new-item', {})
+                EventHub.fire('MediaManagerModal-create-new-item', {})
             })
         },
 
@@ -534,7 +534,15 @@ export default {
                     if (this.$refs.includeImagesInItem.disabled) return
                 }
 
-                EventHub.fire('include-images-in-item', {})
+                let selectedImages = []
+
+                if (this.isBulkSelecting()) {
+                  selectedImages = this.bulkList
+                } else {
+                  selectedImages.push(this.selectedFile)
+                }
+
+                EventHub.fire('MediaManagerModal-include-images-in-item', selectedImages)
             })
         },
 
@@ -544,7 +552,7 @@ export default {
                     if (this.$refs.excludeImagesFromItem.disabled) return
                 }
 
-                EventHub.fire('exclude-images-from-item', {})
+                EventHub.fire('MediaManagerModal-exclude-images-from-item', {})
             })
         }
     },

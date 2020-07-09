@@ -375,7 +375,7 @@
                 <div class="level-injected">
                     {{-- first --}}
                     <div class="level-item">
-                        <div class="field has-addons">
+                        <div class="field" :class="{'has-addons': inModal}">
                             {{-- create item --}}
                             <div class="control">
                                 <button class="button is-info"
@@ -388,29 +388,31 @@
                                 </button>
                             </div>
 
-                            {{-- include image(s) in item --}}
-                            <div class="control">
-                                <button class="button is-success"
-                                        ref="includeImagesInItem"
-                                        :disabled="ops_btn_disable"
-                                        v-tippy
-                                        @click.stop="includeImagesInItem()">
-                                    <span class="icon"><icon name="plus"></icon></span>
-                                    <span>Include Image(s)</span>
-                                </button>
-                            </div>
+                            <template v-if="inModal">
+                                {{-- include image(s) in item --}}
+                                <div class="control">
+                                    <button class="button is-success"
+                                            ref="includeImagesInItem"
+                                            :disabled="ops_btn_disable"
+                                            v-tippy
+                                            @click.stop="includeImagesInItem()">
+                                        <span class="icon"><icon name="plus"></icon></span>
+                                        <span>Include Image(s)</span>
+                                    </button>
+                                </div>
 
-                            {{-- exclude image(s) from item --}}
-                            <div class="control">
-                                <button class="button is-warning"
-                                        ref="excludeImagesFromItem"
-                                        :disabled="ops_btn_disable"
-                                        v-tippy
-                                        @click.stop="excludeImagesFromItem()">
-                                    <span class="icon"><icon name="minus"></icon></span>
-                                    <span>Exclude Image(s)</span>
-                                </button>
-                            </div>
+                                {{-- exclude image(s) from item --}}
+                                <div class="control">
+                                    <button class="button is-warning"
+                                            ref="excludeImagesFromItem"
+                                            :disabled="ops_btn_disable"
+                                            v-tippy
+                                            @click.stop="excludeImagesFromItem()">
+                                        <span class="icon"><icon name="minus"></icon></span>
+                                        <span>Exclude Image(s)</span>
+                                    </button>
+                                </div>
+                            </template>
                         </div>
                     </div>
 
