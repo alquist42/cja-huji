@@ -23,9 +23,9 @@
                  :key="`filter-${item.key}`"
                  class="dropdown-item link"
                  :class="[
-                     filterNameIs(item.key) ? 'has-text-weight-bold has-text-link' : 'has-text-grey-dark'
+                     customFilterNameIs(item.key) ? 'has-text-weight-bold has-text-link' : 'has-text-grey-dark'
                  ]"
-                 @click.stop="setFilterName(item)">
+                 @click.stop="setCustomFilterName(item.key)">
                 {{ item.text }}
             </div>
 
@@ -46,7 +46,9 @@
 export default {
     props: [
         'setFilterName',
+        'setCustomFilterName',
         'filterNameIs',
+        'customFilterNameIs',
         'setSortName',
         'sortNameIs',
         'disabled',

@@ -108,6 +108,7 @@ export default {
             activeModal: null,
             currentFileIndex: null,
             filterName: null,
+            customFilterName: null,
             sortName: null,
             imageSlideDirection: null,
             newFilename: null,

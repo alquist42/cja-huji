@@ -3,7 +3,7 @@ export default {
         /*                Main                */
         getFiles(prev_folder = null, prev_file = null) {
             if (this.folders.join('/') === 'ORPHANS (virtual folder)') {
-                return this.setFilterName({ key: 'orphans' })
+                return this.setCustomFilterName('orphans')
             }
 
             this.files.next = null

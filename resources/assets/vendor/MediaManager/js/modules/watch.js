@@ -75,17 +75,26 @@ export default {
         // filter
         filterName(val) {
             if (val) {
+                this.showFilesOfType(val)
+            } else {
+                this.resetInput('filterdFilesList', [])
+                this.selectFirst()
+            }
+        },
+        customFilterName(val) {
+            if (val) {
                 switch (val) {
                     case 'orphans':
                         this.folders = ['ORPHANS (virtual folder)']
                         this.getOrphanFiles()
                         break
                     case 'item-s':
+                      this.folders = ['ITEM\'S (virtual folder)']
+                      // this.getItemsFiles()
                         break
                     case 'whole-tree':
-                        break
-                    default:
-                        this.showFilesOfType(val)
+                      this.folders = ['WHOLE TREE (virtual folder)']
+                      // this.getWholeTreeFiles()
                 }
             } else {
                 this.resetInput('filterdFilesList', [])

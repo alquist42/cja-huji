@@ -2,17 +2,15 @@ export default {
     methods: {
         // setters
         setFilterName(val) {
-            if (typeof val === 'object') {
-                if (!this.filterNameIs(val.key)) {
-                    this.filterName = val.key
-                }
-                return
-            }
-
             if (val == 'non') {
                 return this.resetInput('filterName')
             } else if (!this.filterNameIs(val) && this.haveAFileOfType(val)) {
                 this.filterName = val
+            }
+        },
+        setCustomFilterName(val) {
+            if (!this.customFilterNameIs(val)) {
+                this.customFilterName = val
             }
         },
         setSortName(val) {
@@ -35,6 +33,9 @@ export default {
         },
         filterNameIs(val) {
             return this.filterName == val
+        },
+        customFilterNameIs(val) {
+            return this.customFilterName === val
         },
         sortNameIs(val) {
             return this.sortName == val

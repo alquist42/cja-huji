@@ -314,8 +314,10 @@
                         <div class="level-item" v-if="searchItemsCount != 0 && allItemsCount">
                             <filter-and-sorting :disabled="isLoading"
                                 :filter-name-is="filterNameIs"
+                                :custom-filter-name-is="customFilterNameIs"
                                 :sort-name-is="sortNameIs"
                                 :set-filter-name="setFilterName"
+                                :set-custom-filter-name="setCustomFilterName"
                                 :set-sort-name="setSortName"
                                 :have-a-file-of-type="haveAFileOfType"
                                 :trans="trans"
