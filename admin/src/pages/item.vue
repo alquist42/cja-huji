@@ -17,6 +17,10 @@
       </template>
     </v-snackbar>
 
+    <v-dialog v-model="mediaManagerDialog">
+      <slot name="media-manager-modal" />
+    </v-dialog>
+
     <dashboard-core-app-bar>
       <v-btn
         outlined
@@ -36,8 +40,6 @@
         fluid
         tag="section"
       >
-        <slot name="media-manager-modal" />
-
         <v-row>
           <v-col cols="8">
             <base-material-card class="px-5 py-3">
@@ -454,6 +456,7 @@
     },
 
     data: () => ({
+      mediaManagerDialog: false,
       isSaving: false,
       item: {},
 
@@ -675,6 +678,7 @@
     created () {
       EventHub.listen('MediaManagerModal-include-images-in-item', (images) => this.includeImages(images))
       EventHub.listen('MediaManagerModal-exclude-images-from-item', (images) => this.excludeImages(images))
+      EventHub.listen('modal-hide', () => { this.mediaManagerDialog = false })
     },
 
     async mounted () {
@@ -785,7 +789,8 @@
       },
 
       openMediaManagerModal () {
-        EventHub.fire('MediaManagerModal-show')
+        this.mediaManagerDialog = true
+        this.$nextTick(() => EventHub.fire('MediaManagerModal-show'))
       },
 
       async includeImages (images) {
