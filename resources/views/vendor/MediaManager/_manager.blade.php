@@ -317,7 +317,8 @@
                                 :set-filter-name="setFilterName"
                                 :set-sort-name="setSortName"
                                 :have-a-file-of-type="haveAFileOfType"
-                                :trans="trans">
+                                :trans="trans"
+                                :in-modal="this.inModal">
                             </filter-and-sorting>
                         </div>
 

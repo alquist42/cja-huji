@@ -2,6 +2,13 @@ export default {
     methods: {
         // setters
         setFilterName(val) {
+            if (typeof val === 'object') {
+                if (!this.filterNameIs(val.key)) {
+                    this.filterName = val.key
+                }
+                return
+            }
+
             if (val == 'non') {
                 return this.resetInput('filterName')
             } else if (!this.filterNameIs(val) && this.haveAFileOfType(val)) {
