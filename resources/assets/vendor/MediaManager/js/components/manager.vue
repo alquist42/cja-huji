@@ -76,7 +76,8 @@ export default {
         'hideExt',
         'hidePath',
         'restrict',
-        'userId'
+        'userId',
+        'itemId',
     ],
     data() {
         return {

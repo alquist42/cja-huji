@@ -8,13 +8,6 @@
 
     mixins: [MediaManagerModalMixin],
 
-    props: {
-      itemId: {
-        type: String,
-        required: true,
-      },
-    },
-
     data () {
       return {
         images: '',
