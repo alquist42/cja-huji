@@ -5,6 +5,7 @@ namespace App\Services;
 
 use App\Models\Copyright;
 use App\Models\Date;
+use App\Models\Image;
 use App\Models\Item;
 use App\Models\Taxonomy\Maker;
 use Illuminate\Database\Eloquent\Model;
@@ -30,10 +31,42 @@ class ItemService
     public function saveItem(array $data)
     {
         $this->item->update($this->prepareHasOneRelations($data['item']));
-        $this->updateTaxonomy($data['taxonomy']);
-        $this->updateProperties($data['taxonomy']['properties']);
+
+        if (isset($data['taxonomy'])) {
+            $this->updateTaxonomy($data['taxonomy']);
+            $this->updateProperties($data['taxonomy']['properties']);
+        }
+
+        if (isset($data['images'])) {
+            $this->updateImages($data['images']);
+        }
 
         return $this->item;
+    }
+
+    /**
+     * Update images
+     *
+     * @param array $data
+     * @return void
+     */
+    public function updateImages(array $data)
+    {
+        $images = [];
+
+        foreach ($data as $imageData) {
+            if (isset($imageData['id'])) {
+                $image = $imageData;
+            } else {
+                $image = Image::where('def', $imageData['storage_path'])
+                    ->firstOrFail()
+                    ->toArray();
+            }
+
+            $images[$image['id']] = ['entity_type' => 'set'];
+        }
+
+        $this->item->images()->sync($images);
     }
 
     /**
@@ -149,6 +182,12 @@ class ItemService
         }
     }
 
+    /**
+     * Update properties.
+     *
+     * @param array $data
+     * @return void
+     */
     private function updateProperties(array $data)
     {
         $properties = [];

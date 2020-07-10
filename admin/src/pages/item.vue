@@ -412,6 +412,8 @@
   import { singular } from 'pluralize'
   import { TiptapVuetify, Heading, Bold, Italic, Strike, Underline, Code, Paragraph, BulletList, OrderedList, ListItem, Link, Blockquote, HardBreak, HorizontalRule, History } from 'tiptap-vuetify'
   import _sortBy from 'lodash/sortBy'
+  import CreateItemFromImages from '../mixins/CreateItemFromImages'
+  import SnackBar from '../mixins/SnackBar'
 
   const PUBLISH_STATE_NOT_PUBLISHED = 0
   const PUBLISH_STATE_PREPARED_FOR_PUBLISHING = 1
@@ -437,6 +439,8 @@
       TaxonMakerModal: () => import('../components/TaxonMakerModal'),
     },
 
+    mixins: [CreateItemFromImages, SnackBar],
+
     props: {
       id: {
         type: String,
@@ -450,9 +454,6 @@
 
     data: () => ({
       isSaving: false,
-      snackbar: false,
-      snackbarText: '',
-      snackbarColor: '',
       item: {},
 
       panel: [],
@@ -662,10 +663,15 @@
           this.isLoadingCopyright = false
         }
       },
+
+      'item.category_object' (val) {
+        if (val) {
+          this.item.category = val.slug
+        }
+      },
     },
 
     created () {
-      EventHub.listen('show-snackbar', (options) => this.showSnackbar(options.color, options.text))
       EventHub.listen('MediaManagerModal-include-images-in-item', (images) => this.includeImages(images))
       EventHub.listen('MediaManagerModal-exclude-images-from-item', (images) => this.excludeImages(images))
     },
@@ -692,7 +698,6 @@
 
     beforeDestroy () {
       EventHub.removeListenersFrom([
-        'show-snackbar',
         'MediaManagerModal-include-images-in-item',
         'MediaManagerModal-exclude-images-from-item',
       ])
@@ -726,14 +731,10 @@
             value: t.pivot.value,
           }
         })
-        const item = {
-          ...this.item,
-          category: this.item.category_object.slug,
-        }
 
         this.isSaving = true
         try {
-          await this.$http.put('/api/items/' + this.id + '?project=slovenia', { item: item, taxonomy: this.taxonomy })
+          await this.$http.put('/api/items/' + this.id + '?project=slovenia', { item: this.item, taxonomy: this.taxonomy })
           this.showSnackbarSuccess('Item has been saved')
           console.log(this.item, this.taxonomy)
         } catch (e) {
@@ -742,23 +743,6 @@
         } finally {
           this.isSaving = false
         }
-      },
-
-      showSnackbar (color, text) {
-        // TODO: after switching to a real SPA move this into the header component
-        this.snackbarColor = color
-        this.snackbarText = text
-        this.snackbar = true
-      },
-
-      showSnackbarSuccess (text) {
-        // TODO: after switching to a real SPA move this into the header component
-        this.showSnackbar('success', text)
-      },
-
-      showSnackbarError (text = 'An error occurred') {
-        // TODO: after switching to a real SPA move this into the header component
-        this.showSnackbar('error', text)
       },
 
       updateTaxon (taxonName, taxonItems) {

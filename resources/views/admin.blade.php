@@ -49,6 +49,7 @@
             v-bind='{!! json_encode($data, JSON_PRETTY_PRINT) !!}'
     >
         <template #media-manager-modal>
+            @if(isset($data['id']))
             <media-manager-modal inline-template item-id="{{ $data['id'] }}">
                 <div>
                     <div v-if="inputName">@include('MediaManager::extras.modal')</div>
@@ -58,6 +59,22 @@
                     <input type="hidden" name="images" :value="images" />
                 </div>
             </media-manager-modal>
+            @endif
+        </template>
+        <template #media-manager>
+            {{-- notifications --}}
+            <div class="notif-container">
+                <my-notification></my-notification>
+            </div>
+
+            <div class="container is-fluid">
+                <div class="columns">
+                    {{-- media manager --}}
+                    <div class="column">
+                        @include('MediaManager::_manager')
+                    </div>
+                </div>
+            </div>
         </template>
     </component>
 </div>
