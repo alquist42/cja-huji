@@ -27,6 +27,7 @@ class ImageService
         return Image::select('images.*', 'entity_images.image_id')
             ->leftJoin('entity_images', 'images.id', '=', 'entity_images.image_id')
             ->whereNull('entity_id')
+            ->with(['copyright', 'photographer'])
             ->get();
     }
 }
