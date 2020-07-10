@@ -1,9 +1,10 @@
 <?php
 
-namespace App\MediaManager\Modules;
+namespace App\Services\MediaManager;
 
 use App\Services\ImageService;
 use Illuminate\Http\Request;
+use League\Flysystem\Util;
 
 trait GetContent
 {
@@ -31,6 +32,42 @@ trait GetContent
                     'files'  => [
                         'path'  => $path,
                         'items' => $this->paginate($this->getData($path), $this->paginationAmount),
+                    ],
+                ]
+            )
+        );
+    }
+
+    public function getOrphanFiles()
+    {
+        $orphanImages = (new ImageService())->getOrphans();
+
+        $list = [];
+        foreach ($orphanImages as $image) {
+            $file = $this->storageDisk->getWithMetadata($image->def, ['mimetype', 'visibility', 'timestamp', 'size']);
+            $path = $file['path'];
+            $time = $file['timestamp'];
+
+            $list[] = [
+                'name'                   => Util::pathinfo($path)['basename'],
+                'type'                   => $file['mimetype'],
+                'path'                   => $this->resolveUrl($path),
+                'storage_path'           => $path,
+                'size'                   => $file['size'],
+                'visibility'             => $file['visibility'],
+                'last_modified'          => $time,
+                'last_modified_formated' => $this->getItemTime($time),
+                'image'                  => $image,
+            ];
+        }
+
+        return response()->json(
+            array_merge(
+                $this->lockList(),
+                [
+                    'files'  => [
+                        'path'  => 'ORPHANS',
+                        'items' => $this->paginate($list, $this->paginationAmount),
                     ],
                 ]
             )

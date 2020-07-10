@@ -13,6 +13,7 @@
     ]) }}"
     :routes="{{ json_encode([
         'files' => route('staff.media.get_files'),
+        'orphan_files' => route('staff.media.get_orphan_files'),
         'lock' => route('staff.media.lock_file'),
         'visibility' => route('staff.media.change_vis'),
         'upload' => route('staff.media.upload'),

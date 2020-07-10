@@ -2,6 +2,10 @@ export default {
     methods: {
         /*                Main                */
         getFiles(prev_folder = null, prev_file = null) {
+            if (this.folders.join('/') === 'ORPHANS (virtual folder)') {
+                return this.setFilterName({ key: 'orphans' })
+            }
+
             this.files.next = null
             this.resetInput(['sortName', 'filterName', 'selectedFile', 'currentFileIndex'])
             this.noFiles('hide')
@@ -39,6 +43,44 @@ export default {
                 this.ajaxError()
             })
         },
+
+        getOrphanFiles(prev_folder = null, prev_file = null) {
+            this.files.next = null
+            this.resetInput(['sortName', 'selectedFile', 'currentFileIndex'])
+            this.noFiles('hide')
+            this.destroyPlyr()
+
+            if (!this.loading_files) {
+                this.isLoading = true
+                this.infoSidebar = false
+                this.loadingFiles('show')
+            }
+
+            // get data
+            return axios.get(this.routes.orphan_files).then(({data}) => {
+                // folder does'nt exist
+                if (data.error) {
+                  return this.showNotif(data.error, 'danger')
+                }
+
+                // return data
+                this.files = {
+                    path: data.files.path,
+                    items: data.files.items.data,
+                    next: data.files.items.next_page_url
+                }
+                this.lockedList = data.locked
+                this.filesListCheck(prev_folder, prev_file)
+
+            }).catch((err) => {
+                console.error(err)
+
+                this.isLoading = false
+                this.loadingFiles('hide')
+                this.ajaxError()
+            })
+        },
+
         loadPaginatedFiles($state) {
             return axios.post(this.files.next, {
                 path: this.files.path || '/'

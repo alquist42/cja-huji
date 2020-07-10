@@ -37,6 +37,7 @@ Route::group([
         Route::post('upload-link', ['uses' => "$controller@uploadLink", 'as' => 'uploadLink']);
 
         Route::post('get-files', ['uses' => "$controller@getFiles", 'as' => 'get_files']);
+        Route::get('get-orphan-files', ['uses' => "$controller@getOrphanFiles", 'as' => 'get_orphan_files']);
         Route::post('create-new-folder', ['uses' => "$controller@createNewFolder", 'as' => 'new_folder']);
         Route::post('delete-file', ['uses' => "$controller@deleteItem", 'as' => 'delete_file']);
         Route::post('move-file', ['uses' => "$controller@moveItem", 'as' => 'move_file']);
