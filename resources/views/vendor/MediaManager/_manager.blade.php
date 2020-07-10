@@ -821,12 +821,51 @@
                                     <hr>
                                 </template>
 
-
-                                <table>
+                                <template v-if="selectedFile.image">
+                                    <table>
+                                        <tbody>
+                                            <tr>
+                                                <td class="t-key">Photographer:</td>
+                                                <td class="t-val">
+                                                    <a href="#" @click.prevent="openMetadataEditor">
+                                                        @{{ selectedFile.image.photographer ? selectedFile.image.photographer.name : 'unknown' }}
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table>
+                                        <tbody>
+                                            <tr>
+                                                <td class="t-key">Copyright:</td>
+                                                <td class="t-val">
+                                                    <a href="#" @click.prevent="openMetadataEditor">
+                                                        @{{ selectedFile.image.copyright ? selectedFile.image.copyright.name : 'unknown' }}
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table>
+                                        <tbody>
+                                            <tr>
+                                                <td class="t-key">Date:</td>
+                                                <td class="t-val">
+                                                    <a href="#" @click.prevent="openMetadataEditor">
+                                                        @{{ selectedFile.image.date || 'unknown' }}
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </template>
+                                <table v-else>
                                     <tbody>
-                                        <tr>
-                                            <td class="t-key"><a href="#" @click.prevent="openMetadataEditor">Edit Metadata</a></td>
-                                        </tr>
+                                    <tr>
+                                        <td class="t-key">
+                                            <a href="#" @click.prevent="openMetadataEditor">Edit Metadata</a>
+                                        </td>
+                                    </tr>
                                     </tbody>
                                 </table>
                                 <table>

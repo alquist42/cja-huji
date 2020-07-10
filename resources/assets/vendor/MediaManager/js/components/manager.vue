@@ -271,6 +271,25 @@ export default {
 
             // bookmark
             EventHub.listen('dir-bookmarks-update', (data) => this.dirBookmarks = data)
+
+            // update metadata
+            EventHub.listen('MediaManager-metadata-changed', (images) => {
+                this.selectedFiles.forEach(file => {
+                    if (file.type === 'image/jpeg') {
+                        const image = images.find(img => {
+                            if (file.image && file.image.id === img.id) {
+                                return true
+                            }
+
+                            return file.storage_path === img.def
+                        })
+
+                        if (image) {
+                            file.image = image
+                        }
+                    }
+                })
+            })
         },
 
         shortCuts(e) {
@@ -548,11 +567,14 @@ export default {
             })
         },
 
-      openMetadataEditor() {
-        this.$nextTick(() => {
-          EventHub.fire('MediaManager-open-metadata-editor', this.selectedFiles)
-        })
-      },
+        openMetadataEditor() {
+            this.$nextTick(() => {
+                EventHub.fire('MediaManager-open-metadata-editor', {
+                  selectedFile: this.selectedFile,
+                  selectedFiles: this.selectedFiles,
+                })
+            })
+        },
     },
     render() {}
 }

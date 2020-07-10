@@ -38,6 +38,7 @@ class Image extends Classifiable
 
         'rights',
 
+        'date',
         'copyright_id',
         'photographer_id',
 

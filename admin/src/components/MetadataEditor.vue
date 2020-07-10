@@ -3,7 +3,9 @@
     class="ma-3"
     flat
   >
-    <v-card-title class="headline mb-5">Edit Metadata</v-card-title>
+    <v-card-title class="headline mb-5">
+      Edit Metadata
+    </v-card-title>
 
     <v-card-text class="pb-0">
       <v-autocomplete
@@ -59,11 +61,21 @@
 </template>
 
 <script>
+  /* global EventHub */
+
+  import NestedFiles from '../mixins/NestedFiles'
+
   export default {
     name: 'MetadataEditor',
 
+    mixins: [NestedFiles],
+
     props: {
-      files: {
+      selectedFile: {
+        type: Object,
+        required: true,
+      },
+      selectedFiles: {
         type: Array,
         required: true,
       },
@@ -115,14 +127,52 @@
       },
     },
 
+    mounted () {
+      if (this.selectedFile.type === 'image/jpeg') {
+        this.fillMetadataFromImage(this.selectedFile.image)
+      }
+    },
+
     methods: {
+      fillMetadataFromImage (image) {
+        if (image.photographer) {
+          this.photographers = [{ ...image.photographer }]
+          this.photographer_id = image.photographer_id
+        }
+
+        if (image.copyright) {
+          this.copyrights = [{ ...image.copyright }]
+          this.copyright_id = image.copyright_id
+        }
+
+        this.date = image.date
+      },
 
       closeEditor () {
         this.$emit('close')
       },
 
-      save () {
-        this.closeEditor()
+      async save () {
+        const payload = {
+          metadata: {
+            photographer_id: this.photographer_id,
+            copyright_id: this.copyright_id,
+            date: this.date,
+          },
+          images: await this.getAllNestedFiles(this.selectedFiles),
+        }
+
+        this.isSaving = true
+        try {
+          const { data } = await this.$http.post('/api/images/metadata?project=catalogue', payload)
+          EventHub.fire('MediaManager-metadata-changed', data)
+          this.closeEditor()
+        } catch (e) {
+          EventHub.fire('show-snackbar', { color: 'error', text: 'An error occurred' })
+          console.log(e)
+        } finally {
+          this.isSaving = false
+        }
       },
     },
   }

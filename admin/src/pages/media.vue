@@ -35,7 +35,9 @@
           width="500"
         >
           <metadata-editor
-            :files="selectedFiles"
+            v-if="metadataDrawer"
+            :selected-file="selectedFile"
+            :selected-files="selectedFiles"
             @close="metadataDrawer = false"
           />
         </v-navigation-drawer>
@@ -71,6 +73,7 @@
 
     data: () => ({
       metadataDrawer: false,
+      selectedFile: {},
       selectedFiles: [],
     }),
 
@@ -81,9 +84,10 @@
     },
 
     created () {
-      EventHub.listen('MediaManager-open-metadata-editor', (selectedFiles) => {
+      EventHub.listen('MediaManager-open-metadata-editor', (payload) => {
         this.metadataDrawer = true
-        this.selectedFiles = selectedFiles
+        this.selectedFile = payload.selectedFile
+        this.selectedFiles = payload.selectedFiles
       })
     },
 
