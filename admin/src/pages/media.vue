@@ -27,6 +27,19 @@
         fluid
         tag="section"
       >
+        <v-navigation-drawer
+          v-model="metadataDrawer"
+          fixed
+          right
+          temporary
+          width="500"
+        >
+          <metadata-editor
+            :files="selectedFiles"
+            @close="metadataDrawer = false"
+          />
+        </v-navigation-drawer>
+
         <slot name="media-manager" />
       </v-container>
 
@@ -38,6 +51,8 @@
 </template>
 
 <script>
+  /* global EventHub */
+
   import CreateItemFromImages from '../mixins/CreateItemFromImages'
   import SnackBar from '../mixins/SnackBar'
 
@@ -49,8 +64,31 @@
       DashboardCoreDrawer: () => import('../views/dashboard/components/core/Drawer'),
       // DashboardCoreSettings: () => import('./components/core/Settings'),
       // DashboardCoreView: () => import('../components/core/View'),
+      MetadataEditor: () => import('../components/MetadataEditor'),
     },
 
     mixins: [CreateItemFromImages, SnackBar],
+
+    data: () => ({
+      metadataDrawer: false,
+      selectedFiles: [],
+    }),
+
+    watch: {
+      metadataDrawer (val) {
+        EventHub.fire('disable-global-keys', val)
+      },
+    },
+
+    created () {
+      EventHub.listen('MediaManager-open-metadata-editor', (selectedFiles) => {
+        this.metadataDrawer = true
+        this.selectedFiles = selectedFiles
+      })
+    },
+
+    beforeDestroy () {
+      EventHub.removeListenersFrom('MediaManager-open-metadata-editor')
+    },
   }
 </script>

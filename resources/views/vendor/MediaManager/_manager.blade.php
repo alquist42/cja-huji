@@ -712,7 +712,6 @@
                                 v-tippy="{arrow: true, placement: 'left'}"
                                 title="{{ trans('MediaManager::messages.space') }}"
                                 :key="selectedFile.storage_path">
-
                                 <img :src="selectedFile.path"
                                     :alt="selectedFile.name"
                                     class="link image"
@@ -822,6 +821,14 @@
                                     <hr>
                                 </template>
 
+
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <td class="t-key"><a href="#" @click.prevent="openMetadataEditor">Edit Metadata</a></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                                 <table>
                                     <tbody>
                                         <tr>

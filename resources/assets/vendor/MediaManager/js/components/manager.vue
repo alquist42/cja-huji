@@ -546,7 +546,13 @@ export default {
 
                 EventHub.fire('MediaManagerModal-exclude-images-from-item', this.selectedFiles)
             })
-        }
+        },
+
+      openMetadataEditor() {
+        this.$nextTick(() => {
+          EventHub.fire('MediaManager-open-metadata-editor', this.selectedFiles)
+        })
+      },
     },
     render() {}
 }

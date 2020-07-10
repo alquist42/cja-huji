@@ -22,6 +22,7 @@ Route::group(['namespace' => 'Api'], function () {
         Route::get('/categories', 'CategoriesController@index');
         Route::get('/dates', 'DatesController@index');
         Route::get('/copyrights', 'CopyrightsController@index');
+        Route::get('/photographers', 'PhotographersController@index');
     });
 
     Route::group(['namespace' => 'MHS', 'prefix' => 'mhs'], function () {
