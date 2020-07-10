@@ -37,6 +37,7 @@
         tag="section"
       >
         <slot name="media-manager-modal" />
+
         <v-row>
           <v-col cols="8">
             <base-material-card class="px-5 py-3">
