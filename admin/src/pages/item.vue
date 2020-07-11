@@ -839,12 +839,12 @@
         }
       },
 
-      async excludeImages (images) {
+      async excludeImages (excludingImages) {
         // eslint-disable-next-line
         let itemImages = this.item.images.slice(0)
 
-        images.forEach(image => {
-          const index = this.item.images.findIndex(img => img.def === `images_db/${image.storage_path}`)
+        excludingImages.forEach(excludingImage => {
+          const index = this.item.images.findIndex(img => img.id === excludingImage.image.id)
 
           if (index !== -1) {
             itemImages.splice(index, 1)
