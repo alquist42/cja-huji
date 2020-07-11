@@ -223,7 +223,24 @@ export default {
             // normal
             this.getPathFromUrl()
                     .then(this.preSaved())
-                    .then(this.getFiles(null, this.selectedFile))
+                    .then(() => {
+                        if (this.itemId) {
+                            return this.setCustomFilterName('item-s')
+                        }
+
+                        if (this.folders.join('/') === 'ORPHANS (virtual folder)') {
+                            return this.getCustomFiles('orphan_files')
+                        }
+                        if (this.folders.join('/') === 'WHOLE TREE (virtual folder)') {
+                            return this.getCustomFiles('tree_files')
+                        }
+
+                        if (this.folders.join('/') === 'ITEM\'S (virtual folder)') {
+                            this.folders = []
+                        }
+
+                        this.getFiles(null, this.selectedFile)
+                    })
                     .then(this.updatePageUrl())
                     .then(this.afterInit())
 

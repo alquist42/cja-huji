@@ -2,10 +2,6 @@ export default {
     methods: {
         /*                Main                */
         getFiles(prev_folder = null, prev_file = null) {
-            if (this.folders.join('/') === 'ORPHANS (virtual folder)') {
-                return this.setCustomFilterName('orphans')
-            }
-
             this.files.next = null
             this.resetInput(['sortName', 'filterName', 'selectedFile', 'currentFileIndex'])
             this.noFiles('hide')
