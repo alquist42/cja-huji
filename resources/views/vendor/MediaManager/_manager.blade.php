@@ -14,6 +14,8 @@
     :routes="{{ json_encode([
         'files' => route('staff.media.get_files'),
         'orphan_files' => route('staff.media.get_orphan_files'),
+        'item_files' => route('staff.media.get_item_files'),
+        'tree_files' => route('staff.media.get_tree_files'),
         'lock' => route('staff.media.lock_file'),
         'visibility' => route('staff.media.change_vis'),
         'upload' => route('staff.media.upload'),

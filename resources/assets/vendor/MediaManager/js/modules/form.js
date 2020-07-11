@@ -40,7 +40,7 @@ export default {
             })
         },
 
-        getOrphanFiles(prev_folder = null, prev_file = null) {
+        getCustomFiles(route, prev_folder = null, prev_file = null) {
             this.files.next = null
             this.resetInput(['sortName', 'selectedFile', 'currentFileIndex'])
             this.noFiles('hide')
@@ -53,7 +53,7 @@ export default {
             }
 
             // get data
-            return axios.get(this.routes.orphan_files).then(({data}) => {
+            return axios.post(this.routes[route], { itemId: this.itemId }).then(({data}) => {
                 // folder does'nt exist
                 if (data.error) {
                   return this.showNotif(data.error, 'danger')

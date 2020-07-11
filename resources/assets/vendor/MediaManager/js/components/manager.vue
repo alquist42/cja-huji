@@ -211,7 +211,7 @@ export default {
             // restrictions
             EventHub.listen('external_modal_resrtict', (data) => {
                 return this.restrictions = Object.assign(this.restrictions, data)
-            })
+              })
 
             if (this.restrictModeIsOn) {
                 this.clearUrlQuery()
@@ -231,11 +231,8 @@ export default {
                         if (this.folders.join('/') === 'ORPHANS (virtual folder)') {
                             return this.getCustomFiles('orphan_files')
                         }
-                        if (this.folders.join('/') === 'WHOLE TREE (virtual folder)') {
-                            return this.getCustomFiles('tree_files')
-                        }
 
-                        if (this.folders.join('/') === 'ITEM\'S (virtual folder)') {
+                        if (this.folders.join('/') === 'ITEM\'S (virtual folder)' || this.folders.join('/') === 'WHOLE TREE (virtual folder)') {
                             this.folders = []
                         }
 

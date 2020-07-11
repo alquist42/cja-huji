@@ -86,15 +86,15 @@ export default {
                 switch (val) {
                     case 'orphans':
                         this.folders = ['ORPHANS (virtual folder)']
-                        this.getOrphanFiles()
+                        this.getCustomFiles('orphan_files')
                         break
                     case 'item-s':
-                      this.folders = ['ITEM\'S (virtual folder)']
-                      // this.getItemsFiles()
+                        this.folders = ['ITEM\'S (virtual folder)']
+                        this.getCustomFiles('item_files')
                         break
                     case 'whole-tree':
-                      this.folders = ['WHOLE TREE (virtual folder)']
-                      // this.getWholeTreeFiles()
+                        this.folders = ['WHOLE TREE (virtual folder)']
+                        this.getCustomFiles('tree_files')
                 }
             } else {
                 this.resetInput('filterdFilesList', [])
