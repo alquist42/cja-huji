@@ -368,7 +368,21 @@
                 </div>
               </template>
               <v-card-text>
-                <v-treeview :items="item.leaf" />
+                <v-treeview
+                  open-on-click
+                  :active="compositionTreeActive"
+                  :open="compositionTreeOpen"
+                  :items="item.leaf"
+                >
+                  <template #append="{ item: treeItem }">
+                    <v-icon
+                      v-if="item.id !== treeItem.id"
+                      @click="openItem(treeItem.id)"
+                    >
+                      mdi-arrow-right-bold-box
+                    </v-icon>
+                  </template>
+                </v-treeview>
               </v-card-text>
             </base-material-card>
 
@@ -458,7 +472,9 @@
     data: () => ({
       mediaManagerDialog: false,
       isSaving: false,
-      item: {},
+      item: {
+        ancestors: [],
+      },
 
       panel: [],
 
@@ -608,6 +624,14 @@
           },
           ...sortedCategories,
         ]
+      },
+
+      compositionTreeOpen () {
+        return this.item.ancestors.map(item => item.id).concat([this.item.id])
+      },
+
+      compositionTreeActive () {
+        return [this.item.id]
       },
     },
 
@@ -837,6 +861,10 @@
         } catch (e) {
           this.showSnackbarError()
         }
+      },
+
+      openItem (itemId) {
+        window.location = `/staff/items/${itemId}`
       },
     },
   }
