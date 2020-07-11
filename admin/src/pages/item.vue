@@ -857,6 +857,7 @@
           })
 
           this.item.images = data
+          EventHub.fire('MediaManagerModal-images-excluded-from-item')
           this.showSnackbarSuccess('Images have been excluded')
         } catch (e) {
           this.showSnackbarError()

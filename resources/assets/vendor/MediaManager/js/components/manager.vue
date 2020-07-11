@@ -306,6 +306,23 @@ export default {
                     }
                 })
             })
+
+            // update images
+            EventHub.listen('MediaManagerModal-images-excluded-from-item', () => {
+              switch (this.customFilterName) {
+                  case 'orphans':
+                      this.getCustomFiles('orphan_files')
+                      break
+                  case 'item-s':
+                      this.getCustomFiles('item_files')
+                      break
+                  case 'whole-tree':
+                      this.getCustomFiles('tree_files')
+                      break
+                  default:
+                      this.getFiles()
+              }
+            })
         },
 
         shortCuts(e) {
