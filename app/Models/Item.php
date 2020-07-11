@@ -179,28 +179,27 @@ class Item extends Classifiable
 
     public function leaf() {
         $ancestors = Item::ancestorsAndSelf($this->id);
-        foreach ($ancestors as $anc){
-            if(empty($anc->parent_id)){
+        foreach ($ancestors as $anc) {
+            if (empty($anc->parent_id)) {
                 $descendants = $anc->descendantsOf($anc->id);
                 break;
             }
         }
-       $parents = [];
-        foreach($descendants as $descendant){
-            if(!in_array($descendant->parent_id,$parents)){
+        $parents = [];
+        foreach ($descendants as $descendant) {
+            if (!in_array($descendant->parent_id, $parents)) {
                 $parents[] = $descendant->parent_id;
             }
         }
 
-        foreach($descendants as $key => $descendant){
-            if(!in_array($descendant->id,$parents)){
+        foreach ($descendants as $key => $descendant) {
+            if (!in_array($descendant->id, $parents)) {
                 unset($descendants[$key]);
             }
         }
 
         return $ancestors->merge($descendants)->toTree();
-       // return Item::ancestorsAndSelf($this->id)->merge($this->descendants)->toTree();
-
+        // return Item::ancestorsAndSelf($this->id)->merge($this->descendants)->toTree();
     }
 
     public function url(){
