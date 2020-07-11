@@ -73,6 +73,8 @@ export default {
             }
         },
         fileTypeIs(item, val) {
+            if (!item) return
+
             let mimes = this.config.mimeTypes
             let type = item.type || item
 

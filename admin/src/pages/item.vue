@@ -817,20 +817,18 @@
         this.$nextTick(() => EventHub.fire('MediaManagerModal-show'))
       },
 
-      async includeImages (images) {
+      async includeImages (includingImages) {
         // eslint-disable-next-line
-        let itemImages = this.item.images.slice(0)
+        let images = this.item.images.slice(0)
 
-        images.forEach(image => {
-          if (!this.item.images.find(img => img.def === `images_db/${image.storage_path}`)) {
-            itemImages.push(image)
+        includingImages.forEach(includingImage => {
+          if (!this.item.images.find(img => img.id === includingImage.image.id)) {
+            images.push(includingImage)
           }
         })
 
         try {
-          const { data } = await this.$http.put(`/api/items/${this.id}/images?project=catalogue`, {
-            images: itemImages,
-          })
+          const { data } = await this.$http.put(`/api/items/${this.id}/images?project=catalogue`, { images })
 
           this.item.images = data
           this.showSnackbarSuccess('Images have been included')
@@ -841,20 +839,18 @@
 
       async excludeImages (excludingImages) {
         // eslint-disable-next-line
-        let itemImages = this.item.images.slice(0)
+        let images = this.item.images.slice(0)
 
         excludingImages.forEach(excludingImage => {
-          const index = this.item.images.findIndex(img => img.id === excludingImage.image.id)
+          const index = images.findIndex(img => img.id === excludingImage.image.id)
 
           if (index !== -1) {
-            itemImages.splice(index, 1)
+            images.splice(index, 1)
           }
         })
 
         try {
-          const { data } = await this.$http.put(`/api/items/${this.id}/images?project=catalogue`, {
-            images: itemImages,
-          })
+          const { data } = await this.$http.put(`/api/items/${this.id}/images?project=catalogue`, { images })
 
           this.item.images = data
           EventHub.fire('MediaManagerModal-images-excluded-from-item')
