@@ -92,19 +92,56 @@
                     cols="12"
                     class="pb-0"
                   >
+                    <v-tooltip
+                      v-if="taxonomyInheritance[taxon] !== 'enabled'"
+                      top
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                          v-bind="attrs"
+                          v-on="on"
+                          icon
+                          @click="enableTaxonomyInheritance(taxon)"
+                        >
+                          <v-icon color="grey">mdi-lock</v-icon>
+                        </v-btn>
+                      </template>
+                      <span>Enable taxonomy inheritance</span>
+                    </v-tooltip>
+                    <v-tooltip
+                      v-else
+                      top
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                          v-bind="attrs"
+                          v-on="on"
+                          icon
+                          @click="disableTaxonomyInheritance(taxon)"
+                        >
+                          <v-icon color="grey">mdi-lock-open</v-icon>
+                        </v-btn>
+                      </template>
+                      <span>Disable taxonomy inheritance</span>
+                    </v-tooltip>
                     <span class="overline">
                       {{ taxon.replace('_', ' ') }}
                     </span>
+                    <span
+                      class="caption"
+                      v-if="taxonomyInheritance[taxon] === 'enabled'"
+                    >
+                      (from parent)
+                    </span>
                     <taxon-modal
+                      v-if="taxonomyInheritance[taxon] !== 'enabled'"
                       :taxon="taxon"
                       :value="item[taxon] || []"
                       @input="updateTaxon(taxon, $event)"
                     />
                   </v-col>
                   <v-row no-gutters>
-                    <v-col
-                      v-if="item[taxon] && item[taxon].length"
-                    >
+                    <v-col v-if="taxonomyInheritance[taxon] === 'disabled-own'">
                       <v-chip
                         v-for="obj in item[taxon]"
                         :key="obj.id"
@@ -117,11 +154,16 @@
                       </v-chip>
                       ({{ details(taxon) }})
                     </v-col>
-                    <!--TODO: allow to work with a parent taxonomy too-->
-                    <v-col
-                      v-if="item.parent && item.parent[0]"
-                      cols="6"
-                    >
+                    <v-col v-else-if="taxonomyInheritance[taxon] === 'disabled-none'">
+                      <v-chip
+                        class="mb-1 mr-1"
+                        outlined
+                        disabled
+                      >
+                        none
+                      </v-chip>
+                    </v-col>
+                    <v-col v-else-if="item.parent && item.parent[0]">
                       <v-chip
                         v-for="obj in item.parent[0][taxon]"
                         :key="obj.id"
@@ -129,7 +171,16 @@
                       >
                         {{ obj.name }}
                       </v-chip>
-                      <!--                      ({{ details(taxon) }})-->
+                      <!--({{ details(taxon) }})-->
+                    </v-col>
+                    <v-col v-else>
+                      <v-chip
+                        class="mb-1 mr-1"
+                        outlined
+                        disabled
+                      >
+                        none
+                      </v-chip>
                     </v-col>
                   </v-row>
                 </v-row>
@@ -375,12 +426,13 @@
                   :items="item.leaf"
                 >
                   <template #append="{ item: treeItem }">
-                    <v-icon
+                    <a
                       v-if="item.id !== treeItem.id"
-                      @click="openItem(treeItem.id)"
+                      :href="`/staff/items/${treeItem.id}`"
+                      style="text-decoration: none;"
                     >
-                      mdi-arrow-right-bold-box
-                    </v-icon>
+                      <v-icon>mdi-arrow-right-bold-box</v-icon>
+                    </a>
                   </template>
                 </v-treeview>
               </v-card-text>
@@ -633,6 +685,24 @@
       compositionTreeActive () {
         return [this.item.id]
       },
+
+      taxonomyInheritance () {
+        // eslint-disable-next-line
+        let taxonomyInheritance = {}
+
+        this.taxons.forEach(taxonName => {
+          const taxons = this.item[taxonName]
+          if (!taxons || taxons.length === 0) {
+            taxonomyInheritance[taxonName] = 'enabled' // blank - inheritance enabled
+          } else if (taxons[0].id === -1) {
+            taxonomyInheritance[taxonName] = 'disabled-none' // -1 (unknown) - inheritance disabled - but show nothing
+          } else {
+            taxonomyInheritance[taxonName] = 'disabled-own' // other own value - inheritance disabled
+          }
+        })
+
+        return taxonomyInheritance
+      },
     },
 
     watch: {
@@ -860,8 +930,12 @@
         }
       },
 
-      openItem (itemId) {
-        window.location = `/staff/items/${itemId}`
+      enableTaxonomyInheritance (taxonName) {
+        this.item[taxonName] = []
+      },
+
+      disableTaxonomyInheritance (taxonName) {
+        this.item[taxonName] = [{ id: -1, name: 'unknown' }]
       },
     },
   }

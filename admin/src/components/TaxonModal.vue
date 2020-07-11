@@ -82,6 +82,7 @@
         isLoading: false,
         searchInput: '',
         searchTimeoutId: null,
+        hasUnknown: false,
       }
     },
 
@@ -89,8 +90,9 @@
       value: {
         immediate: true,
         handler (initialItems) {
-          this.items = initialItems.slice(0)
-          this.selectedItems = initialItems.slice(0)
+          this.hasUnknown = initialItems[0].id === -1
+          this.items = this.excludeUnknown(initialItems)
+          this.selectedItems = this.items.slice(0)
         },
       },
 
@@ -109,7 +111,7 @@
         this.isLoading = true
         const { data } = await this.$http.get(`/api/autocomplete/?project=catalogue&type=${this.taxon}&term=${search}`)
         this.isLoading = false
-        this.items = data || []
+        this.items = this.excludeUnknown(data || [])
       },
 
       closeDialog () {
@@ -117,8 +119,22 @@
       },
 
       save () {
-        this.$emit('input', this.selectedItems)
+        let items = this.selectedItems
+
+        if (this.selectedItems.length === 0 && this.hasUnknown) {
+          items = this.includeUnknown(items)
+        }
+
+        this.$emit('input', items)
         this.closeDialog()
+      },
+
+      excludeUnknown (arr) {
+        return arr.filter(item => item.id > 0)
+      },
+
+      includeUnknown (arr) {
+        return arr.concat([{ id: -1, name: 'unknown' }])
       },
     },
   }
