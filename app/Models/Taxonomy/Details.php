@@ -12,7 +12,7 @@ class Details extends Model
 {
     // use NodeTrait;
     public $timestamps = false;
-    protected $table = 'taxomony_details';
+    protected $table = 'taxonomy_details';
     /**
      * @var array
      */
