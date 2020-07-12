@@ -17,6 +17,10 @@
       </template>
     </v-snackbar>
 
+    <v-dialog v-model="mediaManagerDialog">
+      <slot name="media-manager-modal" />
+    </v-dialog>
+
     <dashboard-core-app-bar>
       <v-btn
         outlined
@@ -36,8 +40,6 @@
         fluid
         tag="section"
       >
-        <slot name="media-manager-modal" />
-
         <v-row>
           <v-col cols="8">
             <base-material-card class="px-5 py-3">
@@ -366,7 +368,21 @@
                 </div>
               </template>
               <v-card-text>
-                <v-treeview :items="item.leaf" />
+                <v-treeview
+                  open-on-click
+                  :active="compositionTreeActive"
+                  :open="compositionTreeOpen"
+                  :items="item.leaf"
+                >
+                  <template #append="{ item: treeItem }">
+                    <v-icon
+                      v-if="item.id !== treeItem.id"
+                      @click="openItem(treeItem.id)"
+                    >
+                      mdi-arrow-right-bold-box
+                    </v-icon>
+                  </template>
+                </v-treeview>
               </v-card-text>
             </base-material-card>
 
@@ -454,8 +470,11 @@
     },
 
     data: () => ({
+      mediaManagerDialog: false,
       isSaving: false,
-      item: {},
+      item: {
+        ancestors: [],
+      },
 
       panel: [],
 
@@ -606,6 +625,14 @@
           ...sortedCategories,
         ]
       },
+
+      compositionTreeOpen () {
+        return this.item.ancestors.map(item => item.id).concat([this.item.id])
+      },
+
+      compositionTreeActive () {
+        return [this.item.id]
+      },
     },
 
     watch: {
@@ -675,6 +702,7 @@
     created () {
       EventHub.listen('MediaManagerModal-include-images-in-item', (images) => this.includeImages(images))
       EventHub.listen('MediaManagerModal-exclude-images-from-item', (images) => this.excludeImages(images))
+      EventHub.listen('modal-hide', () => { this.mediaManagerDialog = false })
     },
 
     async mounted () {
@@ -785,23 +813,22 @@
       },
 
       openMediaManagerModal () {
-        EventHub.fire('MediaManagerModal-show')
+        this.mediaManagerDialog = true
+        this.$nextTick(() => EventHub.fire('MediaManagerModal-show'))
       },
 
-      async includeImages (images) {
+      async includeImages (includingImages) {
         // eslint-disable-next-line
-        let itemImages = this.item.images.slice(0)
+        let images = this.item.images.slice(0)
 
-        images.forEach(image => {
-          if (!this.item.images.find(img => img.def === `images_db/${image.storage_path}`)) {
-            itemImages.push(image)
+        includingImages.forEach(includingImage => {
+          if (!this.item.images.find(img => img.id === includingImage.image.id)) {
+            images.push(includingImage)
           }
         })
 
         try {
-          const { data } = await this.$http.put(`/api/items/${this.id}/images?project=catalogue`, {
-            images: itemImages,
-          })
+          const { data } = await this.$http.put(`/api/items/${this.id}/images?project=catalogue`, { images })
 
           this.item.images = data
           this.showSnackbarSuccess('Images have been included')
@@ -810,28 +837,31 @@
         }
       },
 
-      async excludeImages (images) {
+      async excludeImages (excludingImages) {
         // eslint-disable-next-line
-        let itemImages = this.item.images.slice(0)
+        let images = this.item.images.slice(0)
 
-        images.forEach(image => {
-          const index = this.item.images.findIndex(img => img.def === `images_db/${image.storage_path}`)
+        excludingImages.forEach(excludingImage => {
+          const index = images.findIndex(img => img.id === excludingImage.image.id)
 
           if (index !== -1) {
-            itemImages.splice(index, 1)
+            images.splice(index, 1)
           }
         })
 
         try {
-          const { data } = await this.$http.put(`/api/items/${this.id}/images?project=catalogue`, {
-            images: itemImages,
-          })
+          const { data } = await this.$http.put(`/api/items/${this.id}/images?project=catalogue`, { images })
 
           this.item.images = data
+          EventHub.fire('MediaManagerModal-images-excluded-from-item')
           this.showSnackbarSuccess('Images have been excluded')
         } catch (e) {
           this.showSnackbarError()
         }
+      },
+
+      openItem (itemId) {
+        window.location = `/staff/items/${itemId}`
       },
     },
   }

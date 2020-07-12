@@ -13,6 +13,9 @@
     ]) }}"
     :routes="{{ json_encode([
         'files' => route('staff.media.get_files'),
+        'orphan_files' => route('staff.media.get_orphan_files'),
+        'item_files' => route('staff.media.get_item_files'),
+        'tree_files' => route('staff.media.get_tree_files'),
         'lock' => route('staff.media.lock_file'),
         'visibility' => route('staff.media.change_vis'),
         'upload' => route('staff.media.upload'),
@@ -94,7 +97,8 @@
     :hide-path="{{ isset($hidePath) ? json_encode($hidePath) : '[]' }}"
     :restrict="{{ isset($restrict) ? json_encode($restrict) : '{}' }}"
     :user-id="{{ config('mediaManager.enable_broadcasting') ? optional(auth()->user())->id : 0 }}"
-    :upload-panel-img-list="{{ !empty($patterns) ? $patterns : '[]' }}">
+    :upload-panel-img-list="{{ !empty($patterns) ? $patterns : '[]' }}"
+    :item-id="{{ isset($data['id']) ? $data['id'] : 0 }}">
 
     <div class="media-manager"
         :class="[
@@ -313,11 +317,14 @@
                         <div class="level-item" v-if="searchItemsCount != 0 && allItemsCount">
                             <filter-and-sorting :disabled="isLoading"
                                 :filter-name-is="filterNameIs"
+                                :custom-filter-name-is="customFilterNameIs"
                                 :sort-name-is="sortNameIs"
                                 :set-filter-name="setFilterName"
+                                :set-custom-filter-name="setCustomFilterName"
                                 :set-sort-name="setSortName"
                                 :have-a-file-of-type="haveAFileOfType"
-                                :trans="trans">
+                                :trans="trans"
+                                :in-modal="this.inModal">
                             </filter-and-sorting>
                         </div>
 

@@ -47,7 +47,7 @@ export default {
         editor_btn_disable() {
             return this.ops_btn_disable ||
                 !this.selectedFileIs('image') ||
-                this.selectedFile.type.includes('gif')
+                (this.selectedFile.type && this.selectedFile.type.includes('gif'))
         },
         lock_btn_disable() {
             return this.searchItemsCount == 0 ||

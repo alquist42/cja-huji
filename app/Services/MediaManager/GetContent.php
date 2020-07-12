@@ -1,9 +1,11 @@
 <?php
 
-namespace App\MediaManager\Modules;
+namespace App\Services\MediaManager;
 
 use App\Services\ImageService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use League\Flysystem\Util;
 
 trait GetContent
 {
@@ -35,6 +37,88 @@ trait GetContent
                 ]
             )
         );
+    }
+
+    public function getOrphanFiles()
+    {
+        $orphanImages = (new ImageService())->getOrphans();
+
+        return response()->json(
+            array_merge(
+                $this->lockList(),
+                [
+                    'files'  => [
+                        'path'  => 'ORPHANS',
+                        'items' => $this->paginate($this->getFilesMetadataForImages($orphanImages), $this->paginationAmount),
+                    ],
+                ]
+            )
+        );
+    }
+
+    public function getItemFiles(Request $request)
+    {
+        $itemImages = (new ImageService())->getItemImages($request->input('itemId'));
+
+        return response()->json(
+            array_merge(
+                $this->lockList(),
+                [
+                    'files'  => [
+                        'path'  => 'ITEM\'S',
+                        'items' => $this->paginate($this->getFilesMetadataForImages($itemImages), $this->paginationAmount),
+                    ],
+                ]
+            )
+        );
+    }
+
+    public function getTreeFiles(Request $request)
+    {
+        $treeImages = (new ImageService())->getWholeTree($request->input('itemId'));
+
+        return response()->json(
+            array_merge(
+                $this->lockList(),
+                [
+                    'files'  => [
+                        'path'  => 'ORPHANS',
+                        'items' => $this->paginate($this->getFilesMetadataForImages($treeImages), $this->paginationAmount),
+                    ],
+                ]
+            )
+        );
+    }
+
+    /**
+     * Get file's metadata for each image's file
+     *
+     * @param array|Collection $images
+     * @return array
+     */
+    protected function getFilesMetadataForImages($images)
+    {
+        $list = [];
+
+        foreach ($images as $image) {
+            $file = $this->storageDisk->getWithMetadata($image->def, ['mimetype', 'visibility', 'timestamp', 'size']);
+            $path = $file['path'];
+            $time = $file['timestamp'];
+
+            $list[] = [
+                'name'                   => Util::pathinfo($path)['basename'],
+                'type'                   => $file['mimetype'],
+                'path'                   => $this->resolveUrl($path),
+                'storage_path'           => $path,
+                'size'                   => $file['size'],
+                'visibility'             => $file['visibility'],
+                'last_modified'          => $time,
+                'last_modified_formated' => $this->getItemTime($time),
+                'image'                  => $image,
+            ];
+        }
+
+        return $list;
     }
 
     /**

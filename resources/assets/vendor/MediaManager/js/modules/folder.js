@@ -50,6 +50,7 @@ export default {
                 }
 
                 this.$nextTick(() => {
+                    this.setCustomFilterName(null)
                     this.getFiles(prev_folder_name).then(this.updatePageUrl())
                 })
             }

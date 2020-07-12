@@ -50,7 +50,7 @@
     >
         <template #media-manager-modal>
             @if(isset($data['id']))
-            <media-manager-modal inline-template item-id="{{ $data['id'] }}">
+            <media-manager-modal inline-template>
                 <div>
                     <metadata-editor-drawer></metadata-editor-drawer>
 

@@ -76,7 +76,8 @@ export default {
         'hideExt',
         'hidePath',
         'restrict',
-        'userId'
+        'userId',
+        'itemId',
     ],
     data() {
         return {
@@ -108,6 +109,7 @@ export default {
             activeModal: null,
             currentFileIndex: null,
             filterName: null,
+            customFilterName: null,
             sortName: null,
             imageSlideDirection: null,
             newFilename: null,
@@ -209,7 +211,7 @@ export default {
             // restrictions
             EventHub.listen('external_modal_resrtict', (data) => {
                 return this.restrictions = Object.assign(this.restrictions, data)
-            })
+              })
 
             if (this.restrictModeIsOn) {
                 this.clearUrlQuery()
@@ -221,7 +223,21 @@ export default {
             // normal
             this.getPathFromUrl()
                     .then(this.preSaved())
-                    .then(this.getFiles(null, this.selectedFile))
+                    .then(() => {
+                        if (this.itemId) {
+                            return this.setCustomFilterName('item-s')
+                        }
+
+                        if (this.folders.join('/') === 'ORPHANS (virtual folder)') {
+                            return this.getCustomFiles('orphan_files')
+                        }
+
+                        if (this.folders.join('/') === 'ITEM\'S (virtual folder)' || this.folders.join('/') === 'WHOLE TREE (virtual folder)') {
+                            this.folders = []
+                        }
+
+                        this.getFiles(null, this.selectedFile)
+                    })
                     .then(this.updatePageUrl())
                     .then(this.afterInit())
 
@@ -289,6 +305,23 @@ export default {
                         }
                     }
                 })
+            })
+
+            // update images
+            EventHub.listen('MediaManagerModal-images-excluded-from-item', () => {
+              switch (this.customFilterName) {
+                  case 'orphans':
+                      this.getCustomFiles('orphan_files')
+                      break
+                  case 'item-s':
+                      this.getCustomFiles('item_files')
+                      break
+                  case 'whole-tree':
+                      this.getCustomFiles('tree_files')
+                      break
+                  default:
+                      this.getFiles()
+              }
             })
         },
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\MediaManager\GetContent;
 use ctf0\MediaManager\App\Controllers\Modules\Lock;
 use ctf0\MediaManager\App\Controllers\Modules\Move;
 use ctf0\MediaManager\App\Controllers\Modules\Utils;
@@ -9,10 +10,10 @@ use ctf0\MediaManager\App\Controllers\Modules\Delete;
 use ctf0\MediaManager\App\Controllers\Modules\Rename;
 use ctf0\MediaManager\App\Controllers\Modules\Download;
 use ctf0\MediaManager\App\Controllers\Modules\NewFolder;
-use App\MediaManager\Modules\GetContent;
 use App\MediaManager\Modules\Upload;
 use ctf0\MediaManager\App\Controllers\Modules\Visibility;
 use ctf0\MediaManager\App\Controllers\Modules\GlobalSearch;
+use League\Flysystem\Plugin\GetWithMetadata;
 use League\Flysystem\Plugin\ListWith;
 
 class MediaController extends Controller
@@ -64,6 +65,7 @@ class MediaController extends Controller
                                     ->table($config['table_locked']);
 
         $this->storageDisk->addPlugin(new ListWith);
+        $this->storageDisk->addPlugin(new GetWithMetadata);
     }
 
     /**

@@ -17,6 +17,18 @@
                 {{ trans(item) }}
             </div>
 
+            <!-- custom filters -->
+            <hr class="dropdown-divider">
+            <div v-for="item in customFilters"
+                 :key="`filter-${item.key}`"
+                 class="dropdown-item link"
+                 :class="[
+                     customFilterNameIs(item.key) ? 'has-text-weight-bold has-text-link' : 'has-text-grey-dark'
+                 ]"
+                 @click.stop="setCustomFilterName(item.key)">
+                {{ item.text }}
+            </div>
+
             <!-- sorts -->
             <hr class="dropdown-divider">
             <div v-for="item in sorts"
@@ -34,13 +46,17 @@
 export default {
     props: [
         'setFilterName',
+        'setCustomFilterName',
         'filterNameIs',
+        'customFilterNameIs',
         'setSortName',
         'sortNameIs',
         'disabled',
         'haveAFileOfType',
-        'trans'
+        'trans',
+        'inModal'
     ],
+
     data() {
         return {
             filters: [
@@ -62,6 +78,30 @@ export default {
             ]
         }
     },
+
+    computed: {
+        customFilters() {
+            const commonItems = [
+                {
+                    key: 'orphans',
+                    text: 'Orphans',
+                },
+            ]
+            const modalItems = [
+                {
+                    key: 'item-s',
+                    text: 'Item\'s',
+                },
+                {
+                    key: 'whole-tree',
+                    text: 'Whole Tree',
+                },
+            ]
+
+            return commonItems.concat(this.inModal ? modalItems : [])
+        }
+    },
+
     methods: {
         haveFileType(val) {
             if (val == 'non') {

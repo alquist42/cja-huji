@@ -8,6 +8,11 @@ export default {
                 this.filterName = val
             }
         },
+        setCustomFilterName(val) {
+            if (!this.customFilterNameIs(val)) {
+                this.customFilterName = val
+            }
+        },
         setSortName(val) {
             if (val == 'non') {
                 return this.resetInput('sortName')
@@ -28,6 +33,9 @@ export default {
         },
         filterNameIs(val) {
             return this.filterName == val
+        },
+        customFilterNameIs(val) {
+            return this.customFilterName === val
         },
         sortNameIs(val) {
             return this.sortName == val
@@ -65,6 +73,8 @@ export default {
             }
         },
         fileTypeIs(item, val) {
+            if (!item) return
+
             let mimes = this.config.mimeTypes
             let type = item.type || item
 
