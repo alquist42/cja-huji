@@ -310,6 +310,7 @@
                     :key="image.id"
                   >
                     <v-img
+                      :lazy-src="`/storage/${image.small || image.medium || image.def || image.batch_url}`"
                       :src="`http://cja.huji.ac.il/${image.small || image.medium || image.def || image.batch_url}`"
                       max-height="250px"
                       contain

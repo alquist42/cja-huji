@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Item;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 
 class ImagesController extends Controller
 {
@@ -17,7 +18,7 @@ class ImagesController extends Controller
     public function view($itemId, $imageId, $size)
     {
         $addWatermark = false;
-        
+
         $model = Item::where('id', $itemId)->with(
             ["images" => function($q) use ($imageId){
                 $q->where('images.id', '=', $imageId);
@@ -40,7 +41,7 @@ class ImagesController extends Controller
         //    $url = $image->url();
         $url = str_replace(" ", "%20", $url);
 
-        if(!file_exists($url)){
+        if(!Storage::disk('public')->exists($url)){
           //  $this->saveImage($url); //YOU may save it to test the speed
             $url='http://cja.huji.ac.il/' . $url;
         }
