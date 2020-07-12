@@ -41,9 +41,12 @@ class ImagesController extends Controller
         //    $url = $image->url();
         $url = str_replace(" ", "%20", $url);
 
-        if(!Storage::disk('public')->exists($url)){
-          //  $this->saveImage($url); //YOU may save it to test the speed
-            $url='http://cja.huji.ac.il/' . $url;
+        if(Storage::disk('public')->exists($url)){
+            $url = config('filesystems.disks.public.root') . '/' . $url;
+        }
+        else {
+//            $this->saveImage($url); //YOU may save it to test the speed
+            $url = 'http://cja.huji.ac.il/' . $url;
         }
 
         $img = \Image::make($url);
