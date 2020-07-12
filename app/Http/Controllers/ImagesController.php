@@ -16,11 +16,8 @@ class ImagesController extends Controller
 
     public function view($itemId, $imageId, $size)
     {
-        DB::enableQueryLog();
         $addWatermark = false;
-
-
-
+        
         $model = Item::where('id', $itemId)->with(
             ["images" => function($q) use ($imageId){
                 $q->where('images.id', '=', $imageId);
