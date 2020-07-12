@@ -7,7 +7,7 @@
                         <div class="carousel-item  @if($image->id === $item->images[0]->id) {{ 'active' }} @endif">
                             <div class="card">
                                 <div class="placeholder" style="width:100%;min-height:250px;">
-                                    <img class="d-block w-100 preview" src="{{ $item->image_url() }}-medium.png" alt="First slide">
+                                    <img class="d-block w-100 preview" src="/images/{{ $item->id }}-{{ $image->id }}-medium.png" alt="First slide">
                                 </div>
                                 <div class="card-body">
                                     @include('item.image-details', [ 'image' => $image ])

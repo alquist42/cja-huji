@@ -6,7 +6,7 @@
                     <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 mb-4 px-0">
                         <a href="/{{ $obj->url() }}" class="card-link">
                             <div class="card">
-                                <img class="card-img-top lazyload" src="{{ $obj->image_url() }}-small.png" alt="{{ $item->name() }}">
+                                <img class="card-img-top lazyload" src="/images/{{ $obj->id }}-{{ $obj->images->first()->id }}-small.png" alt="{{ $item->name() }}">
                                 <div class="card-img-overlay"style="opacity: 0.6;">
                                     <h5 class="card-title text-white bg-secondary p-3">ID: {{ $obj->id }}</h5>
                                 </div>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Item;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
 class ImagesController extends Controller
@@ -13,22 +14,20 @@ class ImagesController extends Controller
     const THUMB_WIDTH = 600;
     const PIC_NORIGHTS_JPG = 'no_rights.jpg';
 
-    public function view($type, $id, $size)
+    public function view($itemId, $imageId, $size)
     {
+        DB::enableQueryLog();
         $addWatermark = false;
-        switch ($type) {
-            case 's':
-                $modelClass = '\\App\\Models\\Item';
-                break;
-            case 'i':
-                $modelClass = '\\App\\Models\\Item';
-                break;
-        }
 
 
-        $model = $modelClass::where('id', $id)->with('images')->with('collections')->first();
-        $image = $model->images()->first();
 
+        $model = Item::where('id', $itemId)->with(
+            ["images" => function($q) use ($imageId){
+                $q->where('images.id', '=', $imageId);
+            }]
+        )->with('collections')->first();
+
+        $image = $model->images->first();
 
         $allowedToShow = $this->allowedToShow($model, $image, $size);
 
