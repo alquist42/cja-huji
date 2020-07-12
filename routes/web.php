@@ -55,7 +55,7 @@ Route::group([
     });
 });
 
-Route::get('/images/{model}-{id}-{size}.png', 'ImagesController@view')->
+Route::get('/images/{item}-{image}-{size}.png', 'ImagesController@view')->
         where('model', 's|i')->where('id', '[0-9]+')->where('size', 'original|thumb|small|medium');
 
 // Authentication Routes...

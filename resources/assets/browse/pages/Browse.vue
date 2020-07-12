@@ -80,16 +80,17 @@
             class="card-body"
           >
             <div class="row">
-              <template v-for="(item, i) in items">
+              <template v-for="(item, i) in items" >
                 <div
                   :key="i"
                   class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 mb-4"
                   @click="openItem(item.id)"
+                  :set="image = item.images[0]"
                 >
                   <div class="card">
                     <img
                       class="card-img-top"
-                      :src="`/images/s-${item.id}-small.png`"
+                      :src="`/images/${item.id}-${image.id}-small.png`"
                       alt="Card image cap"
                     >
                     <div class="card-body">

@@ -49,6 +49,8 @@ class FixTree extends Command
      */
     public function handle()
     {
+        ini_set("memory_limit", "-1");
+        set_time_limit(0);
         try {
             Location::fixTree();
             Subject::fixTree();

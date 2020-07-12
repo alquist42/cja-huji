@@ -13,7 +13,7 @@ class CreateTaxomonyDetailsTable extends Migration
      */
     public function up()
     {
-        Schema::create('taxomony_details', function (Blueprint $table) {
+        Schema::create('taxonomy_details', function (Blueprint $table) {
             $table->integer('id', true);
             $table->string('taxonomy_type', 50)->nullable();
             $table->bigInteger('entity_id')->nullable()->index('entity_id');
@@ -30,6 +30,6 @@ class CreateTaxomonyDetailsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('taxomony_details');
+        Schema::drop('taxonomy_details');
     }
 }
