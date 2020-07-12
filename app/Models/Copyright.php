@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\SearchableByName;
 use Illuminate\Database\Eloquent\Model;
 
 class Copyright extends Model
 {
+    use SearchableByName;
+
     /**
      * DB Table name
      *

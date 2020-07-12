@@ -28,6 +28,7 @@ import Dash from './pages/dash'
 import Items from './pages/items'
 import Item from './pages/item'
 import Media from './pages/media'
+import MetadataEditorDrawer from './components/MetadataEditorDrawer'
 import { TiptapVuetifyPlugin } from 'tiptap-vuetify'
 // don't forget to import CSS styles
 import 'tiptap-vuetify/dist/main.css'
@@ -61,6 +62,7 @@ Vue.component('Dash', Dash)
 Vue.component('Items', Items)
 Vue.component('Item', Item)
 Vue.component('Media', Media)
+Vue.component('MetadataEditorDrawer', MetadataEditorDrawer)
 
 Vue.component('MediaManagerModal', require('./components/MediaManagerModal.vue').default)
 require('../../resources/assets/vendor/MediaManager/js/manager')

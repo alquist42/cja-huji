@@ -27,6 +27,8 @@
         fluid
         tag="section"
       >
+        <metadata-editor-drawer />
+
         <slot name="media-manager" />
       </v-container>
 
@@ -49,6 +51,7 @@
       DashboardCoreDrawer: () => import('../views/dashboard/components/core/Drawer'),
       // DashboardCoreSettings: () => import('./components/core/Settings'),
       // DashboardCoreView: () => import('../components/core/View'),
+      MetadataEditorDrawer: () => import('../components/MetadataEditorDrawer'),
     },
 
     mixins: [CreateItemFromImages, SnackBar],

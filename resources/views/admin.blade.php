@@ -52,6 +52,8 @@
             @if(isset($data['id']))
             <media-manager-modal inline-template item-id="{{ $data['id'] }}">
                 <div>
+                    <metadata-editor-drawer></metadata-editor-drawer>
+
                     <div v-if="inputName">@include('MediaManager::extras.modal')</div>
 
                     <media-modal item="images" :name="inputName" :multi="true"></media-modal>

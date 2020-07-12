@@ -14,6 +14,7 @@ Route::group(['namespace' => 'Api'], function () {
 
         //   Route::get('/images', 'ImagesController@index');
         //  Route::get('/images/{image}', 'ImagesController@show');
+        Route::post('/images/metadata', 'ImageMetadataController@store');
 
         Route::get('/taxonomy/{type}', 'TaxonomyController@index');
         Route::get('/taxonomy/{type}/{id}', 'TaxonomyController@show');
@@ -22,6 +23,7 @@ Route::group(['namespace' => 'Api'], function () {
         Route::get('/categories', 'CategoriesController@index');
         Route::get('/dates', 'DatesController@index');
         Route::get('/copyrights', 'CopyrightsController@index');
+        Route::get('/photographers', 'PhotographersController@index');
     });
 
     Route::group(['namespace' => 'MHS', 'prefix' => 'mhs'], function () {

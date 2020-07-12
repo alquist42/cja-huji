@@ -2,6 +2,7 @@
 
 namespace App\MediaManager\Modules;
 
+use App\Services\ImageService;
 use Illuminate\Http\Request;
 
 trait GetContent
@@ -84,6 +85,7 @@ trait GetContent
                 'visibility'             => $file['visibility'],
                 'last_modified'          => $time,
                 'last_modified_formated' => $this->getItemTime($time),
+                'image'                  => (new ImageService)->findByPath($path),
             ];
         }
 
