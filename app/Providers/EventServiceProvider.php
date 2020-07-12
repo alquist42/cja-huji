@@ -30,7 +30,7 @@ class EventServiceProvider extends ServiceProvider
 
         Event::listen('MMFileUploaded', function ($file_path, $mime_type, $options) {
             Image::create([
-                'def' => 'images_db/'.$file_path,
+                'def' => $file_path,
                 'rights' => '111',
             ]);
         });
