@@ -5,7 +5,6 @@ namespace App\Services;
 
 use App\Models\Copyright;
 use App\Models\Date;
-use App\Models\Image;
 use App\Models\Item;
 use App\Models\Taxonomy\Maker;
 use Illuminate\Database\Eloquent\Model;
@@ -55,15 +54,9 @@ class ItemService
         $images = [];
 
         foreach ($data as $imageData) {
-            if (isset($imageData['id'])) {
-                $image = $imageData;
-            } else {
-                $image = Image::where('def', $imageData['storage_path'])
-                    ->firstOrFail()
-                    ->toArray();
-            }
+            $imageId = isset($imageData['id']) ? $imageData['id'] : $imageData['image']['id'];
 
-            $images[$image['id']] = ['entity_type' => 'set'];
+            $images[$imageId] = ['entity_type' => 'set'];
         }
 
         $this->item->images()->sync($images);
