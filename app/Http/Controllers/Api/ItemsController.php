@@ -76,10 +76,23 @@ class ItemsController extends Controller
 
     public function show(Item $item)
     {
-        $item->load(Item::$relationships);
+        $item->load(array_diff(Item::$relationships, ['ancestors']));
         $item->leaf = $item->leaf();
-        $item->parent = $item->parent()->get();
-        $item->parent->load(Item::$relationships);
+        $item->load(['ancestors' => function ($query) {
+            $query->with([
+                'locations',
+                'origins',
+                'schools',
+                'subjects',
+                'objects',
+                'historical_origins',
+                'periods',
+                'collections',
+                'communities',
+                'sites',
+            ]);
+        }]);
+
         return response()->json($item);
     }
 

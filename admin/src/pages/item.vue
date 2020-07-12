@@ -131,7 +131,7 @@
                       class="caption"
                       v-if="taxonomyInheritance[taxon] === 'enabled'"
                     >
-                      (from parent)
+                      (inherited)
                     </span>
                     <taxon-modal
                       v-if="taxonomyInheritance[taxon] !== 'enabled'"
@@ -141,40 +141,50 @@
                     />
                   </v-col>
                   <v-row no-gutters>
-                    <v-col v-if="taxonomyInheritance[taxon] === 'disabled-own'">
+                    <v-col>
+                      <template v-if="taxonomyInheritance[taxon] === 'disabled-own'">
+                        <v-chip
+                          v-for="obj in item[taxon]"
+                          :key="obj.id"
+                          class="mb-1 mr-1"
+                          close
+                          color="green lighten-2"
+                          @click:close="removeTaxonItem(taxon, obj.id)"
+                        >
+                          {{ obj.name }}
+                        </v-chip>
+                        ({{ details(taxon) }})
+                      </template>
                       <v-chip
-                        v-for="obj in item[taxon]"
-                        :key="obj.id"
-                        class="mb-1 mr-1"
-                        close
-                        color="green lighten-2"
-                        @click:close="removeTaxonItem(taxon, obj.id)"
-                      >
-                        {{ obj.name }}
-                      </v-chip>
-                      ({{ details(taxon) }})
-                    </v-col>
-                    <v-col v-else-if="taxonomyInheritance[taxon] === 'disabled-none'">
-                      <v-chip
+                        v-else-if="taxonomyInheritance[taxon] === 'disabled-none'"
                         class="mb-1 mr-1"
                         outlined
                         disabled
                       >
                         none
                       </v-chip>
-                    </v-col>
-                    <v-col v-else-if="item.parent && item.parent[0]">
+                      <template v-else-if="item.ancestors && item.ancestors[0]">
+                        <template v-if="ancestorsTaxonomy[taxon].length">
+                          <v-chip
+                            v-for="obj in ancestorsTaxonomy[taxon]"
+                            :key="obj.id"
+                            class="mb-1 mr-1"
+                          >
+                            {{ obj.name }}
+                          </v-chip>
+                          <!--({{ details(taxon) }})-->
+                        </template>
+                        <v-chip
+                          v-else
+                          class="mb-1 mr-1"
+                          outlined
+                          disabled
+                        >
+                          none
+                        </v-chip>
+                      </template>
                       <v-chip
-                        v-for="obj in item.parent[0][taxon]"
-                        :key="obj.id"
-                        class="mb-1 mr-1"
-                      >
-                        {{ obj.name }}
-                      </v-chip>
-                      <!--({{ details(taxon) }})-->
-                    </v-col>
-                    <v-col v-else>
-                      <v-chip
+                        v-else
                         class="mb-1 mr-1"
                         outlined
                         disabled
@@ -702,6 +712,28 @@
         })
 
         return taxonomyInheritance
+      },
+
+      ancestorsTaxonomy () {
+        // eslint-disable-next-line
+        let taxonomy = {}
+
+        this.taxons.forEach(taxonName => {
+          let taxonValue = []
+
+          for (const ancestor of this.item.ancestors) {
+            if (ancestor[taxonName].length) {
+              if (ancestor[taxonName][0].id !== -1) {
+                taxonValue = ancestor[taxonName]
+              }
+              break
+            }
+          }
+
+          taxonomy[taxonName] = taxonValue
+        })
+
+        return taxonomy
       },
     },
 
