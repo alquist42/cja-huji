@@ -67,6 +67,19 @@
         @click="deleteItemConfirmationDialog = true"
       >
         Delete
+        <v-icon right>mdi-trash-can-outline</v-icon>
+      </v-btn>
+      <v-btn
+        class="ml-2"
+        style="text-decoration: none"
+        color="info"
+        outlined
+        :disabled="isSaving || isCopyingAttributes"
+        :href="`/catalogue/items/${id}`"
+        target="_blank"
+      >
+        Preview
+        <v-icon right>mdi-open-in-new</v-icon>
       </v-btn>
     </dashboard-core-app-bar>
 
