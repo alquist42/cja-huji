@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
+
 class Image extends Classifiable
 {
     /**
@@ -59,6 +61,14 @@ class Image extends Classifiable
     public function sets()
     {
         return $this->morphTo(Item::class, 'entity');
+    }
+
+    /**
+     * @return MorphToMany
+     */
+    public function items()
+    {
+        return $this->morphedByMany(Item::class, 'entity', 'entity_images');
     }
 
     /**

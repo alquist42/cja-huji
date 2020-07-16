@@ -18,7 +18,13 @@ class ImageService
     public function findByPath($path)
     {
         $image = Image::where('def', $path)
-            ->with(['copyright', 'photographer'])
+            ->with([
+                'copyright',
+                'photographer',
+                'items' => function ($query) {
+                    $query->select('entity_images.entity_id as id');
+                }
+            ])
             ->first();
 
         return $image ? $image->toArray() : [];
