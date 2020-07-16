@@ -21,6 +21,14 @@
       <slot name="media-manager-modal" />
     </v-dialog>
 
+    <select-item-modal
+      :exclude="item.id"
+      :value="copyAttributesFromObjectDialog"
+      title="Select object to copy attributes from"
+      @cancel="copyAttributesFromObjectDialog = false"
+      @input="copyAttributesFromObjectDialog = false; copyAttributesFrom($event)"
+    />
+
     <dashboard-core-app-bar>
       <v-btn
         outlined
@@ -552,6 +560,7 @@
       // DashboardCoreView: () => import('../components/core/View'),
       TaxonModal: () => import('../components/TaxonModal'),
       TaxonMakerModal: () => import('../components/TaxonMakerModal'),
+      SelectItemModal: () => import('../components/SelectItemModal'),
     },
 
     mixins: [CreateItemFromImages, SnackBar],

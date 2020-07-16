@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\SearchableByName;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Kalnoy\Nestedset\NodeTrait;
 
 class Item extends Classifiable
 {
-    use NodeTrait;
+    use NodeTrait, SearchableByName;
 
     const PUBLISH_STATE_NOT_PUBLISHED = 0;
     const PUBLISH_STATE_PREPARED_FOR_PUBLISHING = 1;

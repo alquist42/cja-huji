@@ -121,4 +121,9 @@ class ItemsController extends Controller
     {
         return (new ItemService($item))->copyFrom($source);
     }
+
+    public function search(Request $request)
+    {
+        return Item::searchByName($request->query('search'))->get();
+    }
 }
