@@ -90,7 +90,7 @@
       value: {
         immediate: true,
         handler (initialItems) {
-          this.hasUnknown = initialItems[0].id === -1
+          this.hasUnknown = initialItems.length && initialItems[0].id === -1
           this.items = this.excludeUnknown(initialItems)
           this.selectedItems = this.items.slice(0)
         },

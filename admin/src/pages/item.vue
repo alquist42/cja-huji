@@ -165,38 +165,40 @@
                     cols="12"
                     class="pb-0"
                   >
-                    <v-tooltip
-                      v-if="taxonomyInheritance[taxon] !== 'enabled'"
-                      top
-                    >
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-btn
-                          v-bind="attrs"
-                          v-on="on"
-                          icon
-                          @click="enableTaxonomyInheritance(taxon)"
-                        >
-                          <v-icon color="grey">mdi-lock</v-icon>
-                        </v-btn>
-                      </template>
-                      <span>Enable taxonomy inheritance</span>
-                    </v-tooltip>
-                    <v-tooltip
-                      v-else
-                      top
-                    >
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-btn
-                          v-bind="attrs"
-                          v-on="on"
-                          icon
-                          @click="disableTaxonomyInheritance(taxon)"
-                        >
-                          <v-icon color="grey">mdi-lock-open</v-icon>
-                        </v-btn>
-                      </template>
-                      <span>Disable taxonomy inheritance</span>
-                    </v-tooltip>
+                    <template v-if="hasParent">
+                      <v-tooltip
+                        v-if="taxonomyInheritance[taxon] !== 'enabled'"
+                        top
+                      >
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-btn
+                            v-bind="attrs"
+                            v-on="on"
+                            icon
+                            @click="enableTaxonomyInheritance(taxon)"
+                          >
+                            <v-icon color="grey">mdi-lock-open</v-icon>
+                          </v-btn>
+                        </template>
+                        <span>Enable taxonomy inheritance</span>
+                      </v-tooltip>
+                      <v-tooltip
+                        v-else
+                        top
+                      >
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-btn
+                            v-bind="attrs"
+                            v-on="on"
+                            icon
+                            @click="disableTaxonomyInheritance(taxon)"
+                          >
+                            <v-icon color="grey">mdi-lock</v-icon>
+                          </v-btn>
+                        </template>
+                        <span>Disable taxonomy inheritance</span>
+                      </v-tooltip>
+                    </template>
                     <span class="overline">
                       {{ taxon.replace('_', ' ') }}
                     </span>
@@ -207,7 +209,6 @@
                       (inherited)
                     </span>
                     <taxon-modal
-                      v-if="taxonomyInheritance[taxon] !== 'enabled'"
                       :taxon="taxon"
                       :value="item[taxon] || []"
                       @input="updateTaxon(taxon, $event)"
