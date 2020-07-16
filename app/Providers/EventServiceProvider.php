@@ -4,7 +4,9 @@ namespace App\Providers;
 
 use App\Models\Image;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Str;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -33,6 +35,30 @@ class EventServiceProvider extends ServiceProvider
                 'def' => $file_path,
                 'rights' => '111',
             ]);
+        });
+
+        Event::listen(['MMFileRenamed', 'MMFileMoved'], function ($old_path, $new_path) {
+            // Laravel Media Manager adds '/' at the beginning og the $new_path only when moving a file,
+            // but not when renaming it
+            if (Str::startsWith($new_path, '/')) {
+                $new_path = Str::substr($new_path, 1);
+            }
+
+            Image::where('def', $old_path)
+                ->update(['def' => $new_path]);
+        });
+
+        Event::listen('MMFileDeleted', function ($file_path, $is_folder) {
+            // If $is_folder then also remove all nested images
+            $imagesIds = Image::where('def', 'like', "$file_path%")
+                ->pluck('id');
+
+            DB::table('entity_images')
+                ->whereIn('image_id', $imagesIds)
+                ->delete();
+
+            Image::whereIn('id', $imagesIds)
+                ->delete();
         });
     }
 

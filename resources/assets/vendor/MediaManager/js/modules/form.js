@@ -278,6 +278,8 @@ export default {
                             this.searchItemsCount = this.filesList.length
                         }
                     })
+
+                    EventHub.fire('MediaManagerModal-files-deleted', files)
                 } else {
                     data.map((item) => {
                         EventHub.fire('global-search-deleted', this.global_search_item.path)
