@@ -12,8 +12,10 @@
                                 </div>
                                 <div class="card-footer text-muted">
                                         {{ $obj->name() }}
-                                        @foreach ($obj->collections as $collection){{$collection->name}}@endforeach
-                                        @if($item->collection_detail()), {{$item->collection_detail()}} @endif
+                                        @foreach ($obj->collections as $collection){{$collection->name}}
+                                        @if($collection->details) <span>, {{ $collection->details }}</span> @endif
+                                        @endforeach
+
                                 </div>
                             </div>
                         </a>

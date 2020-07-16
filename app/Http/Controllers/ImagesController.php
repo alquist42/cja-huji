@@ -118,7 +118,7 @@ class ImagesController extends Controller
             $img_rights = $image->rights;
         if(empty($img_rights) || $img_rights == 2){
          //   $collection = $model->collections()->first();
-            $collection = $model->getCollections()->first();
+            $collection = $model->getTaxonomy('collections')->first();
             if(!empty($collection)){
                 $img_rights = $collection->rights;
             }

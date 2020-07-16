@@ -119,14 +119,6 @@ class Classifiable extends Model
         return $this->morphedByMany(Maker::class, 'taxonomy','taxonomy','entity_id', 'taxonomy_id');
     }
 
-    public function makersHasProfession(){
-        foreach ($this->getMakers() as $maker){
-            if($maker->profession->id != -1){
-                return true;
-            }
-        }
-        return false;
-    }
 
     /**
      * @return BelongsToMany
@@ -178,19 +170,6 @@ class Classifiable extends Model
             ->where('taxonomy_type', '=', 'location');
     }
 
-    public function location_detail()
-    {
-        if(count($this->location_details)){
-            return $this->location_details->first()->details;
-        }
-        else {
-            $parent = $this->parent;
-            if(!empty($parent)){
-                return $parent->location_detail();
-            }
-            return null;
-        }
-    }
 
     /**
      * @return BelongsToMany
@@ -199,20 +178,6 @@ class Classifiable extends Model
     {
         return $this->morphMany(Details::class, 'entity', null, 'entity_id')
             ->where('taxonomy_type', '=', 'origin');
-    }
-
-    public function origin_detail()
-    {
-        if(count($this->origin_details)){
-            return $this->origin_details->first()->details;
-        }
-        else {
-            $parent = $this->parent;
-            if(!empty($parent)){
-                return $parent->origin_detail();
-            }
-            return null;
-        }
     }
 
     /**
@@ -224,20 +189,6 @@ class Classifiable extends Model
             ->where('taxonomy_type', '=', 'object');
     }
 
-    public function object_detail()
-    {
-        if(count($this->object_details)){
-            return $this->object_details->first()->details;
-        }
-        else {
-            $parent = $this->parent;
-            if(!empty($parent)){
-                return $parent->object_detail();
-            }
-            return null;
-        }
-    }
-
     /**
      * @return BelongsToMany
      */
@@ -247,20 +198,6 @@ class Classifiable extends Model
             ->where('taxonomy_type', '=', 'collection');
     }
 
-    public function collection_detail()
-    {
-        if(count($this->collection_details)){
-            return $this->collection_details->first()->details;
-        }
-        elseif(!is_null($this->parent_id)) {
-            $parent = $this->parent;
-            if(!empty($parent)){
-                return $parent->collection_detail();
-            }
-            return null;
-        }
-        return null;
-    }
 
     /**
      * @return BelongsToMany
@@ -271,19 +208,6 @@ class Classifiable extends Model
             ->where('taxonomy_type', '=', 'community');
     }
 
-    public function community_detail()
-    {
-        if(count($this->community_details)){
-            return $this->community_details->first()->details;
-        }
-        else {
-            $parent = $this->parent;
-            if(!empty($parent)){
-                return $parent->community_detail();
-            }
-            return null;
-        }
-    }
 
     /**
      * @return BelongsToMany
@@ -294,19 +218,6 @@ class Classifiable extends Model
             ->where('taxonomy_type', '=', 'maker');
     }
 
-    public function maker_detail()
-    {
-        if(count($this->maker_details)){
-            return $this->maker_details->first()->details;
-        }
-        else {
-            $parent = $this->parent;
-            if(!empty($parent)){
-                return $parent->maker_detail();
-            }
-            return null;
-        }
-    }
 
     /**
      * @return BelongsToMany
@@ -317,19 +228,6 @@ class Classifiable extends Model
             ->where('taxonomy_type', '=', 'period');
     }
 
-    public function period_detail()
-    {
-        if(count($this->period_details)){
-            return $this->period_details->first()->details;
-        }
-        else {
-            $parent = $this->parent;
-            if(!empty($parent)){
-                return $parent->period_detail();
-            }
-            return null;
-        }
-    }
 
     /**
      * @return BelongsToMany
@@ -340,19 +238,6 @@ class Classifiable extends Model
             ->where('taxonomy_type', '=', 'school');
     }
 
-    public function school_detail()
-    {
-        if(count($this->school_details)){
-            return $this->school_details->first()->details;
-        }
-        else {
-            $parent = $this->parent;
-            if(!empty($parent)){
-                return $parent->school_detail();
-            }
-            return null;
-        }
-    }
 
     /**
      * @return BelongsToMany
@@ -363,182 +248,50 @@ class Classifiable extends Model
             ->where('taxonomy_type', '=', 'subject');
     }
 
-    public function subject_detail()
-    {
-        if(count($this->subject_details)){
-            return $this->subject_details->first()->details;
+
+    public function getTaxonomy($taxonomy, $details = null){
+        $taxonomy_singular_name = str_singular($taxonomy);
+        if(is_null($details)){
+            $details = $taxonomy_singular_name . "_details";
+            $details = $this->{$details}()->get();
         }
-        else {
+        if(count($this->{$taxonomy}) == 1 && $this->{$taxonomy}->first()->id == -1 && !count($details)){
+            return [];
+        }
+        if(!count($this->{$taxonomy})){
             $parent = $this->parent;
             if(!empty($parent)){
-                return $parent->subject_detail();
+                return $parent->getTaxonomy($taxonomy, (count($details) ? $details : null) );
             }
-            return null;
-        }
-    }
-
-    public function getObjects()
-    {
-        if(count($this->objects) == 1 && $this->objects->first()->id == -1 ){
-            return [];
-        }
-
-        if(count($this->objects)){
-            return $this->objects;
-        }
-        else {
-            $parent = $this->parent;
-            if(!empty($parent)){
-                return $parent->getObjects();
+            if(!count($details)){
+                return [];
             }
-            return [];
-
-        }
-    }
-
-    public function getMakers()
-    {
-
-        if(count($this->makers) == 1 && $this->makers->first()->id == -1 ){
-            return [];
         }
 
-        if(count($this->makers)){
-            return $this->makers;
-        }
-        else {
-            $parent = $this->parent;
-            if(!empty($parent)){
-                return $parent->getMakers();
+        foreach ($details as $detail) {
+            $taxonomy_obj = null;
+            if ($this->{$taxonomy}->contains('id', $detail->taxonomy_id)){ // return taxonomy with the same id
+                $taxonomy_obj = $this->{$taxonomy}->first(function ($obj) use ($detail) {
+                    return $obj->id == $detail->taxonomy_id;
+                });
+            } else { // create undefined taxonomy to link details
+                $model = '\\App\\Models\\Taxonomy\\' . ucfirst($taxonomy_singular_name);
+                $taxonomy_obj = new $model(['id'=>-1,'name'=>'undefined',
+                    'maker_name_id'=>-1,
+                    'maker_profession_id'=>-1,
+                    'pivot_taxonomy_id'=>-1]);
+                $this->{$taxonomy}->push($taxonomy_obj);
             }
-            return [];
-
+        //    dd($taxonomy_obj);
+            $taxonomy_obj->details = $detail->details;
         }
+     //   if($taxonomy=='makers')
+     //   dd($this->{$taxonomy});
+
+        return $this->{$taxonomy};
     }
 
 
-    public function getSubjects(){
-
-        if(count($this->subjects) == 1 && $this->subjects->first()->id == -1 ){
-            return [];
-        }
-
-        if(count($this->subjects)){
-            return $this->subjects;
-        }
-        else {
-            $parent = $this->parent;
-            if(!empty($parent)){
-                return $parent->getSubjects();
-            }
-            return [];
-
-        }
-    }
-
-    public function getPeriods(){
-        if(count($this->periods) == 1 && $this->periods->first()->id == -1 ){
-            return [];
-        }
-
-        if(count($this->periods)){
-            return $this->periods;
-        }
-        else {
-            $parent = $this->parent;
-            if(!empty($parent)){
-                return $parent->getPeriods();
-            }
-            return [];
-
-        }
-    }
-
-    public function getOrigins(){
-        if(count($this->origins) == 1 && $this->origins->first()->id == -1 ){
-            return [];
-        }
-        if(count($this->origins)){
-            return $this->origins;
-        }
-        else {
-            $parent = $this->parent;
-            if(!empty($parent)){
-                return $parent->getOrigins();
-            }
-            return [];
-
-        }
-    }
-
-
-    public function getCollections(){
-        if(count($this->collections) == 1 && $this->collections->first()->id == -1 ){
-            return [];
-        }
-        if(count($this->collections)){
-            return $this->collections;
-        }
-        else {
-            $parent = $this->parent;
-            if(!empty($parent)){
-                return $parent->getCollections();
-            }
-            return [];
-
-        }
-    }
-
-    public function getCommunities(){
-        if(count($this->communities) == 1 && $this->communities->first()->id == -1 ){
-            return [];
-        }
-        if(count($this->communities)){
-            return $this->communities;
-        }
-        else {
-            $parent = $this->parent;
-            if(!empty($parent)){
-                return $parent->getCommunities();
-            }
-            return [];
-
-        }
-    }
-
-    public function getLocations(){
-        if(count($this->locations) == 1 && $this->locations->first()->id == -1 ){
-            return [];
-        }
-        if(count($this->locations)){
-            return $this->locations;
-        }
-        else {
-            $parent = $this->parent;
-            if(!empty($parent)){
-                return $parent->getLocations();
-            }
-            return [];
-
-        }
-    }
-
-    public function getSchools(){
-        if(count($this->schools) == 1 && $this->schools->first()->id == -1 ){
-            return [];
-        }
-        if(count($this->schools)){
-            return $this->schools;
-        }
-        else {
-            $parent = $this->parent;
-            if(!empty($parent)){
-                return $parent->getSchools();
-            }
-            return [];
-
-        }
-    }
 
     public function addenda(){
         if(!empty($this->addenda)){
