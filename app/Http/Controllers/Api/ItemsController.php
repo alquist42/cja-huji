@@ -133,6 +133,12 @@ class ItemsController extends Controller
         return response('', 204);
     }
 
+    public function destroy(Item $item) {
+        $item->delete();
+
+        return response('', 204);
+    }
+
     /**
      * Copy attributes from other item.
      *

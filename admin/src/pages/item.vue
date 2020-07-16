@@ -73,7 +73,7 @@
         class="ml-2"
         color="error"
         outlined
-        :disabled="isSaving || isCopyingAttributes"
+        :disabled="lockWhileProcessing"
         @click="deleteItemConfirmationDialog = true"
       >
         Delete
