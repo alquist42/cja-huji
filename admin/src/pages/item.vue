@@ -25,7 +25,7 @@
       <v-btn
         outlined
         :loading="isSaving"
-        :disabled="isSaving"
+        :disabled="isSaving || isCopyingAttributes"
         @click="save"
       >
         Save
@@ -44,9 +44,44 @@
           <v-col cols="8">
             <base-material-card class="px-5 py-3">
               <template v-slot:heading>
-                <div class="display-2 font-weight-light">
-                  Item {{ item.id }}
-                </div>
+                <v-row no-gutters>
+                  <v-col class="flex-grow-1 display-2 font-weight-light">
+                    Item {{ item.id }}
+                  </v-col>
+                  <v-col
+                    cols="auto"
+                    class="d-flex align-center"
+                  >
+                    <v-menu
+                      offset-y
+                      bottom
+                      left
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                          v-bind="attrs"
+                          v-on="on"
+                          icon
+                          :loading="isCopyingAttributes"
+                          :disabled="isSaving || isCopyingAttributes"
+                        >
+                          <v-icon>mdi-dots-vertical</v-icon>
+                        </v-btn>
+                      </template>
+                      <v-list>
+                        <v-list-item
+                          v-if="hasParent"
+                          @click="copyAttributesFrom(item.ancestors[0].id)"
+                        >
+                          <v-list-item-title>Copy all attributes from parent</v-list-item-title>
+                        </v-list-item>
+                        <v-list-item @click="copyAttributesFromObjectDialog = true">
+                          <v-list-item-title>Copy all attributes from object</v-list-item-title>
+                        </v-list-item>
+                      </v-list>
+                    </v-menu>
+                  </v-col>
+                </v-row>
               </template>
               <v-card-text>
                 <v-form
@@ -534,7 +569,9 @@
 
     data: () => ({
       mediaManagerDialog: false,
+      copyAttributesFromObjectDialog: false,
       isSaving: false,
+      isCopyingAttributes: false,
       item: {
         ancestors: [],
       },
@@ -736,6 +773,10 @@
 
         return taxonomy
       },
+
+      hasParent () {
+        return this.item.ancestors.length
+      },
     },
 
     watch: {
@@ -816,15 +857,7 @@
       response = await this.$http.get('/api/categories?project=catalogue')
       this.categories = response.data
 
-      Object.keys(this.propers).forEach((categName, categIndex) => {
-        this.propers[categName].forEach((prop) => {
-          const pr = this.item.properties.find(p => p.prop_name === prop.prop_name)
-          console.log(categName, pr, prop.prop_name, categIndex)
-          if (pr) {
-            this.panel.push(categIndex)
-          }
-        })
-      })
+      this.updatePropertiesPanels()
 
       console.log(this.item)
     },
@@ -837,6 +870,20 @@
     },
 
     methods: {
+      updatePropertiesPanels () {
+        this.panel = []
+
+        Object.keys(this.propers).forEach((categName, categIndex) => {
+          this.propers[categName].forEach((prop) => {
+            const pr = this.item.properties.find(p => p.prop_name === prop.prop_name)
+            console.log(categName, pr, prop.prop_name, categIndex)
+            if (pr) {
+              this.panel.push(categIndex)
+            }
+          })
+        })
+      },
+
       async save () {
         Object.keys(this.item).forEach(field => {
           if (this.taxons.includes(field)) {
@@ -980,6 +1027,21 @@
 
       disableTaxonomyInheritance (taxonName) {
         this.item[taxonName] = [{ id: -1, name: 'unknown' }]
+      },
+
+      async copyAttributesFrom (itemId) {
+        this.isCopyingAttributes = true
+        try {
+          const { data } = await this.$http.patch(`/api/items/${this.id}/copy/${itemId}?project=catalogue`)
+          this.item = data
+          this.updatePropertiesPanels()
+          this.showSnackbarSuccess('Attributes have been copied')
+        } catch (e) {
+          this.showSnackbarError('An error occurred')
+          console.log(e)
+        } finally {
+          this.isCopyingAttributes = false
+        }
       },
     },
   }

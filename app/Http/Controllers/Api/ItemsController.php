@@ -109,4 +109,16 @@ class ItemsController extends Controller
     public function update(Request $request, Item $item) {
         return (new ItemService($item))->saveItem($request->all());
     }
+
+    /**
+     * Copy attributes from other item.
+     *
+     * @param Item $item
+     * @param Item $source
+     * @return Item
+     */
+    public function copy(Item $item, Item $source)
+    {
+        return (new ItemService($item))->copyFrom($source);
+    }
 }
