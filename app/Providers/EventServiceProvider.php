@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\Image;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Str;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -33,6 +34,17 @@ class EventServiceProvider extends ServiceProvider
                 'def' => $file_path,
                 'rights' => '111',
             ]);
+        });
+
+        Event::listen(['MMFileRenamed', 'MMFileMoved'], function ($old_path, $new_path) {
+            // Laravel Media Manager adds '/' at the beginning og the $new_path only when moving a file,
+            // but not when renaming it
+            if (Str::startsWith($new_path, '/')) {
+                $new_path = Str::substr($new_path, 1);
+            }
+
+            Image::where('def', $old_path)
+                ->update(['def' => $new_path]);
         });
     }
 
