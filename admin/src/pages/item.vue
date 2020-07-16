@@ -29,6 +29,15 @@
       @input="copyAttributesFromObjectDialog = false; copyAttributesFrom($event)"
     />
 
+    <confirmation-modal
+      :value="deleteItemConfirmationDialog"
+      title="Delete item"
+      :message="`Are you sure you want to delete ${item.name || 'item'}?`"
+      btn-confirm-text="Delete"
+      @cancel="deleteItemConfirmationDialog = false"
+      @confirm="deleteItem"
+    />
+
     <dashboard-core-app-bar>
       <v-btn
         outlined
@@ -48,6 +57,16 @@
       >
         Create child
         <v-icon right>mdi-file-tree</v-icon>
+      </v-btn>
+      <v-btn
+        v-if="!hasImages"
+        class="ml-2"
+        color="error"
+        outlined
+        :disabled="isSaving || isCopyingAttributes"
+        @click="deleteItemConfirmationDialog = true"
+      >
+        Delete
       </v-btn>
     </dashboard-core-app-bar>
 
@@ -559,6 +578,7 @@
       TaxonModal: () => import('../components/TaxonModal'),
       TaxonMakerModal: () => import('../components/TaxonMakerModal'),
       SelectItemModal: () => import('../components/SelectItemModal'),
+      ConfirmationModal: () => import('../components/ConfirmationModal'),
     },
 
     mixins: [CreateItemFromImages, SnackBar],
@@ -577,11 +597,13 @@
     data: () => ({
       mediaManagerDialog: false,
       copyAttributesFromObjectDialog: false,
+      deleteItemConfirmationDialog: false,
       isSaving: false,
       isCreatingChild: false,
       isCopyingAttributes: false,
       item: {
         ancestors: [],
+        images: [],
       },
 
       panel: [],
@@ -784,6 +806,10 @@
 
       lockWhileProcessing () {
         return this.isSaving || this.isCreatingChild || this.isCopyingAttributes
+      },
+
+      hasImages () {
+        return this.item.images.length
       },
     },
 
@@ -1049,6 +1075,18 @@
           console.log(e)
         } finally {
           this.isCopyingAttributes = false
+        }
+      },
+
+      async deleteItem () {
+        try {
+          await this.$http.delete(`/api/items/${this.id}?project=catalogue`)
+          window.location.href = '/staff/items/'
+        } catch (e) {
+          this.showSnackbarError('An error occurred')
+          console.log(e)
+        } finally {
+          this.deleteItemConfirmationDialog = false
         }
       },
 

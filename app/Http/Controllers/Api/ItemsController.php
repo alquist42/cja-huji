@@ -110,6 +110,12 @@ class ItemsController extends Controller
         return (new ItemService($item))->saveItem($request->all());
     }
 
+    public function destroy(Item $item) {
+        $item->delete();
+
+        return response('', 204);
+    }
+
     /**
      * Copy attributes from other item.
      *
