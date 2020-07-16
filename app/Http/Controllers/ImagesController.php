@@ -65,7 +65,7 @@ class ImagesController extends Controller
                 $constraint->aspectRatio();
             });
         }
-        if ($addWatermark && $size !='small') {
+        if ($addWatermark) {
             $wm = \Image::make('cr_wm.png');
 
             $ratio = round($img->width() / $wm->width());
