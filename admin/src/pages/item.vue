@@ -806,6 +806,7 @@
       EventHub.listen('MediaManagerModal-include-images-in-item', (images) => this.includeImages(images))
       EventHub.listen('MediaManagerModal-exclude-images-from-item', (images) => this.excludeImages(images))
       EventHub.listen('modal-hide', () => { this.mediaManagerDialog = false })
+      EventHub.listen('MediaManagerModal-files-deleted', (files) => this.updateImages())
     },
 
     async mounted () {
@@ -960,6 +961,16 @@
           this.showSnackbarSuccess('Images have been excluded')
         } catch (e) {
           this.showSnackbarError()
+        }
+      },
+
+      async updateImages () {
+        try {
+          const { data } = await this.$http.get(`/api/items/${this.id}?project=catalogue`)
+
+          this.item.images = data.images
+        } catch (e) {
+          console.error(e)
         }
       },
 
