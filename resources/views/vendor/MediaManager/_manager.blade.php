@@ -391,7 +391,7 @@
                                         v-tippy
                                         @click.stop="createNewItem()">
                                     <span class="icon"><icon name="file-text-o"></icon></span>
-                                    <span>Create New Item</span>
+                                    <span>Create @{{ inModal ? 'Child' : 'New' }} Item</span>
                                 </button>
                             </div>
 
