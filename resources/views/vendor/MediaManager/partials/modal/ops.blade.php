@@ -235,6 +235,14 @@
                         <span class="icon is-medium"><icon name="warning" scale="1.2"></icon></span>
                         <span>{{ trans('MediaManager::messages.delete.folder') }}</span>
                     </h5>
+
+                    {{-- deleting attached image warning --}}
+                    <h5 v-show="attachedImageDeleteWarning" class="__modal-folder-warning">
+                        <span class="icon is-medium"><icon name="warning" scale="1.2"></icon></span>
+                        <span>
+                            There are associated items. Deleting will also detach from the items.
+                        </span>
+                    </h5>
                 </section>
 
                 <footer class="modal-card-foot">

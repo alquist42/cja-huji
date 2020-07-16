@@ -88,6 +88,7 @@ export default {
             firstMeta: false, // for alt + click selection
             firstRun: false, // deffer running logic on init
             folderDeleteWarning: false,
+            attachedImageDeleteWarning: false,
             imageWasEdited: false,
             infoSidebar: false,
             introIsOn: false,
@@ -561,6 +562,12 @@ export default {
                             }
                         })
                     }
+
+                    this.selectedFiles.some(file => {
+                        if (file.image && file.image.items && file.image.items.length) {
+                            return this.attachedImageDeleteWarning = true
+                        }
+                    })
                 }
 
                 this.toggleModal('confirm_delete_modal')
