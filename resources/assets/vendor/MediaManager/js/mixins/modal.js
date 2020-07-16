@@ -15,6 +15,9 @@ export default {
         hideInputModal() {
             this.inputName = ''
             EventHub.fire('modal-hide')
+            if (!this.activeModal) {
+                EventHub.fire('MediaManagerModal-modal-hide')
+            }
         }
     }
 }

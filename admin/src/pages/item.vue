@@ -805,7 +805,7 @@
     created () {
       EventHub.listen('MediaManagerModal-include-images-in-item', (images) => this.includeImages(images))
       EventHub.listen('MediaManagerModal-exclude-images-from-item', (images) => this.excludeImages(images))
-      EventHub.listen('modal-hide', () => { this.mediaManagerDialog = false })
+      EventHub.listen('MediaManagerModal-modal-hide', () => { this.mediaManagerDialog = false })
       EventHub.listen('MediaManagerModal-files-deleted', (files) => this.updateImages())
     },
 
