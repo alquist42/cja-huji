@@ -117,5 +117,5 @@ return [
     /*
      * loaded chunk amount "pagination"
      */
-    'pagination_amount' => 50,
+    'pagination_amount' => 5000, // 5000 is a value that should kind of turn the pagination off in most real case scenarios
 ];
