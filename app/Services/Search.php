@@ -55,7 +55,7 @@ class Search
             "www",
         );
     public function findByTaxonomy($filters){
-        DB::enableQueryLog();
+     //   DB::enableQueryLog();
         $project = app()->make(Tenant::class)->slug();
         $collection = collect([]);
         foreach ($filters as $type => $values) {
@@ -171,7 +171,7 @@ class Search
     public function find($filters, $search, $text, $categories){
 
 
-        DB::enableQueryLog();
+     //   DB::enableQueryLog();
         $project = app()->make(Tenant::class)->slug();
         $collection = collect([]);
         $result = null;
@@ -204,7 +204,8 @@ class Search
                             $field=str_singular($type);
                             $names = "";
                             foreach ($filters[$type] as $name) {
-                                $names .=" " . $name->name;
+                                $names .= " " . $name->name;
+                                $query->where($field, 'LIKE', "%$name->name%");
                             }
                              $query->whereRaw('MATCH ('.$field.') AGAINST ("'.$names.'" IN BOOLEAN MODE) > 0');
                         }
@@ -240,7 +241,8 @@ class Search
                                            $field=str_singular($type);
                                            $names = "";
                                            foreach ($filters[$type] as $name) {
-                                               $names .=" " . $name->name;
+                                               $names .= " " . $name->name;
+                                               $query->where($field, 'LIKE', "%$name->name%");
                                            }
                                            $query->whereRaw('MATCH ('.$field.') AGAINST ("'.$names.'" IN BOOLEAN MODE) > 0');
                                        }
@@ -555,6 +557,19 @@ class Search
                     GROUP BY s.id
                   
                     ");
+
+            /*
+             * UPDATE search sr SET sr.set_id =
+(SELECT parent_id FROM sets WHERE sets.id = sr.id AND sets.old_id IS NOT  null )
+
+            UPDATE search sr SET sr.set_id = 0
+WHERE id IN
+(SELECT id FROM sets
+WHERE
+ sets.parent_id IS NULL AND sets.old_id IS NOT  null
+)
+
+            */
 
 // TODO : add  title fields ?
             // add localname

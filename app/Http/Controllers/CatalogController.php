@@ -79,7 +79,7 @@ class CatalogController extends Controller
             $selected[$type] = $model::select("id", "name")->find($values);
         }
         if (is_array($categories) && count($all_categories) == count($categories)) {
-            $categories = null;
+        //    $categories = null;
         }
         $data = $this->search->find($selected, $search, $text, $categories);
         $items = $data['collection'];

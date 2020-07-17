@@ -72,8 +72,8 @@
                     </div>
                     <select id="communities" name="communities[]" class="form-control" multiple>
                         @if(!empty($filters['communities']))
-                            @foreach ($filters['communities'] as $community)
-                                <option value="{{ $community->id }}" selected>{{ $community->name }}</option>
+                            @foreach ($filters['communities'] as $curFilter)
+                                <option value="{{ $curFilter->id }}" selected>{{ $curFilter->name }}</option>
                             @endforeach
                         @endif
                     </select>
@@ -88,8 +88,8 @@
                     </div>
                     <select id="objects" name="objects[]" class="form-control" multiple>
                         @if(!empty($filters['objects']))
-                            @foreach ($filters['objects'] as $community)
-                                <option value="{{ $community->id }}" selected>{{ $community->name }}</option>
+                            @foreach ($filters['objects'] as $curFilter)
+                                <option value="{{ $curFilter->id }}" selected>{{ $curFilter->name }}</option>
                             @endforeach
                         @endif
                     </select>
@@ -101,8 +101,8 @@
                     </div>
                     <select id="dates" name="dates[]" class="form-control" multiple>
                         @if(!empty($filters['dates']))
-                            @foreach ($filters['dates'] as $community)
-                                <option value="{{ $community->id }}" selected>{{ $community->name }}</option>
+                            @foreach ($filters['dates'] as $curFilter)
+                                <option value="{{ $curFilter->id }}" selected>{{ $curFilter->name }}</option>
                             @endforeach
                         @endif
                     </select>
@@ -115,8 +115,8 @@
                     </div>
                     <select id="locations" name="locations[]" class="form-control" multiple>
                         @if(!empty($filters['locations']))
-                            @foreach ($filters['locations'] as $community)
-                                <option value="{{ $community->id }}" selected>{{ $community->name }}</option>
+                            @foreach ($filters['locations'] as $curFilter)
+                                <option value="{{ $curFilter->id }}" selected>{{ $curFilter->name }}</option>
                             @endforeach
                         @endif
                     </select>
@@ -127,8 +127,8 @@
                     </div>
                     <select id="collections" name="collections[]" class="form-control" multiple>
                         @if(!empty($filters['collections']))
-                            @foreach ($filters['collections'] as $community)
-                                <option value="{{ $community->id }}" selected>{{ $community->name }}</option>
+                            @foreach ($filters['collections'] as $curFilter)
+                                <option value="{{ $curFilter->id }}" selected>{{ $curFilter->name }}</option>
                             @endforeach
                         @endif
                     </select>
@@ -143,8 +143,8 @@
                     </div>
                     <select id="subjects" name="subjects[]" class="form-control" multiple>
                         @if(!empty($filters['subjects']))
-                            @foreach ($filters['subjects'] as $community)
-                                <option value="{{ $community->id }}" selected>{{ $community->name }}</option>
+                            @foreach ($filters['subjects'] as $curFilter)
+                                <option value="{{ $curFilter->id }}" selected>{{ $curFilter->name }}</option>
                             @endforeach
                         @endif
                     </select>
@@ -156,8 +156,8 @@
                     </div>
                     <select id="artists" name="artists[]" class="form-control" multiple>
                         @if(!empty($filters['artists']))
-                            @foreach ($filters['artists'] as $community)
-                                <option value="{{ $community->name }}" selected>{{ $community->name }}</option>
+                            @foreach ($filters['artists'] as $curFilter)
+                                <option value="{{ $curFilter->id }}" selected>{{ $curFilter->name }}</option>
                             @endforeach
                         @endif
                     </select>
@@ -169,8 +169,8 @@
                     </div>
                     <select id="schools" name="schools[]" class="form-control" multiple>
                         @if(!empty($filters['schools']))
-                            @foreach ($filters['schools'] as $taxon)
-                                <option value="{{ $taxon->id }}" selected>{{ $taxon->name }}</option>
+                            @foreach ($filters['schools'] as $curFilter)
+                                <option value="{{ $curFilter->id }}" selected>{{ $curFilter->name }}</option>
                             @endforeach
                         @endif
                     </select>

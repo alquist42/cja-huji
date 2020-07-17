@@ -132,9 +132,12 @@ class TaxonomyController extends Controller
         $type = str_singular($request->get('type'));
         $model = $this->nameSpace . Str::studly($type);
 
-//        if($type == 'object'){
-//            $model = $this->nameSpace . 'IObject';
-//        }
+        if($type == 'artist'){
+            $type = 'maker';
+            $type_plural = 'makers';
+            $model = $this->nameSpace . 'Artist';
+        }
+
         $search = $request->get('term');
 
         if (!class_exists($model)) {
@@ -147,14 +150,15 @@ class TaxonomyController extends Controller
 
         $project = app()->make(Tenant::class)->slug();
 
-        if ($type_plural === 'artists' || $type_plural === 'professions') {
-            return response()->json($model::select($type_plural.".id", $type_plural.".name")
-                ->where($type_plural.'.name','LIKE',"%$search%")
-                ->distinct()
-                ->get());
-        }
-
-        $data = $model::select($type_plural.".id", $type_plural.".name")
+        $data = $model::select($type_plural.".*")
+            ->when($type == 'maker', function ($q) use ($type,$type_plural,$project) {
+                $q->select("artists.*");
+            })
+            ->when($type == 'maker', function ($q) use ($type,$type_plural,$project) {
+                $q->join('makers', function ($join) use ($type,$type_plural,$project){
+                    $join->on('makers.maker_name_id', '=', 'artists.id');
+                });
+            })
             ->join('taxonomy', function ($join) use ($type, $type_plural) {
                 $join->on('taxonomy.taxonomy_id', '=', $type_plural.'.id')
                     ->where('taxonomy.taxonomy_type', $type);
@@ -172,7 +176,12 @@ class TaxonomyController extends Controller
                 });
             })
             ->where('sets.publish_state', '>', 0)
-            ->where($type_plural.'.name', 'LIKE', "%$search%")
+            ->when($type == 'maker', function ($q) use ($search) {
+                $q->where('artists'.'.name', 'LIKE', "%$search%");
+            })
+            ->when($type != 'maker', function ($q) use ($type_plural,$search) {
+                $q->where($type_plural.'.name', 'LIKE', "%$search%");
+            })
             ->distinct()
             ->get();
 
