@@ -6,6 +6,7 @@ namespace App\Services;
 use App\Models\Copyright;
 use App\Models\Date;
 use App\Models\Item;
+use App\Models\Project;
 use App\Models\Taxonomy\Maker;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -31,6 +32,10 @@ class ItemService
     public function saveItem(array $data)
     {
         $this->item->update($this->prepareHasOneRelations($data['item']));
+
+        if (isset($data['item']['projects'])) {
+            $this->updateProjects($data['item']['projects']);
+        }
 
         if (isset($data['taxonomy'])) {
             $this->updateTaxonomy($data['taxonomy']);
@@ -260,5 +265,28 @@ class ItemService
         }
 
         $this->item->properties()->sync($properties);
+    }
+
+    /**
+     * Update projects.
+     *
+     * @param array $projects
+     * @return void
+     */
+    private function updateProjects(array $projects)
+    {
+        $slugs = array_column($projects, 'tag_slug');
+
+        $this->item->projects()
+            ->whereNotIn('tag_slug', $slugs)
+            ->delete();
+
+        foreach ($slugs as $slug) {
+            Project::firstOrCreate([
+                'tag_slug' => $slug,
+                'taggable_type' => 'set',
+                'taggable_id' => $this->item->id,
+            ]);
+        }
     }
 }

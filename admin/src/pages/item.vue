@@ -421,6 +421,19 @@
                   outlined
                 />
                 <v-select
+                  v-model="item.projects"
+                  :items="possibleProjects"
+                  label="Projects"
+                  item-text="title"
+                  item-value="tag_slug"
+                  return-object
+                  multiple
+                  chips
+                  deletable-chips
+                  small-chips
+                  outlined
+                />
+                <v-select
                   v-model="item.publish_state"
                   :items="possiblePublishStates"
                   label="Publish state"
@@ -718,6 +731,7 @@
       ],
 
       categories: [],
+      projects: [],
       dates: [],
       searchDate: null,
       isLoadingDates: false,
@@ -778,6 +792,10 @@
           },
           ...sortedCategories,
         ]
+      },
+
+      possibleProjects () {
+        return _sortBy(this.projects, 'title')
       },
 
       compositionTreeOpen () {
@@ -918,6 +936,9 @@
 
       response = await this.$http.get('/api/categories?project=catalogue')
       this.categories = response.data
+
+      response = await this.$http.get('/api/projects?project=catalogue')
+      this.projects = response.data
 
       this.updatePropertiesPanels()
 
