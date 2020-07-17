@@ -33,10 +33,21 @@
       <v-btn
         outlined
         :loading="isSaving"
-        :disabled="isSaving || isCopyingAttributes"
+        :disabled="lockWhileProcessing"
         @click="save"
       >
         Save
+      </v-btn>
+      <v-btn
+        class="ml-2"
+        outlined
+        color="success"
+        :loading="isCreatingChild"
+        :disabled="lockWhileProcessing"
+        @click="createChild"
+      >
+        Create child
+        <v-icon right>mdi-file-tree</v-icon>
       </v-btn>
     </dashboard-core-app-bar>
 
@@ -67,7 +78,7 @@
                           v-on="on"
                           icon
                           :loading="isCopyingAttributes"
-                          :disabled="isSaving || isCopyingAttributes"
+                          :disabled="lockWhileProcessing"
                           @click="copyAttributesFromObjectDialog = true"
                         >
                           <v-icon>mdi-content-copy</v-icon>
@@ -567,6 +578,7 @@
       mediaManagerDialog: false,
       copyAttributesFromObjectDialog: false,
       isSaving: false,
+      isCreatingChild: false,
       isCopyingAttributes: false,
       item: {
         ancestors: [],
@@ -768,6 +780,10 @@
         })
 
         return taxonomy
+      },
+
+      lockWhileProcessing () {
+        return this.isSaving || this.isCreatingChild || this.isCopyingAttributes
       },
     },
 
@@ -1033,6 +1049,20 @@
           console.log(e)
         } finally {
           this.isCopyingAttributes = false
+        }
+      },
+
+      async createChild () {
+        this.isCreatingChild = true
+        try {
+          const { data } = await this.$http.post(`/api/items/${this.id}/children?project=catalogue`)
+          this.updatePropertiesPanels()
+          window.location.href = `/staff/items/${data.id}`
+        } catch (e) {
+          this.showSnackbarError('An error occurred')
+          console.log(e)
+        } finally {
+          this.isCreatingChild = false
         }
       },
     },
