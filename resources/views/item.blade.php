@@ -8,10 +8,10 @@
                     <div class="card">
                         <div class="card-header">
                             Obj. ID: {{ $item->id }} {{ $item->name() }}
-                            @if($item->object_detail()), {{$item->object_detail()}} @endif
+                            @foreach ($item->object_details as $object_detail), {{$object_detail->details}}@endforeach
                             @foreach ($item->origins as $origin), {{ $origin->name }}
                             @endforeach
-                            @if($item->origin_detail()) | {{$item->origin_detail()}} @endif
+                            @foreach ($item->origin_details as $origin_detail) | {{$origin_detail->details}}@endforeach
                             @if($item->creation_date), {{$item->creation_date->name}} @endif
                         </div>
 

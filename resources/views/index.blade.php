@@ -32,7 +32,7 @@
                                             {{ $item->name() }}<br/>
                                          </a>
                                         @foreach ($item->collections as $collection){{$collection->name}}@endforeach
-                                        @if($item->collection_detail()), {{$item->collection_detail()}} @endif
+                                        @foreach ($item->collection_details as $collection_detail), {{$collection_detail->details}}@endforeach
                                         (ID:{{ $item->id }})
                                     </h5>
                                 </div>
