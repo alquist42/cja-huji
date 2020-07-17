@@ -31,7 +31,7 @@
                                         <a href="/{{ $item->url() }}">
                                             {{ $item->name() }}<br/>
                                          </a>
-                                        @foreach ($item->collections as $collection){{$collection->name}}@endforeach
+                                        @foreach ($item->collections as $collection)@if($collection->id!=-1){{$collection->name}}@endif @endforeach
                                         @foreach ($item->collection_details as $collection_detail), {{$collection_detail->details}}@endforeach
                                         (ID:{{ $item->id }})
                                     </h5>
