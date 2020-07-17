@@ -60,11 +60,7 @@
                     cols="auto"
                     class="d-flex align-center"
                   >
-                    <v-menu
-                      offset-y
-                      bottom
-                      left
-                    >
+                    <v-tooltip left>
                       <template v-slot:activator="{ on, attrs }">
                         <v-btn
                           v-bind="attrs"
@@ -72,22 +68,13 @@
                           icon
                           :loading="isCopyingAttributes"
                           :disabled="isSaving || isCopyingAttributes"
+                          @click="copyAttributesFromObjectDialog = true"
                         >
-                          <v-icon>mdi-dots-vertical</v-icon>
+                          <v-icon>mdi-content-copy</v-icon>
                         </v-btn>
                       </template>
-                      <v-list>
-                        <v-list-item
-                          v-if="hasParent"
-                          @click="copyAttributesFrom(item.ancestors[0].id)"
-                        >
-                          <v-list-item-title>Copy all attributes from parent</v-list-item-title>
-                        </v-list-item>
-                        <v-list-item @click="copyAttributesFromObjectDialog = true">
-                          <v-list-item-title>Copy all attributes from object</v-list-item-title>
-                        </v-list-item>
-                      </v-list>
-                    </v-menu>
+                      <span>Copy all attributes from object</span>
+                    </v-tooltip>
                   </v-col>
                 </v-row>
               </template>
@@ -782,10 +769,6 @@
 
         return taxonomy
       },
-
-      hasParent () {
-        return this.item.ancestors.length
-      },
     },
 
     watch: {
@@ -856,7 +839,7 @@
       EventHub.listen('MediaManagerModal-include-images-in-item', (images) => this.includeImages(images))
       EventHub.listen('MediaManagerModal-exclude-images-from-item', (images) => this.excludeImages(images))
       EventHub.listen('MediaManagerModal-modal-hide', () => { this.mediaManagerDialog = false })
-      EventHub.listen('MediaManagerModal-files-deleted', (files) => this.updateImages())
+      EventHub.listen('MediaManagerModal-files-deleted', (/* files */) => this.updateImages())
     },
 
     async mounted () {
