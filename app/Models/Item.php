@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\SearchableByName;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Kalnoy\Nestedset\NodeTrait;
 
 class Item extends Classifiable
@@ -101,7 +102,6 @@ class Item extends Classifiable
         'category_object',
         'copyright',
 
-
         'images',
         'images.photographer',
         'images.copyright',
@@ -111,7 +111,9 @@ class Item extends Classifiable
         'children.collections',
 //
         'ancestors',
-        'descendants'
+        'descendants',
+
+        'projects',
     ];
 
     /**
@@ -151,6 +153,14 @@ class Item extends Classifiable
         }
 
        return $children;
+    }
+
+    /**
+     * @return MorphMany
+     */
+    public function projects()
+    {
+        return $this->morphMany(Project::class, 'taggable');
     }
 
     public static function withAllRelations() {
