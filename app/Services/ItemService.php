@@ -8,6 +8,7 @@ use App\Models\Date;
 use App\Models\Item;
 use App\Models\Taxonomy\Maker;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class ItemService
 {
@@ -37,7 +38,8 @@ class ItemService
         }
 
         if (isset($data['images'])) {
-            $this->updateImages($data['images']);
+            $detachFrom = isset($data['detach_from']) ? $data['detach_from'] : [];
+            $this->updateImages($data['images'], $detachFrom);
         }
 
         return $this->item;
@@ -47,16 +49,23 @@ class ItemService
      * Update images
      *
      * @param array $data
+     * @param array $detachFrom
      * @return void
      */
-    public function updateImages(array $data)
+    public function updateImages(array $data, $detachFrom = [])
     {
         $images = [];
 
         foreach ($data as $imageData) {
             $imageId = isset($imageData['id']) ? $imageData['id'] : $imageData['image']['id'];
-
             $images[$imageId] = ['entity_type' => 'set'];
+        }
+
+        if (count($detachFrom)) {
+            DB::table('entity_images')
+                ->whereIn('image_id', array_keys($images))
+                ->whereIn('entity_id', $detachFrom)
+                ->delete();
         }
 
         $this->item->images()->sync($images);

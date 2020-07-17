@@ -16,7 +16,7 @@ trait SearchableByName
      */
     public function scopeSearchByName(Builder $query, $search)
     {
-        return $query->when($search, function ($q, $search) {
+        return $query->when($search, function ($q) use ($search) {
             return $q->where('name', 'LIKE', "%$search%");
         });
     }

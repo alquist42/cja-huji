@@ -38,6 +38,16 @@
       @confirm="deleteItem"
     />
 
+    <confirmation-modal
+      :value="detachImagesConfirmationDialog"
+      title="Detach images"
+      message="Images are attached to other items. Detach from them?"
+      btn-cancel-text="No"
+      btn-confirm-text="Yes"
+      @cancel="createItemWithoutDetachingImages"
+      @confirm="createItemDetachingImages"
+    />
+
     <dashboard-core-app-bar>
       <v-btn
         outlined
