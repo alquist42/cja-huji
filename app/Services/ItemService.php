@@ -103,9 +103,6 @@ class ItemService
             'community_details',
         ];
 
-        if ($fromParent = $this->item->parent_id === $source->id) {
-            $excludingRelations = array_merge($excludingRelations, $taxons);
-        }
         $source->load(array_diff(Item::$relationships, $excludingRelations));
         $this->item->load(['ancestors' => function ($query) use ($taxons) {
             $query->with($taxons);
@@ -118,12 +115,6 @@ class ItemService
         }
         $copy->ancestors = $this->item->ancestors;
         $copy->leaf = $this->item->leaf();
-
-        if ($fromParent) {
-            foreach ($taxons as $taxon) {
-                $copy->$taxon = [];
-            }
-        }
 
         return $copy;
     }

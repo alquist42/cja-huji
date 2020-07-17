@@ -1053,10 +1053,45 @@
       },
 
       async createChild () {
+        const fields = [
+          'name',
+          'publish_state',
+          'publish_state_reason',
+          'category',
+          'ntl',
+          'creation_date',
+          'reconstruction_dates_object',
+          'activity_dates_object',
+          'copyright',
+          'remarks',
+          'description',
+          'addenda',
+          'artifact_at_risk',
+          'geo_lat',
+          'geo_lng',
+          'geo_options',
+        ]
+        const child = {
+          parent_id: this.id,
+        }
+
+        fields.forEach(field => {
+          if (this.item[field]) {
+            child[field] = this.item[field]
+          }
+        })
+
+        this.taxonomy.properties = this.item.properties.map(t => {
+          return {
+            property_id: t.pivot.property_id,
+            value: t.pivot.value,
+          }
+        })
+
         this.isCreatingChild = true
         try {
-          const { data } = await this.$http.post(`/api/items/${this.id}/children?project=catalogue`)
-          this.updatePropertiesPanels()
+          const { data } = await this.$http.post('/api/items?project=catalogue', { item: child, taxonomy: this.taxonomy })
+          this.showSnackbarSuccess('Child has been created')
           window.location.href = `/staff/items/${data.id}`
         } catch (e) {
           this.showSnackbarError('An error occurred')
