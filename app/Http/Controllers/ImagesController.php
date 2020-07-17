@@ -65,17 +65,15 @@ class ImagesController extends Controller
                 $constraint->aspectRatio();
             });
         }
-        if ($addWatermark && $size != 'small') {
-            $wm = Image::make('cr_wm.png');
-
+        if ($addWatermark) {
+            $wm = \Image::make('cr_wm.png');
+          
             $ratio = round($img->width() / $wm->width());
             $wm->resize(($wm->width() * $ratio / 3), null, function ($constraint) {
                 $constraint->aspectRatio();
             });
-            //  dd($ratio);
-            //    if($size !='small'){
+            
             $img->insert($wm, 'top-left', 0, 0);
-            //    }
         }
 
 
@@ -91,10 +89,9 @@ class ImagesController extends Controller
             return true; //TODO : PERMISSIONS FOR USERS
         }
         $img_rights = $image->rights;
-        if (empty($img_rights) || $img_rights == 2) {
-            //   $collection = $model->collections()->first();
-            $collection = $model->getCollections()->first();
-            if (!empty($collection)) {
+        if(empty($img_rights) || $img_rights == 2){
+            $collection = $model->getTaxonomy('collections')->first();
+            if(!empty($collection)){
                 $img_rights = $collection->rights;
             }
         }

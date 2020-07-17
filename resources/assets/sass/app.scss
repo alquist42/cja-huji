@@ -110,7 +110,7 @@ html, body, h1, h2, h3, h4, h5, h6 {
 .card-img-top {
     width: 100%;
     height: 22vw;
-    object-fit: cover;
+    object-fit: contain;
 }
 
 .select2-container--default .select2-selection--multiple .select2-selection__clear {
