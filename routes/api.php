@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+
 Route::post('/auth/token', 'Api\AuthController@getAccessToken');
 Route::post('/auth/reset-password', 'Api\AuthController@passwordResetRequest');
 Route::post('/auth/change-password', 'Api\AuthController@changePassword');
@@ -23,6 +25,7 @@ Route::group(['namespace' => 'Api'], function () {
         Route::get('/taxonomy/{type}/{id}', 'TaxonomyController@show');
         Route::get('/autocomplete', 'TaxonomyController@search');
 
+        Route::get('/properties', 'PropertiesController@index');
         Route::get('/categories', 'CategoriesController@index');
         Route::get('/dates', 'DatesController@index');
         Route::get('/copyrights', 'CopyrightsController@index');

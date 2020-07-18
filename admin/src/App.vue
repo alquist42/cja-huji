@@ -1,11 +1,16 @@
 <template>
-  <Dash />
+  <v-app>
+    <dashboard-core-app-bar />
+    <router-view />
+  </v-app>
 </template>
 
 <script>
   export default {
     name: 'App',
 
-    created () { console.log('in', this) },
+    components: {
+      DashboardCoreAppBar: () => import('@/views/dashboard/components/core/AppBar'),
+    },
   }
 </script>

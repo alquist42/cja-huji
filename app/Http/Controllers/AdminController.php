@@ -6,20 +6,8 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Property;
 use App\Models\Item;
-use App\Models\Taxonomy\Artist;
 use App\Models\Taxonomy\Collection;
-use App\Models\Taxonomy\Community;
-use App\Models\Taxonomy\Details;
-use App\Models\Taxonomy\HistoricalOrigin;
-use App\Models\Taxonomy\Location;
-use App\Models\Taxonomy\Maker;
-use App\Models\Taxonomy\Origin;
-use App\Models\Taxonomy\Period;
-use App\Models\Taxonomy\Profession;
-use App\Models\Taxonomy\School;
-use App\Models\Taxonomy\Subject;
 use App\Models\Tenant;
-use Illuminate\Support\Facades\View;
 
 class AdminController extends Controller
 {
@@ -76,18 +64,6 @@ class AdminController extends Controller
             'name' => 'Items',
             'data' => [
                 'collection' => $collection
-            ]
-        ]);
-    }
-
-    public function item($item) {
-//        $item = Item::with(Item::$relationships)->findOrFail($item);
-        $properties = Property::get()->sortBy('name')->values();
-        return view('admin', [
-            'name' => 'Item',
-            'data' => [
-                'id' => $item,
-                'properties' =>  $properties,
             ]
         ]);
     }

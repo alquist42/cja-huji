@@ -13,6 +13,8 @@
 
 
 use App\Models\Tenant;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', 'WelcomeController@index');
 
@@ -21,10 +23,6 @@ Route::group([
     'as'     => 'staff.',
     'middleware' => 'auth'
 ], function () {
-    Route::get('', 'AdminController@viewLinks');
-    Route::get('/items', 'AdminController@items')->name('admin.items');
-    Route::get('/items/{item}', 'AdminController@item')->name('admin.item');
-
     $controller = config('mediaManager.controller', '\ctf0\MediaManager\App\Controllers\MediaController');
 
     Route::group([
@@ -53,6 +51,14 @@ Route::group([
         Route::post('folder-download', ['uses' => "$controller@downloadFolder", 'as' => 'folder_download']);
         Route::post('files-download', ['uses' => "$controller@downloadFiles", 'as' => 'files_download']);
     });
+
+    Route::get('/{any}', function () {
+        return view('admin');
+    })
+        ->where('any', '.*')
+        ->name('admin');
+//    Route::get('', 'AdminController@viewLinks');
+//    Route::get('/items', 'AdminController@items')->name('admin.items');
 });
 
 Route::get('/images/{item}-{image}-{size}.png', 'ImagesController@view')->

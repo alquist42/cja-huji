@@ -49,48 +49,50 @@
     />
 
     <dashboard-core-app-bar>
-      <v-btn
-        outlined
-        :loading="isSaving"
-        :disabled="lockWhileProcessing"
-        @click="save"
-      >
-        Save
-      </v-btn>
-      <v-btn
-        class="ml-2"
-        outlined
-        color="success"
-        :loading="isCreatingChild"
-        :disabled="lockWhileProcessing"
-        @click="createChild()"
-      >
-        Create child
-        <v-icon right>mdi-file-tree</v-icon>
-      </v-btn>
-      <v-btn
-        v-if="!hasImages"
-        class="ml-2"
-        color="error"
-        outlined
-        :disabled="lockWhileProcessing"
-        @click="deleteItemConfirmationDialog = true"
-      >
-        Delete
-        <v-icon right>mdi-trash-can-outline</v-icon>
-      </v-btn>
-      <v-btn
-        class="ml-2"
-        style="text-decoration: none"
-        color="info"
-        outlined
-        :disabled="isSaving || isCopyingAttributes"
-        :href="`/catalogue/items/${id}`"
-        target="_blank"
-      >
-        Preview
-        <v-icon right>mdi-open-in-new</v-icon>
-      </v-btn>
+      <template #controls>
+        <v-btn
+          outlined
+          :loading="isSaving"
+          :disabled="lockWhileProcessing"
+          @click="save"
+        >
+          Save
+        </v-btn>
+        <v-btn
+          class="ml-2"
+          outlined
+          color="success"
+          :loading="isCreatingChild"
+          :disabled="lockWhileProcessing"
+          @click="createChild()"
+        >
+          Create child
+          <v-icon right>mdi-file-tree</v-icon>
+        </v-btn>
+        <v-btn
+          v-if="!hasImages"
+          class="ml-2"
+          color="error"
+          outlined
+          :disabled="lockWhileProcessing"
+          @click="deleteItemConfirmationDialog = true"
+        >
+          Delete
+          <v-icon right>mdi-trash-can-outline</v-icon>
+        </v-btn>
+        <v-btn
+          class="ml-2"
+          style="text-decoration: none"
+          color="info"
+          outlined
+          :disabled="lockWhileProcessing"
+          :href="`/catalogue/items/${id}`"
+          target="_blank"
+        >
+          Preview
+          <v-icon right>mdi-open-in-new</v-icon>
+        </v-btn>
+      </template>
     </dashboard-core-app-bar>
 
     <dashboard-core-drawer />
@@ -608,8 +610,8 @@
 
     components: {
       TiptapVuetify,
-      DashboardCoreAppBar: () => import('../views/dashboard/components/core/AppBar'),
-      DashboardCoreDrawer: () => import('../views/dashboard/components/core/Drawer'),
+      DashboardCoreAppBar: () => import('./dashboard/components/core/AppBar'),
+      DashboardCoreDrawer: () => import('./dashboard/components/core/Drawer'),
       // DashboardCoreSettings: () => import('./components/core/Settings'),
       // DashboardCoreView: () => import('../components/core/View'),
       TaxonModal: () => import('../components/TaxonModal'),
@@ -623,10 +625,6 @@
     props: {
       id: {
         type: String,
-        required: true,
-      },
-      properties: {
-        type: Array,
         required: true,
       },
     },
@@ -730,6 +728,7 @@
         HardBreak,
       ],
 
+      properties: [],
       categories: [],
       projects: [],
       dates: [],
@@ -865,7 +864,7 @@
 
         this.isLoadingDates = true
         try {
-          const response = await this.$http.get(`/api/dates?project=catalogue&search=${val}`)
+          const response = await this.$http.get(`dates?project=catalogue&search=${val}`)
           this.dates = response.data
         } catch (e) {
           console.log(e)
@@ -879,7 +878,7 @@
 
         this.isLoadingReconstructionDates = true
         try {
-          const response = await this.$http.get(`/api/dates?project=catalogue&search=${val}`)
+          const response = await this.$http.get(`dates?project=catalogue&search=${val}`)
           this.reconstructionDates = response.data
         } catch (e) {
           console.log(e)
@@ -893,7 +892,7 @@
 
         this.isLoadingActivityDates = true
         try {
-          const response = await this.$http.get(`/api/dates?project=catalogue&search=${val}`)
+          const response = await this.$http.get(`dates?project=catalogue&search=${val}`)
           this.activityDates = response.data
         } catch (e) {
           console.log(e)
@@ -907,7 +906,7 @@
 
         this.isLoadingCopyright = true
         try {
-          const response = await this.$http.get(`/api/copyrights?project=catalogue&search=${val}`)
+          const response = await this.$http.get(`copyrights?project=catalogue&search=${val}`)
           this.copyrights = response.data
         } catch (e) {
           console.log(e)
@@ -931,13 +930,16 @@
     },
 
     async mounted () {
-      let response = await this.$http.get(`/api/items/${this.id}?project=catalogue`)
+      let response = await this.$http.get(`items/${this.id}?project=catalogue`)
       this.item = response.data
 
-      response = await this.$http.get('/api/categories?project=catalogue')
+      response = await this.$http.get('categories?project=catalogue')
       this.categories = response.data
 
-      response = await this.$http.get('/api/projects?project=catalogue')
+      response = await this.$http.get('properties?project=catalogue')
+      this.properties = response.data
+
+      response = await this.$http.get('projects?project=catalogue')
       this.projects = response.data
 
       this.updatePropertiesPanels()
@@ -997,7 +999,7 @@
 
         this.isSaving = true
         try {
-          const { data } = await this.$http.put('/api/items/' + this.id + '?project=slovenia', { item: this.item, taxonomy: this.taxonomy })
+          const { data } = await this.$http.put('items/' + this.id + '?project=slovenia', { item: this.item, taxonomy: this.taxonomy })
           this.item.leaf = data.leaf
           this.showSnackbarSuccess('Item has been saved')
           console.log(this.item, this.taxonomy)
@@ -1063,7 +1065,7 @@
         })
 
         try {
-          const { data } = await this.$http.put(`/api/items/${this.id}/images?project=catalogue`, { images })
+          const { data } = await this.$http.put(`items/${this.id}/images?project=catalogue`, { images })
 
           this.item.images = data
           this.showSnackbarSuccess('Images have been included')
@@ -1085,7 +1087,7 @@
         })
 
         try {
-          const { data } = await this.$http.put(`/api/items/${this.id}/images?project=catalogue`, { images })
+          const { data } = await this.$http.put(`items/${this.id}/images?project=catalogue`, { images })
 
           this.item.images = data
           EventHub.fire('MediaManagerModal-images-excluded-from-item')
@@ -1097,7 +1099,7 @@
 
       async updateImages () {
         try {
-          const { data } = await this.$http.get(`/api/items/${this.id}?project=catalogue`)
+          const { data } = await this.$http.get(`items/${this.id}?project=catalogue`)
 
           this.item.images = data.images
         } catch (e) {
@@ -1116,7 +1118,7 @@
       async copyAttributesFrom (itemId) {
         this.isCopyingAttributes = true
         try {
-          const { data } = await this.$http.patch(`/api/items/${this.id}/copy/${itemId}?project=catalogue`)
+          const { data } = await this.$http.patch(`items/${this.id}/copy/${itemId}?project=catalogue`)
           this.item = data
           this.updatePropertiesPanels()
           this.showSnackbarSuccess('Attributes have been copied')
@@ -1130,7 +1132,7 @@
 
       async deleteItem () {
         try {
-          await this.$http.delete(`/api/items/${this.id}?project=catalogue`)
+          await this.$http.delete(`items/${this.id}?project=catalogue`)
           window.location.href = '/staff/items/'
         } catch (e) {
           this.showSnackbarError('An error occurred')
@@ -1178,7 +1180,7 @@
 
         this.isCreatingChild = true
         try {
-          const { data } = await this.$http.post('/api/items?project=catalogue', {
+          const { data } = await this.$http.post('items?project=catalogue', {
             item: child,
             taxonomy: this.taxonomy,
             images: fromImages,
