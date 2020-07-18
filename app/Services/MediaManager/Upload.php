@@ -24,6 +24,7 @@ trait Upload
         $result      = [];
         $broadcast   = false;
         $custom_attr = collect(json_decode($request->custom_attrs));
+        $files_map = collect(json_decode($request->files_map));
 
         foreach ($request->file as $one) {
             if ($this->allowUpload($one)) {
@@ -31,13 +32,23 @@ trait Upload
                 $orig_name  = $one->getClientOriginalName();
                 $name_only  = pathinfo($orig_name, PATHINFO_FILENAME);
                 $ext_only   = pathinfo($orig_name, PATHINFO_EXTENSION);
+
                 $final_name = $random_name
                                 ? $this->getRandomString() . ".$ext_only"
                                 : $this->cleanName($name_only) . ".$ext_only";
 
                 $file_options = []; //optional($custom_attr)->options; //->firstWhere('name', $orig_name)
                 $file_type    = $one->getMimeType();
-                $destination  = !$upload_path ? $final_name : $this->clearDblSlash("$upload_path/$final_name");
+
+                $path_from_client = $files_map->first(function($fileInfo) use ($orig_name) {
+                    return $fileInfo->name === $orig_name;
+                })->path;
+                $add_path = ($path_from_client ? "$path_from_client/" : '');
+                if ($upload_path) {
+                    $destination = $this->clearDblSlash("$upload_path/$add_path" . $final_name);
+                } else {
+                    $destination = $add_path . $final_name;
+                }
 
                 try {
                     // check for mime type
@@ -55,7 +66,7 @@ trait Upload
                     }
 
                     // save file
-                    $full_path = $this->storeFile($one, $upload_path, $final_name);
+                    $full_path = $this->storeFile($one, $upload_path . ($path_from_client ? "/$path_from_client" : ''), $final_name);
 
                     // fire event
                     event('MMFileUploaded', [

@@ -175,6 +175,17 @@ export default {
 
                     // send files custom options
                     formData.append('custom_attrs', JSON.stringify(manager.uploadPreviewOptionsList))
+                    formData.append('files_map', JSON.stringify(manager.uploadPreviewList.map(file => {
+                        let path = file.fullPath ? file.fullPath.substring(0, file.fullPath.length - file.name.length) : ''
+                        if (path.endsWith('/')) {
+                            path = path.substring(0, path.length - 1)
+                        }
+
+                        return {
+                            name: file.name,
+                            path
+                        }
+                    })))
                 },
                 processingmultiple() {
                     manager.showProgress = true
