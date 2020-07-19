@@ -44,7 +44,7 @@
         color="success"
         :loading="isCreatingChild"
         :disabled="lockWhileProcessing"
-        @click="createChild"
+        @click="createChild()"
       >
         Create child
         <v-icon right>mdi-file-tree</v-icon>
@@ -1052,7 +1052,7 @@
         }
       },
 
-      async createChild () {
+      async createChild (fromImages = []) {
         const fields = [
           'name',
           'publish_state',
@@ -1090,7 +1090,11 @@
 
         this.isCreatingChild = true
         try {
-          const { data } = await this.$http.post('/api/items?project=catalogue', { item: child, taxonomy: this.taxonomy })
+          const { data } = await this.$http.post('/api/items?project=catalogue', {
+            item: child,
+            taxonomy: this.taxonomy,
+            images: fromImages,
+          })
           this.showSnackbarSuccess('Child has been created')
           window.location.href = `/staff/items/${data.id}`
         } catch (e) {

@@ -16,11 +16,17 @@
 
     methods: {
       async createItemFromImages (filesAndFolders) {
+        const images = await this.getAllNestedFiles(filesAndFolders)
+
+        if (this.id) {
+          return this.createChild(images)
+        }
+
         const payload = {
           item: {
-            parent_id: this.id || null,
+            parent_id: null,
           },
-          images: await this.getAllNestedFiles(filesAndFolders),
+          images,
         }
 
         try {
