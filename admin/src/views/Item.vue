@@ -1,273 +1,259 @@
 <template>
-  <v-app>
-    <v-snackbar
-      v-model="snackbar"
-      :color="snackbarColor"
-      top
+    <v-container
+      fluid
+      tag="section"
     >
-      {{ snackbarText }}
-      <template v-slot:action="{ attrs }">
-        <v-btn
-          text
-          v-bind="attrs"
-          @click="snackbar = false"
-        >
-          Close
-        </v-btn>
-      </template>
-    </v-snackbar>
-
-    <v-dialog v-model="mediaManagerDialog">
-      <slot name="media-manager-modal" />
-    </v-dialog>
-
-    <select-item-modal
-      :exclude="item.id"
-      :value="copyAttributesFromObjectDialog"
-      title="Select object to copy attributes from"
-      @cancel="copyAttributesFromObjectDialog = false"
-      @input="copyAttributesFromObjectDialog = false; copyAttributesFrom($event)"
-    />
-
-    <confirmation-modal
-      :value="deleteItemConfirmationDialog"
-      title="Delete item"
-      :message="`Are you sure you want to delete ${item.name || 'item'}?`"
-      btn-confirm-text="Delete"
-      @cancel="deleteItemConfirmationDialog = false"
-      @confirm="deleteItem"
-    />
-
-    <confirmation-modal
-      :value="detachImagesConfirmationDialog"
-      title="Detach images"
-      message="Images are attached to other items. Detach from them?"
-      btn-cancel-text="No"
-      btn-confirm-text="Yes"
-      @cancel="createItemWithoutDetachingImages"
-      @confirm="createItemDetachingImages"
-    />
-
-    <dashboard-core-app-bar>
-      <template #controls>
-        <v-btn
-          outlined
-          :loading="isSaving"
-          :disabled="lockWhileProcessing"
-          @click="save"
-        >
-          Save
-        </v-btn>
-        <v-btn
-          class="ml-2"
-          outlined
-          color="success"
-          :loading="isCreatingChild"
-          :disabled="lockWhileProcessing"
-          @click="createChild()"
-        >
-          Create child
-          <v-icon right>mdi-file-tree</v-icon>
-        </v-btn>
-        <v-btn
-          v-if="!hasImages"
-          class="ml-2"
-          color="error"
-          outlined
-          :disabled="lockWhileProcessing"
-          @click="deleteItemConfirmationDialog = true"
-        >
-          Delete
-          <v-icon right>mdi-trash-can-outline</v-icon>
-        </v-btn>
-        <v-btn
-          class="ml-2"
-          style="text-decoration: none"
-          color="info"
-          outlined
-          :disabled="lockWhileProcessing"
-          :href="`/catalogue/items/${id}`"
-          target="_blank"
-        >
-          Preview
-          <v-icon right>mdi-open-in-new</v-icon>
-        </v-btn>
-      </template>
-    </dashboard-core-app-bar>
-
-    <dashboard-core-drawer />
-
-    <v-main>
-      <v-container
-        id="user-profile"
-        fluid
-        tag="section"
+      <v-snackbar
+        v-model="snackbar"
+        :color="snackbarColor"
+        top
       >
-        <v-row>
-          <v-col cols="8">
-            <base-material-card class="px-5 py-3">
-              <template v-slot:heading>
-                <v-row no-gutters>
-                  <v-col class="flex-grow-1 display-2 font-weight-light">
-                    Item {{ item.id }}
-                  </v-col>
-                  <v-col
-                    cols="auto"
-                    class="d-flex align-center"
-                  >
+        {{ snackbarText }}
+        <template v-slot:action="{ attrs }">
+          <v-btn
+            text
+            v-bind="attrs"
+            @click="snackbar = false"
+          >
+            Close
+          </v-btn>
+        </template>
+      </v-snackbar>
+
+      <v-dialog v-model="mediaManagerDialog">
+        <slot name="media-manager-modal" />
+      </v-dialog>
+
+      <select-item-modal
+        :exclude="id"
+        :value="copyAttributesFromObjectDialog"
+        title="Select object to copy attributes from"
+        @cancel="copyAttributesFromObjectDialog = false"
+        @input="copyAttributesFromObjectDialog = false; copyAttributesFrom($event)"
+      />
+
+      <confirmation-modal
+        :value="deleteItemConfirmationDialog"
+        title="Delete item"
+        :message="`Are you sure you want to delete ${item.name || 'item'}?`"
+        btn-confirm-text="Delete"
+        @cancel="deleteItemConfirmationDialog = false"
+        @confirm="deleteItem"
+      />
+
+      <confirmation-modal
+        :value="detachImagesConfirmationDialog"
+        title="Detach images"
+        message="Images are attached to other items. Detach from them?"
+        btn-cancel-text="No"
+        btn-confirm-text="Yes"
+        @cancel="createItemWithoutDetachingImages"
+        @confirm="createItemDetachingImages"
+      />
+
+      <dashboard-core-app-bar>
+        <template #controls>
+          <v-btn
+            outlined
+            :loading="isSaving"
+          :disabled="lockWhileProcessing"
+            @click="save"
+          >
+            Save
+          </v-btn>
+          <v-btn
+            class="ml-2"
+            outlined
+            color="success"
+            :loading="isCreatingChild"
+            :disabled="lockWhileProcessing"
+            @click="createChild()"
+          >
+            Create child
+            <v-icon right>mdi-file-tree</v-icon>
+          </v-btn>
+          <v-btn
+            v-if="!hasImages"
+            class="ml-2"
+            color="error"
+            outlined
+            :disabled="lockWhileProcessing"
+            @click="deleteItemConfirmationDialog = true"
+          >
+            Delete
+            <v-icon right>mdi-trash-can-outline</v-icon>
+          </v-btn>
+          <v-btn
+            class="ml-2"
+            style="text-decoration: none"
+            color="info"
+            outlined
+            :disabled="lockWhileProcessing"
+            :href="`/catalogue/items/${id}`"
+            target="_blank"
+          >
+            Preview
+            <v-icon right>mdi-open-in-new</v-icon>
+          </v-btn>
+        </template>
+      </dashboard-core-app-bar>
+
+      <v-row>
+        <v-col cols="8">
+          <base-material-card class="px-5 py-3">
+            <template v-slot:heading>
+              <v-row no-gutters>
+                <v-col class="flex-grow-1 display-2 font-weight-light">
+                    Item {{ id }}
+                </v-col>
+                <v-col
+                  cols="auto"
+                  class="d-flex align-center"
+                >
                     <v-tooltip left>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                        v-bind="attrs"
+                        v-on="on"
+                        icon
+                        :loading="isCopyingAttributes"
+                          :disabled="lockWhileProcessing"
+                          @click="copyAttributesFromObjectDialog = true"
+                      >
+                          <v-icon>mdi-content-copy</v-icon>
+                      </v-btn>
+                    </template>
+                      <span>Copy all attributes from object</span>
+                    </v-tooltip>
+                </v-col>
+              </v-row>
+            </template>
+            <v-card-text>
+              <v-form
+                ref="form"
+                lazy-validation
+              >
+                <v-text-field
+                  v-model="item.name"
+                  label="Name"
+                  required
+                  outlined
+                />
+
+                <v-text-field
+                  v-model="item.ntl"
+                  label="NTL"
+                  required
+                  outlined
+                />
+
+                <tiptap-vuetify
+                  v-model="item.description"
+                  :extensions="extensions"
+                />
+              </v-form>
+            </v-card-text>
+          </base-material-card>
+
+          <base-material-card class="px-5 py-3">
+            <template v-slot:heading>
+              <div class="display-2 font-weight-light">
+                Attributes
+              </div>
+            </template>
+            <v-card-text>
+              <v-row
+                v-for="taxon in taxons"
+                :key="taxon"
+                no-gutters
+                class="mb-2"
+              >
+                <v-col
+                  cols="12"
+                  class="pb-0"
+                >
+                  <template v-if="hasParent">
+                    <v-tooltip
+                      v-if="taxonomyInheritance[taxon] !== 'enabled'"
+                      top
+                    >
                       <template v-slot:activator="{ on, attrs }">
                         <v-btn
                           v-bind="attrs"
                           v-on="on"
                           icon
-                          :loading="isCopyingAttributes"
-                          :disabled="lockWhileProcessing"
-                          @click="copyAttributesFromObjectDialog = true"
+                          @click="enableTaxonomyInheritance(taxon)"
                         >
-                          <v-icon>mdi-content-copy</v-icon>
+                          <v-icon color="grey">mdi-lock-open</v-icon>
                         </v-btn>
                       </template>
-                      <span>Copy all attributes from object</span>
+                      <span>Enable taxonomy inheritance</span>
                     </v-tooltip>
-                  </v-col>
-                </v-row>
-              </template>
-              <v-card-text>
-                <v-form
-                  ref="form"
-                  lazy-validation
-                >
-                  <v-text-field
-                    v-model="item.name"
-                    label="Name"
-                    required
-                    outlined
-                  />
-
-                  <v-text-field
-                    v-model="item.ntl"
-                    label="NTL"
-                    required
-                    outlined
-                  />
-
-                  <tiptap-vuetify
-                    v-model="item.description"
-                    :extensions="extensions"
-                  />
-                </v-form>
-              </v-card-text>
-            </base-material-card>
-
-            <base-material-card class="px-5 py-3">
-              <template v-slot:heading>
-                <div class="display-2 font-weight-light">
-                  Attributes
-                </div>
-              </template>
-              <v-card-text>
-                <v-row
-                  v-for="taxon in taxons"
-                  :key="taxon"
-                  no-gutters
-                  class="mb-2"
-                >
-                  <v-col
-                    cols="12"
-                    class="pb-0"
-                  >
-                    <template v-if="hasParent">
-                      <v-tooltip
-                        v-if="taxonomyInheritance[taxon] !== 'enabled'"
-                        top
-                      >
-                        <template v-slot:activator="{ on, attrs }">
-                          <v-btn
-                            v-bind="attrs"
-                            v-on="on"
-                            icon
-                            @click="enableTaxonomyInheritance(taxon)"
-                          >
-                            <v-icon color="grey">mdi-lock-open</v-icon>
-                          </v-btn>
-                        </template>
-                        <span>Enable taxonomy inheritance</span>
-                      </v-tooltip>
-                      <v-tooltip
-                        v-else
-                        top
-                      >
-                        <template v-slot:activator="{ on, attrs }">
-                          <v-btn
-                            v-bind="attrs"
-                            v-on="on"
-                            icon
-                            @click="disableTaxonomyInheritance(taxon)"
-                          >
-                            <v-icon color="grey">mdi-lock</v-icon>
-                          </v-btn>
-                        </template>
-                        <span>Disable taxonomy inheritance</span>
-                      </v-tooltip>
-                    </template>
-                    <span class="overline">
-                      {{ taxon.replace('_', ' ') }}
-                    </span>
-                    <span
-                      class="caption"
-                      v-if="taxonomyInheritance[taxon] === 'enabled'"
+                    <v-tooltip
+                      v-else
+                      top
                     >
-                      (inherited)
-                    </span>
-                    <taxon-modal
-                      :taxon="taxon"
-                      :value="item[taxon] || []"
-                      @input="updateTaxon(taxon, $event)"
-                    />
-                  </v-col>
-                  <v-row no-gutters>
-                    <v-col>
-                      <template v-if="taxonomyInheritance[taxon] === 'disabled-own'">
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                          v-bind="attrs"
+                          v-on="on"
+                          icon
+                          @click="disableTaxonomyInheritance(taxon)"
+                        >
+                          <v-icon color="grey">mdi-lock</v-icon>
+                        </v-btn>
+                      </template>
+                      <span>Disable taxonomy inheritance</span>
+                    </v-tooltip>
+                  </template>
+                  <span class="overline">
+                    {{ taxon.replace('_', ' ') }}
+                  </span>
+                  <span
+                    class="caption"
+                    v-if="taxonomyInheritance[taxon] === 'enabled'"
+                  >
+                    (inherited)
+                  </span>
+                  <taxon-modal
+                    :taxon="taxon"
+                    :value="item[taxon] || []"
+                    @input="updateTaxon(taxon, $event)"
+                  />
+                </v-col>
+                <v-row no-gutters>
+                  <v-col>
+                    <template v-if="taxonomyInheritance[taxon] === 'disabled-own'">
+                      <v-chip
+                        v-for="obj in item[taxon]"
+                        :key="obj.id"
+                        class="mb-1 mr-1"
+                        close
+                        color="green lighten-2"
+                        @click:close="removeTaxonItem(taxon, obj.id)"
+                      >
+                        {{ obj.name }}
+                      </v-chip>
+                      ({{ details(taxon) }})
+                    </template>
+                    <v-chip
+                      v-else-if="taxonomyInheritance[taxon] === 'disabled-none'"
+                      class="mb-1 mr-1"
+                      outlined
+                      disabled
+                    >
+                      none
+                    </v-chip>
+                    <template v-else-if="item.ancestors && item.ancestors[0]">
+                      <template v-if="ancestorsTaxonomy[taxon].length">
                         <v-chip
-                          v-for="obj in item[taxon]"
+                          v-for="obj in ancestorsTaxonomy[taxon]"
                           :key="obj.id"
                           class="mb-1 mr-1"
-                          close
-                          color="green lighten-2"
-                          @click:close="removeTaxonItem(taxon, obj.id)"
                         >
                           {{ obj.name }}
                         </v-chip>
-                        ({{ details(taxon) }})
-                      </template>
-                      <v-chip
-                        v-else-if="taxonomyInheritance[taxon] === 'disabled-none'"
-                        class="mb-1 mr-1"
-                        outlined
-                        disabled
-                      >
-                        none
-                      </v-chip>
-                      <template v-else-if="item.ancestors && item.ancestors[0]">
-                        <template v-if="ancestorsTaxonomy[taxon].length">
-                          <v-chip
-                            v-for="obj in ancestorsTaxonomy[taxon]"
-                            :key="obj.id"
-                            class="mb-1 mr-1"
-                          >
-                            {{ obj.name }}
-                          </v-chip>
-                          <!--({{ details(taxon) }})-->
-                        </template>
-                        <v-chip
-                          v-else
-                          class="mb-1 mr-1"
-                          outlined
-                          disabled
-                        >
-                          none
-                        </v-chip>
+                        <!--({{ details(taxon) }})-->
                       </template>
                       <v-chip
                         v-else
@@ -277,312 +263,315 @@
                       >
                         none
                       </v-chip>
-                    </v-col>
-                  </v-row>
-                </v-row>
-                <v-row
-                  no-gutters
-                  class="mb-2"
-                >
-                  <v-col
-                    cols="12"
-                    class="pb-0"
-                  >
-                    <span class="overline">Makers</span>
-                    <taxon-maker-modal @input="addMaker" />
-                  </v-col>
-                  <v-col cols="12">
+                    </template>
                     <v-chip
-                      v-for="obj in item.makers"
-                      :key="obj.id"
+                      v-else
                       class="mb-1 mr-1"
-                      close
-                      color="green lighten-2"
-                      @click:close="removeTaxonItem('makers', obj.id)"
+                      outlined
+                      disabled
                     >
-                      {{ obj.artist.name }} ({{ obj.profession.name }})
+                      none
                     </v-chip>
-                    ({{ details('makers') }})
                   </v-col>
                 </v-row>
-
-                <v-divider class="mt-6" />
-                <div class="overline my-2">
-                  Properties
-                </div>
-                <v-expansion-panels
-                  v-model="panel"
-                  multiple
+              </v-row>
+              <v-row
+                no-gutters
+                class="mb-2"
+              >
+                <v-col
+                  cols="12"
+                  class="pb-0"
                 >
-                  <v-expansion-panel
-                    v-for="categName in Object.keys(propers)"
-                    :key="categName"
+                  <span class="overline">Makers</span>
+                  <taxon-maker-modal @input="addMaker" />
+                </v-col>
+                <v-col cols="12">
+                  <v-chip
+                    v-for="obj in item.makers"
+                    :key="obj.id"
+                    class="mb-1 mr-1"
+                    close
+                    color="green lighten-2"
+                    @click:close="removeTaxonItem('makers', obj.id)"
                   >
-                    <v-expansion-panel-header>
-                      <span class="overline">{{ categName.replace('_', ' ') }}</span>
-                    </v-expansion-panel-header>
-                    <v-expansion-panel-content>
-                      <template v-for="(prop, i) in propers[categName]">
-                        <v-text-field
-                          v-if="prop.type === 'text'"
-                          :key="prop.id"
-                          :label="prop.verbose_name"
-                          outlined
-                          :value="getItemPropValue(prop.prop_name)"
-                          @input="setItemPropValue(prop, $event)"
-                        >
-                          <template v-slot:prepend>
-                            <v-badge :content="i+1" />
-                          </template>
-                        </v-text-field>
-                        <v-textarea
-                          v-if="prop.type === 'textarea' && prop.content_type === 'plain'"
-                          :key="prop.id"
-                          :label="prop.verbose_name"
-                          outlined
-                          :value="getItemPropValue(prop.prop_name)"
-                          @input="setItemPropValue(prop, $event)"
-                        />
-                        <tiptap-vuetify
-                          v-if="prop.type === 'textarea' && prop.content_type === 'htmle'"
-                          :key="prop.id"
-                          :placeholder="prop.verbose_name"
-                          :extensions="extensions"
-                          :value="getItemPropValue(prop.prop_name)"
-                          @input="setItemPropValue(prop, $event)"
-                        />
-                        <v-select
-                          v-if="prop.type === 'select'"
-                          :key="prop.id"
-                          :items="prop.allowed_vals.split(' | ')"
-                          chips
-                          :label="prop.verbose_name"
-                          outlined
-                          :value="getItemPropValue(prop.prop_name)"
-                          @input="setItemPropValue(prop, $event)"
-                        />
-                      </template>
-                    </v-expansion-panel-content>
-                  </v-expansion-panel>
-                </v-expansion-panels>
-              </v-card-text>
-            </base-material-card>
-          </v-col>
+                    {{ obj.artist.name }} ({{ obj.profession.name }})
+                  </v-chip>
+                  ({{ details('makers') }})
+                </v-col>
+              </v-row>
 
-          <v-col cols="4">
-            <base-material-card class="px-5 py-3">
-              <template v-slot:heading>
-                <v-row no-gutters>
-                  <v-col class="flex-grow-1 display-2 font-weight-light">
-                    Images: {{ item.images ? item.images.length : '0' }}
-                  </v-col>
-                  <v-col
-                    cols="auto"
-                    class="d-flex align-center"
-                  >
-                    <v-btn
-                      icon
-                      @click="openMediaManagerModal"
-                    >
-                      <v-icon>mdi-pencil</v-icon>
-                    </v-btn>
-                  </v-col>
-                </v-row>
-              </template>
-              <v-card-text>
-                <v-carousel height="250">
-                  <v-carousel-item
-                    v-for="image in item.images"
-                    :key="image.id"
-                  >
-                    <v-img
-                      :lazy-src="`/storage/${image.small || image.medium || image.def || image.batch_url}`"
-                      :src="`http://cja.huji.ac.il/${image.small || image.medium || image.def || image.batch_url}`"
-                      max-height="250px"
-                      contain
-                    />
-                  </v-carousel-item>
-                </v-carousel>
-              </v-card-text>
-            </base-material-card>
-
-            <base-material-card class="px-5 py-3">
-              <template v-slot:heading>
-                <div class="display-2 font-weight-light">
-                  Settings
-                </div>
-              </template>
-              <v-card-text>
-                <v-select
-                  v-model="item.category_object"
-                  :items="possibleCategories"
-                  label="Category"
-                  item-text="name"
-                  item-value="slug"
-                  return-object
-                  outlined
-                />
-                <v-select
-                  v-model="item.projects"
-                  :items="possibleProjects"
-                  label="Projects"
-                  item-text="title"
-                  item-value="tag_slug"
-                  return-object
-                  multiple
-                  chips
-                  deletable-chips
-                  small-chips
-                  outlined
-                />
-                <v-select
-                  v-model="item.publish_state"
-                  :items="possiblePublishStates"
-                  label="Publish state"
-                  outlined
-                />
-                <v-text-field
-                  v-model="item.publish_state_reason"
-                  label="Publish state reason"
-                  outlined
-                />
-              </v-card-text>
-            </base-material-card>
-
-            <base-material-card class="px-5 py-3">
-              <template v-slot:heading>
-                <div class="display-2 font-weight-light">
-                  Base Fields
-                </div>
-              </template>
-              <v-card-text>
-                <v-combobox
-                  v-model="item.creation_date"
-                  :items="dates"
-                  :search-input.sync="searchDate"
-                  item-value="id"
-                  item-text="name"
-                  label="Creation date"
-                  placeholder="Start typing to search"
-                  outlined
-                  :loading="isLoadingDates"
-                />
-                <v-combobox
-                  v-model="item.reconstruction_dates_object"
-                  :items="reconstructionDates"
-                  :search-input.sync="searchReconstructionDates"
-                  item-value="id"
-                  item-text="name"
-                  label="Reconstruction dates"
-                  placeholder="Start typing to search"
-                  outlined
-                  :loading="isLoadingReconstructionDates"
-                />
-                <v-combobox
-                  v-model="item.activity_dates_object"
-                  :items="activityDates"
-                  :search-input.sync="searchActivityDates"
-                  item-value="id"
-                  item-text="name"
-                  label="Activity dates"
-                  placeholder="Start typing to search"
-                  outlined
-                  :loading="isLoadingActivityDates"
-                />
-                <v-combobox
-                  v-model="item.copyright"
-                  :items="copyrights"
-                  :search-input.sync="searchCopyright"
-                  item-value="id"
-                  item-text="name"
-                  label="Copyright"
-                  placeholder="Start typing to search"
-                  outlined
-                  :loading="isLoadingCopyright"
-                />
-                <v-textarea
-                  v-model="item.remarks"
-                  label="Remarks"
-                  outlined
-                  counter="200"
-                  no-resize
-                />
-                <v-switch
-                  v-model="item.artifact_at_risk"
-                  label="Artifact at risk"
-                  inset
-                />
-                <v-text-field
-                  v-for="field in fields"
-                  :key="field"
-                  v-model="item[field]"
-                  outlined
-                  :label="field"
-                />
-              </v-card-text>
-            </base-material-card>
-
-            <base-material-card class="px-5 py-3">
-              <template v-slot:heading>
-                <div class="display-2 font-weight-light">
-                  Item's Composition
-                </div>
-              </template>
-              <v-card-text>
-                <v-treeview
-                  open-on-click
-                  :active="compositionTreeActive"
-                  :open="compositionTreeOpen"
-                  :items="item.leaf"
+              <v-divider class="mt-6" />
+              <div class="overline my-2">
+                Properties
+              </div>
+              <v-expansion-panels
+                v-model="panel"
+                multiple
+              >
+                <v-expansion-panel
+                  v-for="categName in Object.keys(propers)"
+                  :key="categName"
                 >
-                  <template #append="{ item: treeItem }">
-                    <a
-                      v-if="item.id !== treeItem.id"
-                      :href="`/staff/items/${treeItem.id}`"
-                      style="text-decoration: none;"
-                    >
-                      <v-icon>mdi-arrow-right-bold-box</v-icon>
-                    </a>
-                  </template>
-                </v-treeview>
-              </v-card-text>
-            </base-material-card>
+                  <v-expansion-panel-header>
+                    <span class="overline">{{ categName.replace('_', ' ') }}</span>
+                  </v-expansion-panel-header>
+                  <v-expansion-panel-content>
+                    <template v-for="(prop, i) in propers[categName]">
+                      <v-text-field
+                        v-if="prop.type === 'text'"
+                        :key="prop.id"
+                        :label="prop.verbose_name"
+                        outlined
+                        :value="getItemPropValue(prop.prop_name)"
+                        @input="setItemPropValue(prop, $event)"
+                      >
+                        <template v-slot:prepend>
+                          <v-badge :content="i+1" />
+                        </template>
+                      </v-text-field>
+                      <v-textarea
+                        v-if="prop.type === 'textarea' && prop.content_type === 'plain'"
+                        :key="prop.id"
+                        :label="prop.verbose_name"
+                        outlined
+                        :value="getItemPropValue(prop.prop_name)"
+                        @input="setItemPropValue(prop, $event)"
+                      />
+                      <tiptap-vuetify
+                        v-if="prop.type === 'textarea' && prop.content_type === 'htmle'"
+                        :key="prop.id"
+                        :placeholder="prop.verbose_name"
+                        :extensions="extensions"
+                        :value="getItemPropValue(prop.prop_name)"
+                        @input="setItemPropValue(prop, $event)"
+                      />
+                      <v-select
+                        v-if="prop.type === 'select'"
+                        :key="prop.id"
+                        :items="prop.allowed_vals.split(' | ')"
+                        chips
+                        :label="prop.verbose_name"
+                        outlined
+                        :value="getItemPropValue(prop.prop_name)"
+                        @input="setItemPropValue(prop, $event)"
+                      />
+                    </template>
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
+              </v-expansion-panels>
+            </v-card-text>
+          </base-material-card>
+        </v-col>
 
-            <base-material-card class="px-5 py-3">
-              <template v-slot:heading>
-                <div class="display-2 font-weight-light">
-                  Map
-                </div>
-              </template>
-              <v-card-text>
-                <v-text-field
-                  v-model="item.geo_lat"
-                  label="Latitude"
-                  type="number"
-                  outlined
-                />
-                <v-text-field
-                  v-model="item.geo_lng"
-                  label="Longitude"
-                  type="number"
-                  outlined
-                />
-                <v-text-field
-                  v-model="item.geo_options"
-                  outlined
-                  label="Geolocation options"
-                />
-              </v-card-text>
-            </base-material-card>
-          </v-col>
-        </v-row>
-      </v-container>
+        <v-col cols="4">
+          <base-material-card class="px-5 py-3">
+            <template v-slot:heading>
+              <v-row no-gutters>
+                <v-col class="flex-grow-1 display-2 font-weight-light">
+                  Images: {{ item.images ? item.images.length : '0' }}
+                </v-col>
+                <v-col
+                  cols="auto"
+                  class="d-flex align-center"
+                >
+                  <v-btn
+                    icon
+                    @click="openMediaManagerModal"
+                  >
+                    <v-icon>mdi-pencil</v-icon>
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </template>
+            <v-card-text>
+              <v-carousel height="250">
+                <v-carousel-item
+                  v-for="image in item.images"
+                  :key="image.id"
+                >
+                  <v-img
+                    :lazy-src="`/storage/${image.small || image.medium || image.def || image.batch_url}`"
+                    :src="`http://cja.huji.ac.il/${image.small || image.medium || image.def || image.batch_url}`"
+                    max-height="250px"
+                    contain
+                  />
+                </v-carousel-item>
+              </v-carousel>
+            </v-card-text>
+          </base-material-card>
 
-      <!--      <dashboard-core-footer />-->
-    </v-main>
+          <base-material-card class="px-5 py-3">
+            <template v-slot:heading>
+              <div class="display-2 font-weight-light">
+                Settings
+              </div>
+            </template>
+            <v-card-text>
+              <v-select
+                v-model="item.category_object"
+                :items="possibleCategories"
+                label="Category"
+                item-text="name"
+                item-value="slug"
+                return-object
+                outlined
+              />
+              <v-select
+                v-model="item.projects"
+                :items="possibleProjects"
+                label="Projects"
+                item-text="title"
+                item-value="tag_slug"
+                return-object
+                multiple
+                chips
+                deletable-chips
+                small-chips
+                outlined
+              />
+              <v-select
+                v-model="item.publish_state"
+                :items="possiblePublishStates"
+                label="Publish state"
+                outlined
+              />
+              <v-text-field
+                v-model="item.publish_state_reason"
+                label="Publish state reason"
+                outlined
+              />
+            </v-card-text>
+          </base-material-card>
 
-    <!--    <dashboard-core-settings />-->
-  </v-app>
+          <base-material-card class="px-5 py-3">
+            <template v-slot:heading>
+              <div class="display-2 font-weight-light">
+                Base Fields
+              </div>
+            </template>
+            <v-card-text>
+              <v-combobox
+                v-model="item.creation_date"
+                :items="dates"
+                :search-input.sync="searchDate"
+                item-value="id"
+                item-text="name"
+                label="Creation date"
+                placeholder="Start typing to search"
+                outlined
+                :loading="isLoadingDates"
+              />
+              <v-combobox
+                v-model="item.reconstruction_dates_object"
+                :items="reconstructionDates"
+                :search-input.sync="searchReconstructionDates"
+                item-value="id"
+                item-text="name"
+                label="Reconstruction dates"
+                placeholder="Start typing to search"
+                outlined
+                :loading="isLoadingReconstructionDates"
+              />
+              <v-combobox
+                v-model="item.activity_dates_object"
+                :items="activityDates"
+                :search-input.sync="searchActivityDates"
+                item-value="id"
+                item-text="name"
+                label="Activity dates"
+                placeholder="Start typing to search"
+                outlined
+                :loading="isLoadingActivityDates"
+              />
+              <v-combobox
+                v-model="item.copyright"
+                :items="copyrights"
+                :search-input.sync="searchCopyright"
+                item-value="id"
+                item-text="name"
+                label="Copyright"
+                placeholder="Start typing to search"
+                outlined
+                :loading="isLoadingCopyright"
+              />
+              <v-textarea
+                v-model="item.remarks"
+                label="Remarks"
+                outlined
+                counter="200"
+                no-resize
+              />
+              <v-switch
+                v-model="item.artifact_at_risk"
+                label="Artifact at risk"
+                inset
+              />
+              <v-text-field
+                v-for="field in fields"
+                :key="field"
+                v-model="item[field]"
+                outlined
+                :label="field"
+              />
+            </v-card-text>
+          </base-material-card>
+
+          <base-material-card class="px-5 py-3">
+            <template v-slot:heading>
+              <div class="display-2 font-weight-light">
+                Item's Composition
+              </div>
+            </template>
+            <v-card-text>
+              <v-treeview
+                open-on-click
+                :active="compositionTreeActive"
+                :open="compositionTreeOpen"
+                :items="item.leaf"
+              >
+                <template #append="{ item: treeItem }">
+                  <a
+                    v-if="id !== treeItem.id"
+                    :href="`/staff/items/${treeItem.id}`"
+                    style="text-decoration: none;"
+                  >
+                    <v-icon>mdi-arrow-right-bold-box</v-icon>
+                  </a>
+                </template>
+              </v-treeview>
+            </v-card-text>
+          </base-material-card>
+
+          <base-material-card class="px-5 py-3">
+            <template v-slot:heading>
+              <div class="display-2 font-weight-light">
+                Map
+              </div>
+            </template>
+            <v-card-text>
+              <v-text-field
+                v-model="item.geo_lat"
+                label="Latitude"
+                type="number"
+                outlined
+              />
+              <v-text-field
+                v-model="item.geo_lng"
+                label="Longitude"
+                type="number"
+                outlined
+              />
+              <v-text-field
+                v-model="item.geo_options"
+                outlined
+                label="Geolocation options"
+              />
+            </v-card-text>
+          </base-material-card>
+        </v-col>
+      </v-row>
+    </v-container>
 </template>
 
 <script>
@@ -611,9 +600,6 @@
     components: {
       TiptapVuetify,
       DashboardCoreAppBar: () => import('./dashboard/components/core/AppBar'),
-      DashboardCoreDrawer: () => import('./dashboard/components/core/Drawer'),
-      // DashboardCoreSettings: () => import('./components/core/Settings'),
-      // DashboardCoreView: () => import('../components/core/View'),
       TaxonModal: () => import('../components/TaxonModal'),
       TaxonMakerModal: () => import('../components/TaxonMakerModal'),
       SelectItemModal: () => import('../components/SelectItemModal'),
@@ -621,13 +607,6 @@
     },
 
     mixins: [CreateItemFromImages, SnackBar],
-
-    props: {
-      id: {
-        type: String,
-        required: true,
-      },
-    },
 
     data: () => ({
       mediaManagerDialog: false,
@@ -746,6 +725,10 @@
     }),
 
     computed: {
+      id () {
+        return parseInt(this.$route.params.id)
+      },
+
       propers () {
         const sortedProperties = _sortBy(this.properties, 'categ_name')
 
@@ -798,11 +781,11 @@
       },
 
       compositionTreeOpen () {
-        return this.item.ancestors.map(item => item.id).concat([this.item.id])
+        return this.item.ancestors.map(item => item.id).concat([this.id])
       },
 
       compositionTreeActive () {
-        return [this.item.id]
+        return [this.id]
       },
 
       taxonomyInheritance () {

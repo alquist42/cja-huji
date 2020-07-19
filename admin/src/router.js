@@ -15,7 +15,6 @@ export default new Router({
     {
       path: '/items/:id',
       name: 'Item',
-      props: true,
       component: () => import('@/views/Item'),
     },
     // {

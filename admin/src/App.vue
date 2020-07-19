@@ -1,7 +1,11 @@
 <template>
   <v-app>
-    <dashboard-core-app-bar />
-    <router-view />
+    <dashboard-core-drawer />
+    <v-main>
+      <router-view />
+      <!--      <dashboard-core-footer />-->
+    </v-main>
+    <!--<dashboard-core-settings />-->
   </v-app>
 </template>
 
@@ -10,7 +14,8 @@
     name: 'App',
 
     components: {
-      DashboardCoreAppBar: () => import('@/views/dashboard/components/core/AppBar'),
+      DashboardCoreDrawer: () => import('./views/dashboard/components/core/Drawer'),
+      // DashboardCoreSettings: () => import('./views/dashboard/components/core/Settings'),
     },
   }
 </script>
