@@ -21,14 +21,33 @@
       <slot name="media-manager-modal" />
     </v-dialog>
 
+    <select-item-modal
+      :exclude="item.id"
+      :value="copyAttributesFromObjectDialog"
+      title="Select object to copy attributes from"
+      @cancel="copyAttributesFromObjectDialog = false"
+      @input="copyAttributesFromObjectDialog = false; copyAttributesFrom($event)"
+    />
+
     <dashboard-core-app-bar>
       <v-btn
         outlined
         :loading="isSaving"
-        :disabled="isSaving"
+        :disabled="lockWhileProcessing"
         @click="save"
       >
         Save
+      </v-btn>
+      <v-btn
+        class="ml-2"
+        outlined
+        color="success"
+        :loading="isCreatingChild"
+        :disabled="lockWhileProcessing"
+        @click="createChild()"
+      >
+        Create child
+        <v-icon right>mdi-file-tree</v-icon>
       </v-btn>
     </dashboard-core-app-bar>
 
@@ -44,9 +63,31 @@
           <v-col cols="8">
             <base-material-card class="px-5 py-3">
               <template v-slot:heading>
-                <div class="display-2 font-weight-light">
-                  Item {{ item.id }}
-                </div>
+                <v-row no-gutters>
+                  <v-col class="flex-grow-1 display-2 font-weight-light">
+                    Item {{ item.id }}
+                  </v-col>
+                  <v-col
+                    cols="auto"
+                    class="d-flex align-center"
+                  >
+                    <v-tooltip left>
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                          v-bind="attrs"
+                          v-on="on"
+                          icon
+                          :loading="isCopyingAttributes"
+                          :disabled="lockWhileProcessing"
+                          @click="copyAttributesFromObjectDialog = true"
+                        >
+                          <v-icon>mdi-content-copy</v-icon>
+                        </v-btn>
+                      </template>
+                      <span>Copy all attributes from object</span>
+                    </v-tooltip>
+                  </v-col>
+                </v-row>
               </template>
               <v-card-text>
                 <v-form
@@ -517,6 +558,7 @@
       // DashboardCoreView: () => import('../components/core/View'),
       TaxonModal: () => import('../components/TaxonModal'),
       TaxonMakerModal: () => import('../components/TaxonMakerModal'),
+      SelectItemModal: () => import('../components/SelectItemModal'),
     },
 
     mixins: [CreateItemFromImages, SnackBar],
@@ -534,7 +576,10 @@
 
     data: () => ({
       mediaManagerDialog: false,
+      copyAttributesFromObjectDialog: false,
       isSaving: false,
+      isCreatingChild: false,
+      isCopyingAttributes: false,
       item: {
         ancestors: [],
       },
@@ -736,6 +781,10 @@
 
         return taxonomy
       },
+
+      lockWhileProcessing () {
+        return this.isSaving || this.isCreatingChild || this.isCopyingAttributes
+      },
     },
 
     watch: {
@@ -806,7 +855,7 @@
       EventHub.listen('MediaManagerModal-include-images-in-item', (images) => this.includeImages(images))
       EventHub.listen('MediaManagerModal-exclude-images-from-item', (images) => this.excludeImages(images))
       EventHub.listen('MediaManagerModal-modal-hide', () => { this.mediaManagerDialog = false })
-      EventHub.listen('MediaManagerModal-files-deleted', (files) => this.updateImages())
+      EventHub.listen('MediaManagerModal-files-deleted', (/* files */) => this.updateImages())
     },
 
     async mounted () {
@@ -816,15 +865,7 @@
       response = await this.$http.get('/api/categories?project=catalogue')
       this.categories = response.data
 
-      Object.keys(this.propers).forEach((categName, categIndex) => {
-        this.propers[categName].forEach((prop) => {
-          const pr = this.item.properties.find(p => p.prop_name === prop.prop_name)
-          console.log(categName, pr, prop.prop_name, categIndex)
-          if (pr) {
-            this.panel.push(categIndex)
-          }
-        })
-      })
+      this.updatePropertiesPanels()
 
       console.log(this.item)
     },
@@ -837,6 +878,20 @@
     },
 
     methods: {
+      updatePropertiesPanels () {
+        this.panel = []
+
+        Object.keys(this.propers).forEach((categName, categIndex) => {
+          this.propers[categName].forEach((prop) => {
+            const pr = this.item.properties.find(p => p.prop_name === prop.prop_name)
+            console.log(categName, pr, prop.prop_name, categIndex)
+            if (pr) {
+              this.panel.push(categIndex)
+            }
+          })
+        })
+      },
+
       async save () {
         Object.keys(this.item).forEach(field => {
           if (this.taxons.includes(field)) {
@@ -980,6 +1035,74 @@
 
       disableTaxonomyInheritance (taxonName) {
         this.item[taxonName] = [{ id: -1, name: 'unknown' }]
+      },
+
+      async copyAttributesFrom (itemId) {
+        this.isCopyingAttributes = true
+        try {
+          const { data } = await this.$http.patch(`/api/items/${this.id}/copy/${itemId}?project=catalogue`)
+          this.item = data
+          this.updatePropertiesPanels()
+          this.showSnackbarSuccess('Attributes have been copied')
+        } catch (e) {
+          this.showSnackbarError('An error occurred')
+          console.log(e)
+        } finally {
+          this.isCopyingAttributes = false
+        }
+      },
+
+      async createChild (fromImages = []) {
+        const fields = [
+          'name',
+          'publish_state',
+          'publish_state_reason',
+          'category',
+          'ntl',
+          'creation_date',
+          'reconstruction_dates_object',
+          'activity_dates_object',
+          'copyright',
+          'remarks',
+          'description',
+          'addenda',
+          'artifact_at_risk',
+          'geo_lat',
+          'geo_lng',
+          'geo_options',
+        ]
+        const child = {
+          parent_id: this.id,
+        }
+
+        fields.forEach(field => {
+          if (this.item[field]) {
+            child[field] = this.item[field]
+          }
+        })
+
+        this.taxonomy.properties = this.item.properties.map(t => {
+          return {
+            property_id: t.pivot.property_id,
+            value: t.pivot.value,
+          }
+        })
+
+        this.isCreatingChild = true
+        try {
+          const { data } = await this.$http.post('/api/items?project=catalogue', {
+            item: child,
+            taxonomy: this.taxonomy,
+            images: fromImages,
+          })
+          this.showSnackbarSuccess('Child has been created')
+          window.location.href = `/staff/items/${data.id}`
+        } catch (e) {
+          this.showSnackbarError('An error occurred')
+          console.log(e)
+        } finally {
+          this.isCreatingChild = false
+        }
       },
     },
   }

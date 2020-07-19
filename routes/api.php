@@ -7,9 +7,11 @@ Route::post('/auth/change-password', 'Api\AuthController@changePassword');
 Route::group(['namespace' => 'Api'], function () {
     Route::group(['middleware' => 'project'], function () {
         Route::get('/items', 'ItemsController@index');
+        Route::get('/items/search', 'ItemsController@search');
         Route::post('/items', 'ItemsController@store');
         Route::get('/items/{item}', 'ItemsController@show');
         Route::put('/items/{item}', 'ItemsController@update');
+        Route::patch('/items/{item}/copy/{source}', 'ItemsController@copy');
         Route::put('/items/{item}/images', 'ItemImagesController@update');
 
         //   Route::get('/images', 'ImagesController@index');

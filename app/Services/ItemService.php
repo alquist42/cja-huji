@@ -63,6 +63,63 @@ class ItemService
     }
 
     /**
+     * Copy attributes from other item.
+     *
+     * @param Item $source
+     * @return Item
+     */
+    public function copyFrom(Item $source)
+    {
+        $keepOriginal = ['id', 'old_id', 'parent_id', '_lft', '_rgt', 'images'];
+        $excludingRelations = [
+            'images',
+            'images.photographer',
+            'images.copyright',
+            'children',
+            'children.images',
+            'children.collections',
+            'ancestors',
+            'descendants',
+        ];
+        $taxons = [
+            'locations',
+            'origins',
+            'schools',
+            'subjects',
+            'objects',
+            'historical_origins',
+            'periods',
+            'collections',
+            'communities',
+            'sites',
+
+            'location_details',
+            'origin_details',
+            'school_details',
+            'subject_details',
+            'object_details',
+            'period_details',
+            'collection_details',
+            'community_details',
+        ];
+
+        $source->load(array_diff(Item::$relationships, $excludingRelations));
+        $this->item->load(['ancestors' => function ($query) use ($taxons) {
+            $query->with($taxons);
+        }]);
+
+        /** @var Item $copy */
+        $copy = $source->replicate($keepOriginal);
+        foreach ($keepOriginal as $attribute) {
+            $copy->$attribute = $this->item->$attribute;
+        }
+        $copy->ancestors = $this->item->ancestors;
+        $copy->leaf = $this->item->leaf();
+
+        return $copy;
+    }
+
+    /**
      *  Convert data used in the 'HasOne' relations.
      *
      * @param array $data
