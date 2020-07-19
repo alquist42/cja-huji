@@ -25,6 +25,14 @@
       v-text="$route.name"
     />
 
+    <v-progress-linear
+      :active="loading"
+      indeterminate
+      absolute
+      bottom
+      color="accent"
+    ></v-progress-linear>
+
     <v-spacer />
 
 <!--    <v-text-field-->
@@ -150,6 +158,11 @@
 
     props: {
       value: {
+        type: Boolean,
+        default: false,
+      },
+
+      loading: {
         type: Boolean,
         default: false,
       },
