@@ -19,7 +19,7 @@
           color="warning"
           @click="closeDialog"
         >
-          Cancel
+          {{ btnCancelText }}
         </v-btn>
         <v-btn
           text
@@ -51,6 +51,11 @@
       message: {
         type: String,
         default: 'Are you sure?',
+      },
+
+      btnCancelText: {
+        type: String,
+        default: 'Cancel',
       },
 
       btnConfirmText: {

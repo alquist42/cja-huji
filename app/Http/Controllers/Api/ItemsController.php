@@ -107,7 +107,24 @@ class ItemsController extends Controller
     }
 
     public function update(Request $request, Item $item) {
-        return (new ItemService($item))->saveItem($request->all());
+        $item = (new ItemService($item))->saveItem($request->all());
+        $item->leaf = $item->leaf();
+        $item->load(['ancestors' => function ($query) {
+            $query->with([
+                'locations',
+                'origins',
+                'schools',
+                'subjects',
+                'objects',
+                'historical_origins',
+                'periods',
+                'collections',
+                'communities',
+                'sites',
+            ]);
+        }]);
+
+        return $item;
     }
 
     public function destroy(Item $item) {

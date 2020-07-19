@@ -40,7 +40,7 @@ class ImageService
         return Image::select('images.*', 'entity_images.image_id')
             ->leftJoin('entity_images', 'images.id', '=', 'entity_images.image_id')
             ->whereNull('entity_id')
-            ->with(['copyright', 'photographer'])
+            ->with(['copyright', 'photographer', 'items'])
             ->get();
     }
 
@@ -54,7 +54,15 @@ class ImageService
     {
         $item = Item::findOrFail($itemId);
 
-        return $item->images()->with(['copyright', 'photographer'])->get();
+        return $item->images()
+            ->with([
+                'copyright',
+                'photographer',
+                'items' => function ($query) {
+                    $query->select('entity_images.entity_id as id');
+                }
+            ])
+            ->get();
     }
 
     /**

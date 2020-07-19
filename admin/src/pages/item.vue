@@ -38,6 +38,16 @@
       @confirm="deleteItem"
     />
 
+    <confirmation-modal
+      :value="detachImagesConfirmationDialog"
+      title="Detach images"
+      message="Images are attached to other items. Detach from them?"
+      btn-cancel-text="No"
+      btn-confirm-text="Yes"
+      @cancel="createItemWithoutDetachingImages"
+      @confirm="createItemDetachingImages"
+    />
+
     <dashboard-core-app-bar>
       <v-btn
         outlined
@@ -966,7 +976,8 @@
 
         this.isSaving = true
         try {
-          await this.$http.put('/api/items/' + this.id + '?project=slovenia', { item: this.item, taxonomy: this.taxonomy })
+          const { data } = await this.$http.put('/api/items/' + this.id + '?project=slovenia', { item: this.item, taxonomy: this.taxonomy })
+          this.item.leaf = data.leaf
           this.showSnackbarSuccess('Item has been saved')
           console.log(this.item, this.taxonomy)
         } catch (e) {
