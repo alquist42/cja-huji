@@ -46,8 +46,14 @@ class ItemsController extends Controller
 
     public function index(Request $request)
     {
+        $sortBy = $request->query('sort_by', null);
+        $sortDesc = $request->query('desc', '0');
+
         return Item::with(Item::$relationships)
-            ->paginate($request->query('per_page') ? $request->query('per_page') : null);
+            ->when($sortBy, function ($query) use ($sortBy, $sortDesc) {
+                return $query->orderBy($sortBy, ($sortDesc === '0') ? 'asc' : 'desc');
+            })
+            ->paginate($request->query('per_page', null));
 
 //        $page = $request->get('page');
 

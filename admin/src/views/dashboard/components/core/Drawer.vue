@@ -122,7 +122,7 @@
           title: 'Catalogue',
           icon: 'mdi-format-font',
           to: { name: 'Items' },
-          exact: true,
+          exact: false,
         },
         {
           title: 'Media',

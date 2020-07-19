@@ -47,20 +47,6 @@
                 </v-avatar>
               </template>
             </template>
-            <template v-slot:item.actions="{ item }">
-              <v-icon
-                small
-                class="mr-2"
-                @click="editItem(item.id)"
-              >
-                mdi-pencil
-              </v-icon>
-              <v-icon
-                small
-              >
-                mdi-delete
-              </v-icon>
-            </template>
             <template v-slot:item.name="{ item }">
               <span class="text-no-wrap">{{ item.name }}</span>
             </template>
@@ -232,6 +218,20 @@
                 </v-chip>
               </template>
             </template>
+            <template v-slot:item.actions="{ item }">
+              <v-icon
+                small
+                class="mr-2"
+                @click="editItem(item.id)"
+              >
+                mdi-pencil
+              </v-icon>
+              <v-icon
+                small
+              >
+                mdi-delete
+              </v-icon>
+            </template>
           </v-data-table>
         </v-col>
       </v-row>
@@ -250,7 +250,10 @@
       items: [],
       selected: [],
       headers: [
-        { value: 'images' },
+        {
+          value: 'images',
+          sortable: false,
+        },
         { text: 'Name', value: 'name' },
         // {
         //   text: 'Parent', value: 'parent_id',
@@ -340,53 +343,79 @@
       itemsPerPage () {
         return this.$route.query.per_page ? parseInt(this.$route.query.per_page) : 25
       },
+
+      sortBy () {
+        return this.$route.query.sort_by || ''
+      },
+
+      sortDesc () {
+        return this.$route.query.desc === '1' ? '1' : '0'
+      },
     },
 
     watch: {
-      'options.page' (val) {
-        if (this.page !== val) {
-          this.$router.replace({
-            name: this.$route.name,
-            query: {
-              page: val,
-              per_page: this.itemsPerPage,
-            },
-          })
-          this.getItems()
-        }
-      },
+      options: {
+        deep: true,
+        handler (val) {
+          console.log('options', { ...val })
+          let update = false
+          const query = { ...this.$route.query }
 
-      'options.itemsPerPage' (val) {
-        if (this.itemsPerPage !== val) {
-          this.$router.replace({
-            name: this.$route.name,
-            query: {
-              page: this.page,
-              per_page: val,
-            },
-          })
-          this.getItems()
-        }
+          if (this.page !== val.page) {
+            update = true
+            query.page = val.page
+          }
+
+          if (this.itemsPerPage !== val.itemsPerPage) {
+            update = true
+            query.per_page = val.itemsPerPage
+          }
+
+          const sortBy = val.sortBy.length ? val.sortBy[0] : ''
+          if (this.sortBy !== sortBy) {
+            update = true
+            query.sort_by = sortBy
+          }
+
+          let sortDesc = '0'
+          if (val.sortDesc.length) {
+            sortDesc = val.sortDesc[0] ? '1' : '0'
+          }
+          if (this.sortDesc !== sortDesc) {
+            update = true
+            query.desc = sortDesc
+          }
+
+          if (update) {
+            this.$router.replace({
+              name: this.$route.name,
+              query,
+            })
+            this.getItems()
+          }
+        },
       },
     },
 
     created () {
       this.options.page = this.page
       this.options.itemsPerPage = this.itemsPerPage
+      this.options.sortBy = this.sortBy ? [this.sortBy] : []
+      this.options.sortDesc = this.sortDesc === '1' ? [true] : [false]
       this.getItems()
     },
 
     methods: {
       async getItems () {
         this.isLoading = true
-        const { data } = await this.$http.get(`items?&project=catalogue&page=${this.page}&per_page=${this.itemsPerPage}`)
+        const { data } = await this.$http.get(`items?&project=catalogue&page=${this.page}&per_page=${this.itemsPerPage}&sort_by=${this.sortBy}&desc=${this.sortDesc}`)
         this.items = data.data
         this.totalItems = data.total
         this.isLoading = false
       },
 
       editItem (id) {
-        this.$router.push({ name: 'Items', params: { id } })
+        this.$router.push({ name: 'Item', params: { id } })
       },
     },
   }
