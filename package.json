@@ -60,7 +60,7 @@
     "vue2-filters": "^0.11.0",
     "vue2-google-maps": "^0.10.7",
     "vuemit": "^1.0.9",
-    "vuetify": "^2.3.3",
+    "vuetify": "^2.3.4",
     "vuex": "^3.5.1",
     "worker-loader": "^2.0.0"
   },
