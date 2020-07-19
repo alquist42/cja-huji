@@ -822,6 +822,10 @@
         return this.isSaving || this.isCreatingChild || this.isCopyingAttributes
       },
 
+      hasParent () {
+        return this.item.ancestors.length
+      },
+
       hasImages () {
         return this.item.images.length
       },
