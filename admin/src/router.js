@@ -13,6 +13,11 @@ export default new Router({
       component: () => import('@/views/Dashboard'),
     },
     {
+      path: '/items',
+      name: 'Items',
+      component: () => import('@/views/Items'),
+    },
+    {
       path: '/items/:id',
       name: 'Item',
       component: () => import('@/views/Item'),

@@ -56,22 +56,4 @@ class AdminController extends Controller
             'categories' => $categories,
         ]]);
     }
-
-    public function items() {
-        $collection = Item::with(Item::$relationships)->paginate(20, ['*'], 'page', 30);
-
-        return view('admin', [
-            'name' => 'Items',
-            'data' => [
-                'collection' => $collection
-            ]
-        ]);
-    }
-
-    public function media() {
-        return view('admin', [
-            'name' => 'Media',
-            'data' => [],
-        ]);
-    }
 }

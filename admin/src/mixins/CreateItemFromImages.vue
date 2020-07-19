@@ -74,8 +74,7 @@
 
         try {
           const { data } = await this.$http.post('items?project=catalogue', payload)
-
-          window.location.href = `/staff/items/${data.id}`
+          this.$router.push({ name: 'Item', params: { id: data.id } })
         } catch (e) {
           this.showSnackbarError()
         }

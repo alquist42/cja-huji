@@ -58,7 +58,6 @@ Route::group([
         ->where('any', '.*')
         ->name('admin');
 //    Route::get('', 'AdminController@viewLinks');
-//    Route::get('/items', 'AdminController@items')->name('admin.items');
 });
 
 Route::get('/images/{item}-{image}-{size}.png', 'ImagesController@view')->

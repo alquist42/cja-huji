@@ -1110,7 +1110,7 @@
       async deleteItem () {
         try {
           await this.$http.delete(`items/${this.id}?project=catalogue`)
-          window.location.href = '/staff/items/'
+          this.$router.push({ name: 'Items' })
         } catch (e) {
           this.showSnackbarError('An error occurred')
           console.log(e)

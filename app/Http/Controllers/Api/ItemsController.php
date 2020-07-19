@@ -46,13 +46,19 @@ class ItemsController extends Controller
 
     public function index(Request $request)
     {
+        return Item::with(Item::$relationships)
+            ->paginate(20, ['*'], 'page', 1);
+
 //        $page = $request->get('page');
 
-        $filters = collect($request->only($this->allowed_filters))->filter(function ($value) {
+        $filters = collect($request->only($this->allowed_filters))
+            ->filter(function ($value) {
             return null !== $value;
-        })->map(function ($value) {
+        })
+            ->map(function ($value) {
             return is_array($value) ? $value : [$value];
-        })->toArray();
+        })
+            ->toArray();
 
 
         $data = $this->search->findByTaxonomy($filters);
@@ -63,8 +69,6 @@ class ItemsController extends Controller
             'data'=> $items,
             'meta' => $pagination
         ]);
-
-
 
 //        return view('index', [
 //            "items" => $items ,
