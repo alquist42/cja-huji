@@ -78,20 +78,33 @@ require('../../resources/assets/vendor/MediaManager/js/manager')
 new Vue({
   vuetify,
   data: () => ({
+    mediaManager: false,
     mediaManagerDialog: false,
     itemId: null,
   }),
   created () {
     EventHub.listen('MediaManagerModal-modal-hide', () => { this.mediaManagerDialog = false })
+    EventHub.listen('hide-media-manager', this.hideMediaManager)
+    EventHub.listen('show-media-manager', this.showMediaManager)
     EventHub.listen('show-media-manager-dialog', this.showMediaManagerDialog)
   },
   beforeDestroy () {
     EventHub.removeListenersFrom([
       'MediaManagerModal-modal-hide',
+      'hide-media-manager',
+      'show-media-manager',
       'show-media-manager-dialog',
     ])
   },
   methods: {
+    hideMediaManager () {
+      this.mediaManager = false
+    },
+
+    showMediaManager () {
+      this.mediaManager = true
+    },
+
     showMediaManagerDialog (itemId) {
       this.itemId = itemId
       this.mediaManagerDialog = true

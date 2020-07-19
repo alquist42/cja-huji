@@ -55,19 +55,19 @@
             </div>
         </media-manager-modal>
     </v-dialog>
-    {{--    <template v-if="$route.name === 'Media'">--}}
-    {{--        <div class="notif-container">--}}
-    {{--            <my-notification></my-notification>--}}
-    {{--        </div>--}}
+    <template v-if="mediaManager">
+        <div class="notif-container">
+            <my-notification></my-notification>
+        </div>
 
-    {{--        <div class="container is-fluid">--}}
-    {{--            <div class="columns">--}}
-    {{--                <div class="column">--}}
-    {{--                    @include('MediaManager::_manager')--}}
-    {{--                </div>--}}
-    {{--            </div>--}}
-    {{--        </div>--}}
-    {{--    </template>--}}
+        <div class="container is-fluid">
+            <div class="columns">
+                <div class="column">
+                    @include('MediaManager::_manager')
+                </div>
+            </div>
+        </div>
+    </template>
 </div>
 
 <!-- Scripts -->

@@ -5,6 +5,7 @@
     :target="href && href !== '#' ? '_blank' : undefined"
     :to="item.to"
     :active-class="`primary ${!isDark ? 'black' : 'white'}--text`"
+    :exact="item.exact"
   >
     <v-list-item-icon
       v-if="text"
