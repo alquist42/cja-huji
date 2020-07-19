@@ -2,9 +2,9 @@
 
 @section('content')
     <div class="content">
-        <div class="container-fluid">
+        <div class="container">
             <div class="row mt-5">
-                <div class="col-xl-8 col-lg-8 col-md-12 col-sm-12 col-12">
+                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
                     <div class="card">
                         <div class="card-header">
                             Obj. ID: {{ $item->id }} {{ $item->name() }}
@@ -49,7 +49,7 @@
                     }
                 </style>
 
-                <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
+                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
 
                     @include('item.taxonomy')
 
