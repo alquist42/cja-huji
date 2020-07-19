@@ -98,7 +98,7 @@
     :restrict="{{ isset($restrict) ? json_encode($restrict) : '{}' }}"
     :user-id="{{ config('mediaManager.enable_broadcasting') ? optional(auth()->user())->id : 0 }}"
     :upload-panel-img-list="{{ !empty($patterns) ? $patterns : '[]' }}"
-    :item-id="{{ isset($data['id']) ? $data['id'] : 0 }}">
+    :item-id="itemId">
 
     <div class="media-manager"
         :class="[

@@ -103,7 +103,7 @@
 
         this.isLoadingPhotographer = true
         try {
-          const response = await this.$http.get(`/api/photographers?project=catalogue&search=${val}`)
+          const response = await this.$http.get(`photographers?project=catalogue&search=${val}`)
           this.photographers = response.data
         } catch (e) {
           console.log(e)
@@ -117,7 +117,7 @@
 
         this.isLoadingCopyright = true
         try {
-          const response = await this.$http.get(`/api/copyrights?project=catalogue&search=${val}`)
+          const response = await this.$http.get(`copyrights?project=catalogue&search=${val}`)
           this.copyrights = response.data
         } catch (e) {
           console.log(e)
@@ -164,7 +164,7 @@
 
         this.isSaving = true
         try {
-          const { data } = await this.$http.post('/api/images/metadata?project=catalogue', payload)
+          const { data } = await this.$http.post('images/metadata?project=catalogue', payload)
           EventHub.fire('MediaManager-metadata-changed', data)
           this.closeEditor()
         } catch (e) {

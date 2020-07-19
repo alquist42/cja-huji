@@ -109,7 +109,7 @@
         }
 
         this.isLoading = true
-        const { data } = await this.$http.get(`/api/autocomplete/?project=catalogue&type=${this.taxon}&term=${search}`)
+        const { data } = await this.$http.get(`autocomplete/?project=catalogue&type=${this.taxon}&term=${search}`)
         this.isLoading = false
         this.items = this.excludeUnknown(data || [])
       },

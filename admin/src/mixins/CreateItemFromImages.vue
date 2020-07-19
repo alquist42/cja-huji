@@ -73,7 +73,7 @@
         }
 
         try {
-          const { data } = await this.$http.post('/api/items?project=catalogue', payload)
+          const { data } = await this.$http.post('items?project=catalogue', payload)
 
           window.location.href = `/staff/items/${data.id}`
         } catch (e) {

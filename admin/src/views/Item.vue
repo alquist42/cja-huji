@@ -20,10 +20,6 @@
         </template>
       </v-snackbar>
 
-      <v-dialog v-model="mediaManagerDialog">
-        <slot name="media-manager-modal" />
-      </v-dialog>
-
       <select-item-modal
         :exclude="id"
         :value="copyAttributesFromObjectDialog"
@@ -56,7 +52,7 @@
           <v-btn
             outlined
             :loading="isSaving"
-          :disabled="lockWhileProcessing"
+            :disabled="lockWhileProcessing"
             @click="save"
           >
             Save
@@ -609,7 +605,6 @@
     mixins: [CreateItemFromImages, SnackBar],
 
     data: () => ({
-      mediaManagerDialog: false,
       copyAttributesFromObjectDialog: false,
       deleteItemConfirmationDialog: false,
       isSaving: false,
@@ -908,7 +903,6 @@
     created () {
       EventHub.listen('MediaManagerModal-include-images-in-item', (images) => this.includeImages(images))
       EventHub.listen('MediaManagerModal-exclude-images-from-item', (images) => this.excludeImages(images))
-      EventHub.listen('MediaManagerModal-modal-hide', () => { this.mediaManagerDialog = false })
       EventHub.listen('MediaManagerModal-files-deleted', (/* files */) => this.updateImages())
     },
 
@@ -934,6 +928,7 @@
       EventHub.removeListenersFrom([
         'MediaManagerModal-include-images-in-item',
         'MediaManagerModal-exclude-images-from-item',
+        'MediaManagerModal-files-deleted',
       ])
     },
 
@@ -1033,8 +1028,7 @@
       },
 
       openMediaManagerModal () {
-        this.mediaManagerDialog = true
-        this.$nextTick(() => EventHub.fire('MediaManagerModal-show'))
+        EventHub.fire('show-media-manager-dialog', this.id)
       },
 
       async includeImages (includingImages) {

@@ -96,7 +96,7 @@
         }
 
         this.isLoading = true
-        const { data } = await this.$http.get(`/api/items/search/?project=catalogue&search=${search}`)
+        const { data } = await this.$http.get(`items/search/?project=catalogue&search=${search}`)
         this.isLoading = false
         this.items = data
       },

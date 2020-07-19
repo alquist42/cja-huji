@@ -35,48 +35,40 @@
 </head>
 <body>
 
-{{--<div id="laravel-media-manager"--}}
-{{--     data-vue-component="{{ $name }}"--}}
-{{--     data-vue-props="{{ json_encode($data) }}"--}}
-{{--     data-csrf-token="{{ csrf_token() }}"--}}
-{{--     data-auth="{{ json_encode(['user' => Auth::user() ? Auth::user()->only('id', 'first_name', 'last_name') : null]) }}"--}}
-{{-->--}}
-{{--    <component--}}
-{{--            is="{{ $name }}"--}}
-{{--            v-bind='{!! json_encode($data, JSON_PRETTY_PRINT) !!}'--}}
-{{--    >--}}
-{{--        <template #media-manager-modal>--}}
-{{--            @if(isset($data['id']))--}}
-{{--            <media-manager-modal inline-template>--}}
-{{--                <div>--}}
-{{--                    <metadata-editor-drawer></metadata-editor-drawer>--}}
+<div
+    id="laravel-media-manager"
+    v-cloak
+>
+    <v-dialog v-model="mediaManagerDialog">
+        <media-manager-modal
+                inline-template
+                :item-id="itemId"
+        >
+            <div>
+                <metadata-editor-drawer></metadata-editor-drawer>
 
-{{--                    <div v-if="inputName">@include('MediaManager::extras.modal')</div>--}}
+                <div v-if="inputName">@include('MediaManager::extras.modal')</div>
 
-{{--                    <media-modal item="images" :name="inputName" :multi="true"></media-modal>--}}
+                <media-modal item="images" :name="inputName" :multi="true"></media-modal>
 
-{{--                    <input type="hidden" name="images" :value="images" />--}}
-{{--                </div>--}}
-{{--            </media-manager-modal>--}}
-{{--            @endif--}}
-{{--        </template>--}}
-{{--        <template #media-manager>--}}
-{{--            --}}{{-- notifications --}}
-{{--            <div class="notif-container">--}}
-{{--                <my-notification></my-notification>--}}
-{{--            </div>--}}
+                <input type="hidden" name="images" :value="images" />
+            </div>
+        </media-manager-modal>
+    </v-dialog>
+    {{--    <template v-if="$route.name === 'Media'">--}}
+    {{--        <div class="notif-container">--}}
+    {{--            <my-notification></my-notification>--}}
+    {{--        </div>--}}
 
-{{--            <div class="container is-fluid">--}}
-{{--                <div class="columns">--}}
-{{--                    --}}{{-- media manager --}}
-{{--                    <div class="column">--}}
-{{--                        @include('MediaManager::_manager')--}}
-{{--                    </div>--}}
-{{--                </div>--}}
-{{--            </div>--}}
-{{--        </template>--}}
-{{--    </component>--}}
-{{--</div>--}}
+    {{--        <div class="container is-fluid">--}}
+    {{--            <div class="columns">--}}
+    {{--                <div class="column">--}}
+    {{--                    @include('MediaManager::_manager')--}}
+    {{--                </div>--}}
+    {{--            </div>--}}
+    {{--        </div>--}}
+    {{--    </template>--}}
+</div>
 
 <!-- Scripts -->
 

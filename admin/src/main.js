@@ -27,7 +27,6 @@ import axios from 'axios'
 // import Items from './pages/items'
 // import Item from './pages/item'
 // import Media from './pages/media'
-// import MetadataEditorDrawer from './components/MetadataEditorDrawer'
 import { TiptapVuetifyPlugin } from 'tiptap-vuetify'
 // don't forget to import CSS styles
 import 'tiptap-vuetify/dist/main.css'
@@ -62,11 +61,6 @@ Vue.config.productionTip = false
 // Vue.component('Items', Items)
 // Vue.component('Item', Item)
 // Vue.component('Media', Media)
-// Vue.component('MetadataEditorDrawer', MetadataEditorDrawer)
-//
-// Vue.component('MediaManagerModal', require('./components/MediaManagerModal.vue').default)
-// require('../../resources/assets/vendor/MediaManager/js/manager')
-window.EventHub = require('vuemit')
 
 new Vue({
   router,
@@ -74,3 +68,34 @@ new Vue({
   vuetify,
   render: h => h(App),
 }).$mount('#app')
+
+Vue.component('MediaManagerModal', require('./components/MediaManagerModal.vue').default)
+Vue.component('MetadataEditorDrawer', require('./components/MetadataEditorDrawer').default)
+Vue.component('VDialog', require('vuetify/lib/components/VDialog').default)
+require('../../resources/assets/vendor/MediaManager/js/manager')
+/* global EventHub */
+
+new Vue({
+  vuetify,
+  data: () => ({
+    mediaManagerDialog: false,
+    itemId: null,
+  }),
+  created () {
+    EventHub.listen('MediaManagerModal-modal-hide', () => { this.mediaManagerDialog = false })
+    EventHub.listen('show-media-manager-dialog', this.showMediaManagerDialog)
+  },
+  beforeDestroy () {
+    EventHub.removeListenersFrom([
+      'MediaManagerModal-modal-hide',
+      'show-media-manager-dialog',
+    ])
+  },
+  methods: {
+    showMediaManagerDialog (itemId) {
+      this.itemId = itemId
+      this.mediaManagerDialog = true
+      this.$nextTick(() => EventHub.fire('MediaManagerModal-show'))
+    },
+  },
+}).$mount('#laravel-media-manager')
