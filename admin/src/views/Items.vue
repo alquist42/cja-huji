@@ -3,37 +3,33 @@
       fluid
       tag="section"
     >
-      <dashboard-core-app-bar />
-
+      <dashboard-core-app-bar :loading="isLoading">
+        <template #controls>
+          <v-btn
+            outlined
+            color="success"
+            @click="$router.push({ name: 'ItemCreate' })"
+          >
+            New Item
+          </v-btn>
+        </template>
+      </dashboard-core-app-bar>
       <v-row justify="center">
         <v-col cols="12">
           <v-data-table
             dense
             :headers="headers"
             :items="items"
-            :items-per-page="25"
             class="elevation-1"
             show-select
+            v-model="selected"
+            :options.sync="options"
+            :server-items-length="totalItems"
+            :footer-props="{ itemsPerPageOptions: [5, 10, 15, 25, 50, 100] }"
           >
             <template v-slot:top>
-              <v-toolbar
-                flat
-                color="white"
-              >
+              <v-toolbar flat>
                 <v-toolbar-title>Sets</v-toolbar-title>
-                <v-divider
-                  class="mx-4"
-                  inset
-                  vertical
-                />
-                <v-spacer />
-                <v-btn
-                  color="primary"
-                  dark
-                  class="mb-2"
-                >
-                  New Item
-                </v-btn>
               </v-toolbar>
             </template>
             <template v-slot:item.images="{ item }">
@@ -251,7 +247,8 @@
     },
 
     data: () => ({
-      collection: [],
+      items: [],
+      selected: [],
       headers: [
         { value: 'images' },
         { text: 'Name', value: 'name' },
@@ -319,6 +316,9 @@
         // },
         { text: 'Actions', value: 'actions', sortable: false },
       ],
+      isLoading: false,
+      options: {},
+      totalItems: 0,
     }),
 
     computed: {
@@ -333,19 +333,56 @@
         })
       },
 
-      items () {
-        return this.collection.data
+      page () {
+        return this.$route.query.page ? parseInt(this.$route.query.page) : 1
+      },
+
+      itemsPerPage () {
+        return this.$route.query.per_page ? parseInt(this.$route.query.per_page) : 25
+      },
+    },
+
+    watch: {
+      'options.page' (val) {
+        if (this.page !== val) {
+          this.$router.replace({
+            name: this.$route.name,
+            query: {
+              page: val,
+              per_page: this.itemsPerPage,
+            },
+          })
+          this.getItems()
+        }
+      },
+
+      'options.itemsPerPage' (val) {
+        if (this.itemsPerPage !== val) {
+          this.$router.replace({
+            name: this.$route.name,
+            query: {
+              page: this.page,
+              per_page: val,
+            },
+          })
+          this.getItems()
+        }
       },
     },
 
     created () {
+      this.options.page = this.page
+      this.options.itemsPerPage = this.itemsPerPage
       this.getItems()
     },
 
     methods: {
-      async getItems (page = 0) {
-        const { data } = await this.$http.get(`items?&project=catalogue&page=${page}`)
-        this.collection = data
+      async getItems () {
+        this.isLoading = true
+        const { data } = await this.$http.get(`items?&project=catalogue&page=${this.page}&per_page=${this.itemsPerPage}`)
+        this.items = data.data
+        this.totalItems = data.total
+        this.isLoading = false
       },
 
       editItem (id) {

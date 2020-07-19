@@ -23,9 +23,18 @@ export default new Router({
       component: () => import('@/views/Item'),
     },
     {
+      path: '/items/create',
+      name: 'ItemCreate',
+      component: () => import('@/views/Item'),
+    },
+    {
       path: '/media',
       name: 'Media',
       component: () => import('@/views/Media'),
+    },
+    {
+      path: '/properties',
+      name: 'Properties',
     },
     // {
     //   path: '/',

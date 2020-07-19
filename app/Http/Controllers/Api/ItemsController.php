@@ -47,7 +47,7 @@ class ItemsController extends Controller
     public function index(Request $request)
     {
         return Item::with(Item::$relationships)
-            ->paginate(20, ['*'], 'page', 1);
+            ->paginate($request->query('per_page') ? $request->query('per_page') : null);
 
 //        $page = $request->get('page');
 
