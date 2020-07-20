@@ -47,12 +47,12 @@
         @confirm="createItemDetachingImages"
       />
 
-      <dashboard-core-app-bar>
+      <dashboard-core-app-bar :loading="isLoading">
         <template #controls>
           <v-btn
             outlined
             :loading="isSaving"
-            :disabled="lockWhileProcessing"
+            :disabled="isLoading"
             @click="save"
           >
             Save
@@ -63,7 +63,7 @@
             outlined
             color="success"
             :loading="isCreatingChild"
-            :disabled="lockWhileProcessing"
+            :disabled="isLoading"
             @click="createChild()"
           >
             Create child
@@ -74,7 +74,7 @@
             class="ml-2"
             color="error"
             outlined
-            :disabled="lockWhileProcessing"
+            :disabled="isLoading"
             @click="deleteItemConfirmationDialog = true"
           >
             Delete
@@ -86,7 +86,7 @@
             style="text-decoration: none"
             color="info"
             outlined
-            :disabled="lockWhileProcessing"
+            :disabled="isLoading"
             :href="`/catalogue/items/${id}`"
             target="_blank"
           >
@@ -116,7 +116,7 @@
                           v-on="on"
                           icon
                           :loading="isCopyingAttributes"
-                            :disabled="lockWhileProcessing"
+                            :disabled="isLoading"
                             @click="copyAttributesFromObjectDialog = true"
                         >
                             <v-icon>mdi-content-copy</v-icon>
@@ -376,7 +376,7 @@
                 >
                   <v-btn
                     icon
-                    :disabled="lockWhileProcessing || !id"
+                    :disabled="isLoading || !id"
                     @click="openMediaManagerModal"
                   >
                     <v-icon>mdi-pencil</v-icon>
@@ -611,6 +611,7 @@
     data: () => ({
       copyAttributesFromObjectDialog: false,
       deleteItemConfirmationDialog: false,
+      isGettingItem: false,
       isSaving: false,
       isCreatingChild: false,
       isCopyingAttributes: false,
@@ -877,8 +878,8 @@
         return taxonomy
       },
 
-      lockWhileProcessing () {
-        return this.isSaving || this.isCreatingChild || this.isCopyingAttributes
+      isLoading () {
+        return this.isGettingItem || this.isSaving || this.isCreatingChild || this.isCopyingAttributes
       },
 
       hasParent () {
@@ -974,25 +975,31 @@
 
     methods: {
       async getItem () {
-        let response
+        this.isGettingItem = true
+        try {
+          let response
 
-        if (this.id) {
-          response = await this.$http.get(`items/${this.id}?project=catalogue`)
-          this.item = response.data
+          if (this.id) {
+            response = await this.$http.get(`items/${this.id}?project=catalogue`)
+            this.item = response.data
+          }
+
+          response = await this.$http.get('categories?project=catalogue')
+          this.categories = response.data
+
+          response = await this.$http.get('properties?project=catalogue')
+          this.properties = response.data
+
+          response = await this.$http.get('projects?project=catalogue')
+          this.projects = response.data
+
+          this.updatePropertiesPanels()
+          console.log(this.item)
+        } catch (e) {
+          console.log(e)
+        } finally {
+          this.isGettingItem = false
         }
-
-        response = await this.$http.get('categories?project=catalogue')
-        this.categories = response.data
-
-        response = await this.$http.get('properties?project=catalogue')
-        this.properties = response.data
-
-        response = await this.$http.get('projects?project=catalogue')
-        this.projects = response.data
-
-        this.updatePropertiesPanels()
-
-        console.log(this.item)
       },
 
       updatePropertiesPanels () {
