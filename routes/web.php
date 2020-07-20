@@ -51,12 +51,11 @@ Route::group([
         Route::post('files-download', ['uses' => "$controller@downloadFiles", 'as' => 'files_download']);
     });
 
-    Route::get('/{vueRoute}', function () {
+    Route::get('/{vueRoute?}', function () {
         return view('admin');
     })
         ->where('vueRoute', '.*')
         ->name('admin');
-//    Route::get('', 'AdminController@viewLinks');
 });
 
 Route::get('/images/{item}-{image}-{size}.png', 'ImagesController@view')->

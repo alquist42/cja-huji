@@ -1,247 +1,247 @@
 <template>
-    <v-container
-      fluid
-      tag="section"
-    >
-      <dashboard-core-app-bar :loading="isLoading">
-        <template #controls>
-          <v-btn
-            outlined
-            color="success"
-            @click="$router.push({ name: 'ItemCreate' })"
-          >
-            New Item
-          </v-btn>
-        </template>
-      </dashboard-core-app-bar>
-      <v-row justify="center">
-        <v-col cols="12">
-          <v-data-table
-            dense
-            :headers="headers"
-            :items="items"
-            class="elevation-1"
-            show-select
-            v-model="selected"
-            :options.sync="options"
-            :server-items-length="totalItems"
-            :footer-props="{ itemsPerPageOptions: [5, 10, 15, 25, 50, 100] }"
-          >
-            <template v-slot:top>
-              <v-toolbar flat>
-                <v-toolbar-title>Sets</v-toolbar-title>
-              </v-toolbar>
-            </template>
-            <template v-slot:item.images="{ item }">
-              <template
-                v-for="image in item.images"
-              >
-                <v-avatar
-                  :key="image.id"
-                  class="profile clickable"
-                  color="grey"
-                  size="48"
-                  tile
-                  @click="editItem(item.id)"
-                >
-                  <v-img :src="`http://cja.huji.ac.il/${image.small || image.medium || image.def || image.batch_url}`" />
-                </v-avatar>
-              </template>
-            </template>
-            <template v-slot:item.name="{ item }">
-              <div
-                class="text-no-wrap fill-height clickable"
+  <v-container
+    fluid
+    tag="section"
+  >
+    <dashboard-core-app-bar :loading="isLoading">
+      <template #controls>
+        <v-btn
+          outlined
+          color="success"
+          @click="$router.push({ name: 'ItemCreate' })"
+        >
+          New Item
+        </v-btn>
+      </template>
+    </dashboard-core-app-bar>
+    <v-row justify="center">
+      <v-col cols="12">
+        <v-data-table
+          dense
+          :headers="headers"
+          :items="items"
+          class="elevation-1"
+          show-select
+          v-model="selected"
+          :options.sync="options"
+          :server-items-length="totalItems"
+          :footer-props="{ itemsPerPageOptions: [5, 10, 15, 25, 50, 100] }"
+        >
+          <template v-slot:top>
+            <v-toolbar flat>
+              <v-toolbar-title>Sets</v-toolbar-title>
+            </v-toolbar>
+          </template>
+          <template v-slot:item.images="{ item }">
+            <template
+              v-for="image in item.images"
+            >
+              <v-avatar
+                :key="image.id"
+                class="profile clickable"
+                color="grey"
+                size="48"
+                tile
                 @click="editItem(item.id)"
               >
-                {{ item.name }}
-              </div>
+                <v-img :src="`http://cja.huji.ac.il/${image.small || image.medium || image.def || image.batch_url}`" />
+              </v-avatar>
             </template>
-            <template v-slot:item.locations="{ item }">
-              <template
-                v-for="location in item.locations"
-              >
-                <v-chip
-                  :key="location.id"
-                  color="primary"
-                  label
-                  small
-                >
-                  {{ location.name }}
-                </v-chip>
-              </template>
-            </template>
-            <template v-slot:item.communities="{ item }">
-              <template
-                v-for="community in item.communities"
-              >
-                <v-chip
-                  :key="community.id"
-                  color="primary"
-                  label
-                  small
-                >
-                  {{ community.name }}
-                </v-chip>
-              </template>
-            </template>
-            <template v-slot:item.origins="{ item }">
-              <template
-                v-for="origin in item.origins"
-              >
-                <v-chip
-                  :key="origin.id"
-                  color="primary"
-                  label
-                  small
-                >
-                  {{ origin.name }}
-                </v-chip>
-              </template>
-            </template>
-            <template v-slot:item.origin_details="{ item }">
-              <template
-                v-for="detail in item.origin_details"
-              >
-                <v-chip
-                  :key="detail.id"
-                  color="primary"
-                  label
-                  small
-                >
-                  {{ detail.details }}
-                </v-chip>
-              </template>
-            </template>
-            <template v-slot:item.schools="{ item }">
-              <template
-                v-for="school in item.schools"
-              >
-                <v-chip
-                  :key="school.id"
-                  color="primary"
-                  label
-                  small
-                >
-                  {{ school.name }}
-                </v-chip>
-              </template>
-            </template>
-            <template v-slot:item.objects="{ item }">
-              <template
-                v-for="object in item.objects"
-              >
-                <v-chip
-                  :key="object.id"
-                  color="primary"
-                  label
-                  small
-                >
-                  {{ object.name }}
-                </v-chip>
-              </template>
-            </template>
-            <template v-slot:item.subjects="{ item }">
-              <template
-                v-for="subject in item.subjects"
-              >
-                <v-chip
-                  :key="subject.id"
-                  color="primary"
-                  label
-                  small
-                >
-                  {{ subject.name }}
-                </v-chip>
-              </template>
-            </template>
-            <template v-slot:item.historical_origins="{ item }">
-              <template
-                v-for="historical_origin in item.historical_origins"
-              >
-                <v-chip
-                  :key="historical_origin.id"
-                  color="primary"
-                  label
-                  small
-                >
-                  {{ historical_origin.name }}
-                </v-chip>
-              </template>
-            </template>
-            <template v-slot:item.periods="{ item }">
-              <template
-                v-for="period in item.periods"
-              >
-                <v-chip
-                  :key="period.id"
-                  color="primary"
-                  label
-                  small
-                >
-                  {{ period.name }}
-                </v-chip>
-              </template>
-            </template>
-            <template v-slot:item.collections="{ item }">
-              <template
-                v-for="collection in item.collections"
-              >
-                <v-chip
-                  :key="collection.id"
-                  color="primary"
-                  label
-                  small
-                >
-                  {{ collection.name }}
-                </v-chip>
-              </template>
-            </template>
-            <template v-slot:item.collection_details="{ item }">
-              <template
-                v-for="detail in item.collection_details"
-              >
-                <v-chip
-                  :key="detail.id"
-                  color="primary"
-                  label
-                  small
-                >
-                  {{ detail.details }}
-                </v-chip>
-              </template>
-            </template>
-            <template v-slot:item.makers="{ item }">
-              <template
-                v-for="maker in item.makers"
-              >
-                <v-chip
-                  :key="maker.id"
-                  color="primary"
-                  label
-                  small
-                >
-                  {{ maker.artist.name }} [{{ maker.profession.name }}]
-                </v-chip>
-              </template>
-            </template>
-            <template v-slot:item.actions="{ item }">
-              <v-icon
-                small
-                class="mr-2"
-                @click="editItem(item.id)"
-              >
-                mdi-pencil
-              </v-icon>
-              <v-icon
+          </template>
+          <template v-slot:item.name="{ item }">
+            <div
+              class="text-no-wrap fill-height clickable"
+              @click="editItem(item.id)"
+            >
+              {{ item.name }}
+            </div>
+          </template>
+          <template v-slot:item.locations="{ item }">
+            <template
+              v-for="location in item.locations"
+            >
+              <v-chip
+                :key="location.id"
+                color="primary"
+                label
                 small
               >
-                mdi-delete
-              </v-icon>
+                {{ location.name }}
+              </v-chip>
             </template>
-          </v-data-table>
-        </v-col>
-      </v-row>
-    </v-container>
+          </template>
+          <template v-slot:item.communities="{ item }">
+            <template
+              v-for="community in item.communities"
+            >
+              <v-chip
+                :key="community.id"
+                color="primary"
+                label
+                small
+              >
+                {{ community.name }}
+              </v-chip>
+            </template>
+          </template>
+          <template v-slot:item.origins="{ item }">
+            <template
+              v-for="origin in item.origins"
+            >
+              <v-chip
+                :key="origin.id"
+                color="primary"
+                label
+                small
+              >
+                {{ origin.name }}
+              </v-chip>
+            </template>
+          </template>
+          <template v-slot:item.origin_details="{ item }">
+            <template
+              v-for="detail in item.origin_details"
+            >
+              <v-chip
+                :key="detail.id"
+                color="primary"
+                label
+                small
+              >
+                {{ detail.details }}
+              </v-chip>
+            </template>
+          </template>
+          <template v-slot:item.schools="{ item }">
+            <template
+              v-for="school in item.schools"
+            >
+              <v-chip
+                :key="school.id"
+                color="primary"
+                label
+                small
+              >
+                {{ school.name }}
+              </v-chip>
+            </template>
+          </template>
+          <template v-slot:item.objects="{ item }">
+            <template
+              v-for="object in item.objects"
+            >
+              <v-chip
+                :key="object.id"
+                color="primary"
+                label
+                small
+              >
+                {{ object.name }}
+              </v-chip>
+            </template>
+          </template>
+          <template v-slot:item.subjects="{ item }">
+            <template
+              v-for="subject in item.subjects"
+            >
+              <v-chip
+                :key="subject.id"
+                color="primary"
+                label
+                small
+              >
+                {{ subject.name }}
+              </v-chip>
+            </template>
+          </template>
+          <template v-slot:item.historical_origins="{ item }">
+            <template
+              v-for="historical_origin in item.historical_origins"
+            >
+              <v-chip
+                :key="historical_origin.id"
+                color="primary"
+                label
+                small
+              >
+                {{ historical_origin.name }}
+              </v-chip>
+            </template>
+          </template>
+          <template v-slot:item.periods="{ item }">
+            <template
+              v-for="period in item.periods"
+            >
+              <v-chip
+                :key="period.id"
+                color="primary"
+                label
+                small
+              >
+                {{ period.name }}
+              </v-chip>
+            </template>
+          </template>
+          <template v-slot:item.collections="{ item }">
+            <template
+              v-for="collection in item.collections"
+            >
+              <v-chip
+                :key="collection.id"
+                color="primary"
+                label
+                small
+              >
+                {{ collection.name }}
+              </v-chip>
+            </template>
+          </template>
+          <template v-slot:item.collection_details="{ item }">
+            <template
+              v-for="detail in item.collection_details"
+            >
+              <v-chip
+                :key="detail.id"
+                color="primary"
+                label
+                small
+              >
+                {{ detail.details }}
+              </v-chip>
+            </template>
+          </template>
+          <template v-slot:item.makers="{ item }">
+            <template
+              v-for="maker in item.makers"
+            >
+              <v-chip
+                :key="maker.id"
+                color="primary"
+                label
+                small
+              >
+                {{ maker.artist.name }} [{{ maker.profession.name }}]
+              </v-chip>
+            </template>
+          </template>
+          <template v-slot:item.actions="{ item }">
+            <v-icon
+              small
+              class="mr-2"
+              @click="editItem(item.id)"
+            >
+              mdi-pencil
+            </v-icon>
+            <v-icon
+              small
+            >
+              mdi-delete
+            </v-icon>
+          </template>
+        </v-data-table>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>

@@ -19,22 +19,13 @@ import './plugins/base'
 // import './plugins/vee-validate'
 import vuetify from './plugins/vuetify'
 import axios from 'axios'
-// import VueExcelEditor from 'vue-excel-editor'
-// import VueTreeList from 'vue-tree-list'
-// import FileManager from 'laravel-file-manager'
-// import InstantSearch from 'vue-instantsearch'
-// import Dash from './pages/dash'
-// import Items from './pages/items'
-// import Item from './pages/item'
-// import Media from './pages/media'
+import VueExcelEditor from 'vue-excel-editor'
+import VueTreeList from 'vue-tree-list'
+import FileManager from 'laravel-file-manager'
+import InstantSearch from 'vue-instantsearch'
 import { TiptapVuetifyPlugin } from 'tiptap-vuetify'
 // don't forget to import CSS styles
 import 'tiptap-vuetify/dist/main.css'
-
-// Vue.use(VueExcelEditor)
-// Vue.use(VueTreeList)
-// Vue.use(FileManager, { store })
-// Vue.use(InstantSearch)
 
 window.Vue = require('vue')
 /* global Vue */
@@ -46,6 +37,10 @@ Vue.prototype.$http = axios.create({
   },
 })
 
+Vue.use(VueExcelEditor)
+Vue.use(VueTreeList)
+Vue.use(FileManager, { store })
+Vue.use(InstantSearch)
 Vue.use(TiptapVuetifyPlugin, {
   // the next line is important! You need to provide the Vuetify IObject to this place.
   vuetify, // same as "vuetify: vuetify"
@@ -57,10 +52,6 @@ Vue.config.productionTip = false
 
 // const files = require.context('./pages', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').slice(-1)[0].split('.')[0], () => files(key).default))
-// Vue.component('Dash', Dash)
-// Vue.component('Items', Items)
-// Vue.component('Item', Item)
-// Vue.component('Media', Media)
 
 new Vue({
   router,

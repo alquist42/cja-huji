@@ -20,10 +20,10 @@ export default new Router({
     {
       path: '/items/create',
       name: 'ItemCreate',
+      component: () => import('@/views/Item'),
       meta: {
         title: 'Create Item',
       },
-      component: () => import('@/views/Item'),
     },
     {
       path: '/items/:id',

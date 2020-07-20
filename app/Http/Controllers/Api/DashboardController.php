@@ -1,17 +1,17 @@
 <?php
 
+namespace App\Http\Controllers\Api;
 
-namespace App\Http\Controllers;
-
+use App\Http\Controllers\Controller;
 use App\Models\Category;
-use App\Models\Property;
 use App\Models\Item;
+use App\Models\Property;
 use App\Models\Taxonomy\Collection;
 use App\Models\Tenant;
 
-class AdminController extends Controller
+class DashboardController extends Controller
 {
-    public function viewLinks($name = "index")
+    public function index()
     {
         $sets = Item::with(Item::$relationships)->paginate(3);
 
@@ -36,7 +36,8 @@ class AdminController extends Controller
 
 
         $options = Collection::get()->sortBy('name')->values()->toTree();
-        return view('admin', ['name' => 'Dash', 'data' => [
+
+        return [
             'collection' => $sets,
             'options' => $options,
             //'locations' => $locations,
@@ -54,6 +55,6 @@ class AdminController extends Controller
             'item' => $item,
             'projects' => $projects,
             'categories' => $categories,
-        ]]);
+        ];
     }
 }

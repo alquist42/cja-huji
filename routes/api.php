@@ -30,6 +30,8 @@ Route::group(['namespace' => 'Api'], function () {
         Route::get('/copyrights', 'CopyrightsController@index');
         Route::get('/photographers', 'PhotographersController@index');
         Route::get('/projects', 'ProjectsController@index');
+
+        Route::get('/dashboard', 'DashboardController@index');
     });
 
     Route::group(['namespace' => 'MHS', 'prefix' => 'mhs'], function () {
