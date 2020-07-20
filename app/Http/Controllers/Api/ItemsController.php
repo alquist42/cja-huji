@@ -143,18 +143,6 @@ class ItemsController extends Controller
         return response('', 204);
     }
 
-    /**
-     * Copy attributes from other item.
-     *
-     * @param Item $item
-     * @param Item $source
-     * @return Item
-     */
-    public function copy(Item $item, Item $source)
-    {
-        return (new ItemService($item))->copyFrom($source);
-    }
-
     public function search(Request $request)
     {
         return Item::searchByName($request->query('search'))->get();

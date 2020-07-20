@@ -14,7 +14,6 @@ Route::group(['namespace' => 'Api'], function () {
         Route::get('/items/{item}', 'ItemsController@show');
         Route::put('/items/{item}', 'ItemsController@update');
         Route::delete('/items/{item}', 'ItemsController@destroy');
-        Route::patch('/items/{item}/copy/{source}', 'ItemsController@copy');
         Route::put('/items/{item}/images', 'ItemImagesController@update');
 
         //   Route::get('/images', 'ImagesController@index');

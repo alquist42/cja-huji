@@ -1169,8 +1169,24 @@
       async copyAttributesFrom (itemId) {
         this.isCopyingAttributes = true
         try {
-          const { data } = await this.$http.patch(`items/${this.id}/copy/${itemId}?project=catalogue`)
-          this.item = data
+          const { data } = await this.$http.get(`items/${itemId}?project=catalogue`)
+
+          const keepOriginal = [
+            'id',
+            'old_id',
+            'parent_id',
+            'images',
+            'children',
+            'ancestors',
+            'descendants',
+            'leaf',
+          ]
+          Object.keys(this.item).forEach(field => {
+            if (!keepOriginal.includes(field)) {
+              this.item[field] = data[field]
+            }
+          })
+
           this.updatePropertiesPanels()
           this.showSnackbarSuccess('Attributes have been copied')
         } catch (e) {
