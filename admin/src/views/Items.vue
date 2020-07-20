@@ -92,17 +92,17 @@
                 </v-chip>
               </template>
             </template>
-            <template v-slot:item.origins_details="{ item }">
+            <template v-slot:item.origin_details="{ item }">
               <template
-                v-for="origin in item.origins_details"
+                v-for="detail in item.origin_details"
               >
                 <v-chip
-                  :key="origin.id"
+                  :key="detail.id"
                   color="primary"
                   label
                   small
                 >
-                  {{ origin.details }}
+                  {{ detail.details }}
                 </v-chip>
               </template>
             </template>
@@ -192,15 +192,15 @@
             </template>
             <template v-slot:item.collection_details="{ item }">
               <template
-                v-for="origin in item.collection_details"
+                v-for="detail in item.collection_details"
               >
                 <v-chip
-                  :key="origin.id"
+                  :key="detail.id"
                   color="primary"
                   label
                   small
                 >
-                  {{ origin.details }}
+                  {{ detail.details }}
                 </v-chip>
               </template>
             </template>
@@ -357,7 +357,6 @@
       options: {
         deep: true,
         handler (val) {
-          console.log('options', { ...val })
           let update = false
           const query = { ...this.$route.query }
 
