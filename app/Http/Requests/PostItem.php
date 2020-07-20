@@ -45,7 +45,16 @@ class PostItem extends FormRequest
         ];
 
         $data = $this->all();
-        $data['item'] = isset($data['item']) ? array_merge($defaultItem, $data['item']) : $defaultItem;
+        $data['item'] = $defaultItem;
+
+        if ($this->has('item')) {
+            $itemData = $this->input('item');
+            foreach ($itemData as $key => $value) {
+                if (!empty($itemData[$key])) {
+                    $data['item'][$key] = $itemData[$key];
+                }
+            }
+        }
 
         $this->replace($data);
     }

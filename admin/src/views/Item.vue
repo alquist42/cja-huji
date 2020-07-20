@@ -58,6 +58,7 @@
             Save
           </v-btn>
           <v-btn
+            v-if="id"
             class="ml-2"
             outlined
             color="success"
@@ -69,7 +70,7 @@
             <v-icon right>mdi-file-tree</v-icon>
           </v-btn>
           <v-btn
-            v-if="!hasImages"
+            v-if="id && !hasImages"
             class="ml-2"
             color="error"
             outlined
@@ -80,6 +81,7 @@
             <v-icon right>mdi-trash-can-outline</v-icon>
           </v-btn>
           <v-btn
+            v-if="id"
             class="ml-2"
             style="text-decoration: none"
             color="info"
@@ -100,25 +102,26 @@
             <template v-slot:heading>
               <v-row no-gutters>
                 <v-col class="flex-grow-1 display-2 font-weight-light">
-                    Item {{ id }}
+                  <span v-if="id">Item {{ id }}</span>
+                  <span v-else>New Item</span>
                 </v-col>
                 <v-col
                   cols="auto"
                   class="d-flex align-center"
                 >
                     <v-tooltip left>
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-btn
-                        v-bind="attrs"
-                        v-on="on"
-                        icon
-                        :loading="isCopyingAttributes"
-                          :disabled="lockWhileProcessing"
-                          @click="copyAttributesFromObjectDialog = true"
-                      >
-                          <v-icon>mdi-content-copy</v-icon>
-                      </v-btn>
-                    </template>
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                          v-bind="attrs"
+                          v-on="on"
+                          icon
+                          :loading="isCopyingAttributes"
+                            :disabled="lockWhileProcessing"
+                            @click="copyAttributesFromObjectDialog = true"
+                        >
+                            <v-icon>mdi-content-copy</v-icon>
+                        </v-btn>
+                      </template>
                       <span>Copy all attributes from object</span>
                     </v-tooltip>
                 </v-col>
@@ -373,6 +376,7 @@
                 >
                   <v-btn
                     icon
+                    :disabled="lockWhileProcessing || !id"
                     @click="openMediaManagerModal"
                   >
                     <v-icon>mdi-pencil</v-icon>
@@ -611,8 +615,58 @@
       isCreatingChild: false,
       isCopyingAttributes: false,
       item: {
+        activity_dates: null,
+        activity_dates_object: null,
+        addenda: '',
         ancestors: [],
+        artifact_at_risk: false,
+        category: '',
+        category_object: {
+          name: 'None',
+          slug: null,
+        },
+        children: [],
+        collection_details: [],
+        collections: [],
+        communities: [],
+        community_details: [],
+        copyright: null,
+        copyright_id: null,
+        creation_date: null,
+        date: null,
+        descendants: [],
+        description: '',
+        geo_lat: null,
+        geo_lng: null,
+        geo_options: null,
+        historical_origins: [],
+        id: null,
         images: [],
+        leaf: [],
+        location_details: [],
+        locations: [],
+        maker_details: [],
+        makers: [],
+        name: '',
+        ntl: '',
+        object_details: [],
+        objects: [],
+        origin_details: [],
+        origins: [],
+        period_details: [],
+        periods: [],
+        projects: [],
+        properties: [],
+        publish_state: PUBLISH_STATE_NOT_PUBLISHED,
+        publish_state_reason: '',
+        reconstruction_dates: null,
+        reconstruction_dates_object: null,
+        remarks: '',
+        school_details: [],
+        schools: [],
+        sites: [],
+        subject_details: [],
+        subjects: [],
       },
 
       panel: [],
@@ -906,22 +960,8 @@
       EventHub.listen('MediaManagerModal-files-deleted', (/* files */) => this.updateImages())
     },
 
-    async mounted () {
-      let response = await this.$http.get(`items/${this.id}?project=catalogue`)
-      this.item = response.data
-
-      response = await this.$http.get('categories?project=catalogue')
-      this.categories = response.data
-
-      response = await this.$http.get('properties?project=catalogue')
-      this.properties = response.data
-
-      response = await this.$http.get('projects?project=catalogue')
-      this.projects = response.data
-
-      this.updatePropertiesPanels()
-
-      console.log(this.item)
+    mounted () {
+      this.getItem()
     },
 
     beforeDestroy () {
@@ -933,6 +973,28 @@
     },
 
     methods: {
+      async getItem () {
+        let response
+
+        if (this.id) {
+          response = await this.$http.get(`items/${this.id}?project=catalogue`)
+          this.item = response.data
+        }
+
+        response = await this.$http.get('categories?project=catalogue')
+        this.categories = response.data
+
+        response = await this.$http.get('properties?project=catalogue')
+        this.properties = response.data
+
+        response = await this.$http.get('projects?project=catalogue')
+        this.projects = response.data
+
+        this.updatePropertiesPanels()
+
+        console.log(this.item)
+      },
+
       updatePropertiesPanels () {
         this.panel = []
 
@@ -977,10 +1039,22 @@
 
         this.isSaving = true
         try {
-          const { data } = await this.$http.put('items/' + this.id + '?project=slovenia', { item: this.item, taxonomy: this.taxonomy })
-          this.item.leaf = data.leaf
+          if (this.id) {
+            const { data } = await this.$http.put(`items/${this.id}?project=catalogue`, {
+              item: this.item,
+              taxonomy: this.taxonomy,
+            })
+            this.item.leaf = data.leaf
+            console.log(this.item, this.taxonomy)
+          } else {
+            const { data } = await this.$http.post('items?project=catalogue', {
+              item: this.item,
+              taxonomy: this.taxonomy,
+            })
+            await this.$router.replace({ name: 'Item', params: { id: data.id } })
+            this.getItem()
+          }
           this.showSnackbarSuccess('Item has been saved')
-          console.log(this.item, this.taxonomy)
         } catch (e) {
           this.showSnackbarError('An error occurred')
           console.log(e)
