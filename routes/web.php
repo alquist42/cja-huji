@@ -29,7 +29,6 @@ Route::group([
         'prefix' => 'media',
         'as'     => 'media.',
     ], function () use ($controller) {
-        Route::get('/', ['uses' => 'AdminController@media', 'as' => 'index']);
         Route::post('upload', ['uses' => "$controller@upload", 'as' => 'upload']);
         Route::post('upload-cropped', ['uses' => "$controller@uploadEditedImage", 'as' => 'uploadCropped']);
         Route::post('upload-link', ['uses' => "$controller@uploadLink", 'as' => 'uploadLink']);
