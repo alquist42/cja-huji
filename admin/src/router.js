@@ -18,13 +18,16 @@ export default new Router({
       component: () => import('@/views/Items'),
     },
     {
-      path: '/items/:id',
-      name: 'Item',
+      path: '/items/create',
+      name: 'ItemCreate',
+      meta: {
+        title: 'Create Item',
+      },
       component: () => import('@/views/Item'),
     },
     {
-      path: '/items/create',
-      name: 'ItemCreate',
+      path: '/items/:id',
+      name: 'Item',
       component: () => import('@/views/Item'),
     },
     {

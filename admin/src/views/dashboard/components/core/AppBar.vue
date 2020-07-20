@@ -22,7 +22,7 @@
     <v-toolbar-title
       v-if="$route"
       class="hidden-sm-and-down font-weight-light"
-      v-text="$route.name"
+      v-text="$route.meta.title || $route.name"
     />
 
     <v-progress-linear
