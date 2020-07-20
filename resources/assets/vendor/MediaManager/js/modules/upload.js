@@ -141,6 +141,7 @@ export default {
                         })
                     }
                 }
+            let filesMap = []
 
             let options = {
                 url: manager.routes.upload,
@@ -166,6 +167,15 @@ export default {
                         return done(manager.trans('already_exists'))
                     }
 
+                    let path = file.fullPath ? file.fullPath.substring(0, file.fullPath.length - file.name.length) : ''
+                    if (path.endsWith('/')) {
+                      path = path.substring(0, path.length - 1)
+                    }
+                    filesMap.push({
+                      name: file.name,
+                      path
+                    })
+
                     allFiles++
                     done()
                 },
@@ -175,17 +185,8 @@ export default {
 
                     // send files custom options
                     formData.append('custom_attrs', JSON.stringify(manager.uploadPreviewOptionsList))
-                    formData.append('files_map', JSON.stringify(manager.uploadPreviewList.map(file => {
-                        let path = file.fullPath ? file.fullPath.substring(0, file.fullPath.length - file.name.length) : ''
-                        if (path.endsWith('/')) {
-                            path = path.substring(0, path.length - 1)
-                        }
 
-                        return {
-                            name: file.name,
-                            path
-                        }
-                    })))
+                    formData.set('files_map', JSON.stringify(filesMap))
                 },
                 processingmultiple() {
                     manager.showProgress = true
