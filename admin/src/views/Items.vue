@@ -38,17 +38,23 @@
               >
                 <v-avatar
                   :key="image.id"
-                  class="profile"
+                  class="profile clickable"
                   color="grey"
                   size="48"
                   tile
+                  @click="editItem(item.id)"
                 >
                   <v-img :src="`http://cja.huji.ac.il/${image.small || image.medium || image.def || image.batch_url}`" />
                 </v-avatar>
               </template>
             </template>
             <template v-slot:item.name="{ item }">
-              <span class="text-no-wrap">{{ item.name }}</span>
+              <div
+                class="text-no-wrap fill-height clickable"
+                @click="editItem(item.id)"
+              >
+                {{ item.name }}
+              </div>
             </template>
             <template v-slot:item.locations="{ item }">
               <template
@@ -317,7 +323,7 @@
         // {
         //   text: 'Properties', value: 'properties',
         // },
-        { text: 'Actions', value: 'actions', sortable: false },
+        // { text: 'Actions', value: 'actions', sortable: false },
       ],
       isLoading: false,
       options: {},
@@ -419,3 +425,9 @@
     },
   }
 </script>
+
+<style scoped>
+  .clickable {
+    cursor: pointer;
+  }
+</style>
