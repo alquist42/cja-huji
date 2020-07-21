@@ -73,6 +73,7 @@ class Item extends Classifiable
         'historical_origins',
         'periods',
         'sites',
+        'bibliography',
 //        'congregations',
         'collections',
         'communities',

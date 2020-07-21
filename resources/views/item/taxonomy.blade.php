@@ -6,8 +6,10 @@ $subjects = $item->getTaxonomy('subjects');
 $periods = $item->getTaxonomy('periods');
 $origins = $item->getTaxonomy('origins');
 $communities = $item->getTaxonomy('communities');
+$sites = $item->getTaxonomy('sites');
 $collections = $item->getTaxonomy('collections');
 $schools = $item->getTaxonomy('schools');
+$bibliographies = $item->getTaxonomy('bibliography');
 
 
 ?>
@@ -149,6 +151,19 @@ $schools = $item->getTaxonomy('schools');
                 </li>
             @endif
 
+            @if (count($sites))
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>Collection</span>
+                    <span class="text-right">
+                    @foreach ($sites as $site)
+                            <a href="/{{ request()->project }}/browse/site/{{ $site->id }}">{{ $site->name }}</a>
+                            @if($site->details) <span>({{ $site->details }})</span> @endif
+                            @if(!$loop->last) <br> @endif
+                        @endforeach
+                </span>
+                </li>
+            @endif
+
             @if(count($locations) > 0)
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     <span>Location</span>
@@ -178,6 +193,17 @@ $schools = $item->getTaxonomy('schools');
                         @endforeach
 
                     </span>
+                </li>
+            @endif
+            @if (count($bibliographies))
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>Bibliography</span>
+                    <span class="text-right">
+                @foreach ($bibliographies as $bibliography)
+                            {{ $bibliography->name }}
+                            @if(!$loop->last) <br> @endif
+                        @endforeach
+            </span>
                 </li>
             @endif
 
