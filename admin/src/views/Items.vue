@@ -21,8 +21,8 @@
           :headers="headers"
           :items="items"
           class="elevation-1"
-          show-select
           v-model="selected"
+          show-select
           :options.sync="options"
           :server-items-length="totalItems"
           :footer-props="{ itemsPerPageOptions: [5, 10, 15, 25, 50, 100] }"
