@@ -30,7 +30,9 @@
       @confirm="createItemDetachingImages"
     />
 
-    <dashboard-core-app-bar />
+    <dashboard-core-app-bar :loading="isLoading" />
+
+    <div id="media-wrapper" />
 
     <metadata-editor-drawer />
   </v-container>
@@ -51,6 +53,10 @@
     },
 
     mixins: [CreateItemFromImages, SnackBar],
+
+    data: () => ({
+      isLoading: false,
+    }),
 
     created () {
       EventHub.fire('show-media-manager')

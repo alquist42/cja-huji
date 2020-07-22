@@ -112,12 +112,12 @@
           to: { name: 'Dashboard' },
           exact: true,
         },
-        {
-          icon: 'mdi-account',
-          title: 'Properties',
-          to: { name: 'Properties' },
-          exact: true,
-        },
+        // {
+        //   icon: 'mdi-account',
+        //   title: 'Properties',
+        //   to: { name: 'Properties' },
+        //   exact: true,
+        // },
         {
           title: 'Catalogue',
           icon: 'mdi-format-font',

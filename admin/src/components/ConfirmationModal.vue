@@ -4,12 +4,10 @@
     max-width="800"
     persistent
   >
-    <base-material-card class="px-5 py-3">
-      <template v-slot:heading>
-        <div class="display-2 font-weight-light">
-          {{ title }}
-        </div>
-      </template>
+    <v-card class="px-5 py-3">
+      <div class="headline font-weight-light">
+        {{ title }}
+      </div>
       <v-card-text>
         <span class="body-1">{{ message }}</span>
       </v-card-text>
@@ -29,7 +27,7 @@
           {{ btnConfirmText }}
         </v-btn>
       </v-card-actions>
-    </base-material-card>
+    </v-card>
   </v-dialog>
 </template>
 

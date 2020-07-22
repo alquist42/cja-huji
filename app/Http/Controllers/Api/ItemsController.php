@@ -49,45 +49,17 @@ class ItemsController extends Controller
         $sortBy = $request->query('sort_by', null);
         $sortDesc = $request->query('desc', '0');
 
-        return Item::with(Item::$relationships)
-            ->when($sortBy, function ($query) use ($sortBy, $sortDesc) {
-                return $query->orderBy($sortBy, ($sortDesc === '0') ? 'asc' : 'desc');
-            })
-            ->paginate($request->query('per_page', null));
-
-//        $page = $request->get('page');
-
-        $filters = collect($request->only($this->allowed_filters))
-            ->filter(function ($value) {
-            return null !== $value;
+        return Item::with('images')->when($sortBy, function ($query) use ($sortBy, $sortDesc) {
+            return $query->orderBy($sortBy, ($sortDesc === '0') ? 'asc' : 'desc');
         })
-            ->map(function ($value) {
-            return is_array($value) ? $value : [$value];
-        })
-            ->toArray();
-
-
-        $data = $this->search->findByTaxonomy($filters);
-        $items = $data['collection'];
-        $pagination =  $data['pagination'];
-
-        return response()->json([
-            'data'=> $items,
-            'meta' => $pagination
-        ]);
-
-//        return view('index', [
-//            "items" => $items ,
-//            'pagination' => $pagination,
-//            'setsCount' => $data['setsCount'],
-//            'itemsCount' => $data['itemsCount']
-//        ]);
+            ->where('parent_id', '=', null)
+            ->paginate($request->query('per_page', null));;
     }
 
     public function show(Item $item)
     {
         $item->load(array_diff(Item::$relationships, ['ancestors']));
-        $item->leaf = $item->leaf();
+        $item->leaf = [];
         $item->load(['ancestors' => function ($query) {
             $query->with([
                 'locations',
@@ -118,7 +90,7 @@ class ItemsController extends Controller
 
     public function update(Request $request, Item $item) {
         $item = (new ItemService($item))->saveItem($request->all());
-        $item->leaf = $item->leaf();
+        $item->leaf = [];
         $item->load(['ancestors' => function ($query) {
             $query->with([
                 'locations',

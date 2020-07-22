@@ -67,7 +67,9 @@
           @click="createChild()"
         >
           Create child
-          <v-icon right>mdi-file-tree</v-icon>
+          <v-icon right>
+            mdi-file-tree
+          </v-icon>
         </v-btn>
         <v-btn
           v-if="id && !hasImages"
@@ -78,7 +80,9 @@
           @click="deleteItemConfirmationDialog = true"
         >
           Delete
-          <v-icon right>mdi-trash-can-outline</v-icon>
+          <v-icon right>
+            mdi-trash-can-outline
+          </v-icon>
         </v-btn>
         <v-btn
           v-if="id"
@@ -91,7 +95,9 @@
           target="_blank"
         >
           Preview
-          <v-icon right>mdi-open-in-new</v-icon>
+          <v-icon right>
+            mdi-open-in-new
+          </v-icon>
         </v-btn>
       </template>
     </dashboard-core-app-bar>
@@ -103,10 +109,10 @@
             <template v-slot:activator="{ on, attrs }">
               <v-btn
                 v-bind="attrs"
-                v-on="on"
                 icon
                 :loading="isCopyingAttributes"
                 :disabled="isLoading"
+                v-on="on"
                 @click="copyAttributesFromObjectDialog = true"
               >
                 <v-icon>mdi-content-copy</v-icon>
@@ -118,7 +124,7 @@
         <base-material-card class="px-5 py-3">
           <template v-slot:heading>
             <div class="display-2 font-weight-light">
-              Attributes
+              Taxonomy
             </div>
           </template>
           <v-card-text>
@@ -140,11 +146,13 @@
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn
                         v-bind="attrs"
-                        v-on="on"
                         icon
+                        v-on="on"
                         @click="enableTaxonomyInheritance(taxon)"
                       >
-                        <v-icon color="grey">mdi-lock-open</v-icon>
+                        <v-icon color="grey">
+                          mdi-lock-open
+                        </v-icon>
                       </v-btn>
                     </template>
                     <span>Enable taxonomy inheritance</span>
@@ -156,11 +164,13 @@
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn
                         v-bind="attrs"
-                        v-on="on"
                         icon
+                        v-on="on"
                         @click="disableTaxonomyInheritance(taxon)"
                       >
-                        <v-icon color="grey">mdi-lock</v-icon>
+                        <v-icon color="grey">
+                          mdi-lock
+                        </v-icon>
                       </v-btn>
                     </template>
                     <span>Disable taxonomy inheritance</span>
@@ -170,8 +180,8 @@
                   {{ taxon.replace('_', ' ') }}
                 </span>
                 <span
-                  class="caption"
                   v-if="taxonomyInheritance[taxon] === 'enabled'"
+                  class="caption"
                 >
                   (inherited)
                 </span>
@@ -260,11 +270,16 @@
                 ({{ details('makers') }})
               </v-col>
             </v-row>
+          </v-card-text>
+        </base-material-card>
 
-            <v-divider class="mt-6" />
-            <div class="overline my-2">
+        <base-material-card class="px-5 py-3">
+          <template v-slot:heading>
+            <div class="display-2 font-weight-light">
               Properties
             </div>
+          </template>
+          <v-card-text>
             <v-expansion-panels
               v-model="panel"
               multiple
@@ -650,17 +665,17 @@
       },
 
       taxons: [
-        'locations',
-        'origins',
-        'schools',
         'subjects',
         'objects',
-        'historical_origins',
         'periods',
+        'origins',
+        'historical_origins',
+        'communities',
         'collections',
         // 'congregations',
-        'communities',
+        'locations',
         'sites',
+        'schools',
         // 'location_details',
         // 'origin_details',
         // 'school_details',
@@ -672,29 +687,6 @@
         // 'congregation_details',
         // 'collection_details',
         // 'community_details',
-      ],
-
-      fields: [
-        // 'id',
-        // 'parent_id',
-        // 'name',
-
-        // 'ntl',
-        // 'description',
-        // 'addenda',
-
-        // '_lft',
-        // '_rgt',
-
-        // 'properties',
-
-        // 'makers',
-        // 'creation_date',
-        // 'items',
-        // 'images',
-        // 'children',
-        // 'ancestors',
-        // 'descendants',
       ],
 
       extensions: [
@@ -1196,6 +1188,7 @@
           'geo_lat',
           'geo_lng',
           'geo_options',
+          'projects',
         ]
         const child = {
           parent_id: this.id,

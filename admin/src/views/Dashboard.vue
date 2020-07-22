@@ -1,759 +1,606 @@
 <template>
   <v-container
-    id="user-profile"
+    id="dashboard"
     fluid
     tag="section"
   >
-    <dashboard-core-app-bar />
-    <v-row justify="center">
-      <v-col cols="12">
-        <v-select
-          v-model="projects"
-          :items="projects"
-          item-text="title"
-          item-value="url"
-          attach
-          chips
-          label="Projects 2"
-          multiple
+    <dashboard-core-app-bar :loading="isLoading" />
+    <v-row>
+<!--      <v-col-->
+<!--        cols="12"-->
+<!--        lg="4"-->
+<!--      >-->
+<!--        <base-material-chart-card-->
+<!--          :data="emailsSubscriptionChart.data"-->
+<!--          :options="emailsSubscriptionChart.options"-->
+<!--          :responsive-options="emailsSubscriptionChart.responsiveOptions"-->
+<!--          color="#E91E63"-->
+<!--          hover-reveal-->
+<!--          type="Bar"-->
+<!--        >-->
+<!--          <template v-slot:reveal-actions>-->
+<!--            <v-tooltip bottom>-->
+<!--              <template v-slot:activator="{ attrs, on }">-->
+<!--                <v-btn-->
+<!--                  v-bind="attrs"-->
+<!--                  color="info"-->
+<!--                  icon-->
+<!--                  v-on="on"-->
+<!--                >-->
+<!--                  <v-icon-->
+<!--                    color="info"-->
+<!--                  >-->
+<!--                    mdi-refresh-->
+<!--                  </v-icon>-->
+<!--                </v-btn>-->
+<!--              </template>-->
+
+<!--              <span>Refresh</span>-->
+<!--            </v-tooltip>-->
+
+<!--            <v-tooltip bottom>-->
+<!--              <template v-slot:activator="{ attrs, on }">-->
+<!--                <v-btn-->
+<!--                  v-bind="attrs"-->
+<!--                  light-->
+<!--                  icon-->
+<!--                  v-on="on"-->
+<!--                >-->
+<!--                  <v-icon>mdi-pencil</v-icon>-->
+<!--                </v-btn>-->
+<!--              </template>-->
+
+<!--              <span>Change Date</span>-->
+<!--            </v-tooltip>-->
+<!--          </template>-->
+
+<!--          <h4 class="card-title font-weight-light mt-2 ml-2">-->
+<!--            Website Views-->
+<!--          </h4>-->
+
+<!--          <p class="d-inline-flex font-weight-light ml-2 mt-1">-->
+<!--            Last Campaign Performance-->
+<!--          </p>-->
+
+<!--          <template v-slot:actions>-->
+<!--            <v-icon-->
+<!--              class="mr-1"-->
+<!--              small-->
+<!--            >-->
+<!--              mdi-clock-outline-->
+<!--            </v-icon>-->
+<!--            <span class="caption grey&#45;&#45;text font-weight-light">updated 10 minutes ago</span>-->
+<!--          </template>-->
+<!--        </base-material-chart-card>-->
+<!--      </v-col>-->
+
+<!--      <v-col-->
+<!--        cols="12"-->
+<!--        lg="4"-->
+<!--      >-->
+<!--        <base-material-chart-card-->
+<!--          :data="dailySalesChart.data"-->
+<!--          :options="dailySalesChart.options"-->
+<!--          color="success"-->
+<!--          hover-reveal-->
+<!--          type="Line"-->
+<!--        >-->
+<!--          <template v-slot:reveal-actions>-->
+<!--            <v-tooltip bottom>-->
+<!--              <template v-slot:activator="{ attrs, on }">-->
+<!--                <v-btn-->
+<!--                  v-bind="attrs"-->
+<!--                  color="info"-->
+<!--                  icon-->
+<!--                  v-on="on"-->
+<!--                >-->
+<!--                  <v-icon-->
+<!--                    color="info"-->
+<!--                  >-->
+<!--                    mdi-refresh-->
+<!--                  </v-icon>-->
+<!--                </v-btn>-->
+<!--              </template>-->
+
+<!--              <span>Refresh</span>-->
+<!--            </v-tooltip>-->
+
+<!--            <v-tooltip bottom>-->
+<!--              <template v-slot:activator="{ attrs, on }">-->
+<!--                <v-btn-->
+<!--                  v-bind="attrs"-->
+<!--                  light-->
+<!--                  icon-->
+<!--                  v-on="on"-->
+<!--                >-->
+<!--                  <v-icon>mdi-pencil</v-icon>-->
+<!--                </v-btn>-->
+<!--              </template>-->
+
+<!--              <span>Change Date</span>-->
+<!--            </v-tooltip>-->
+<!--          </template>-->
+
+<!--          <h4 class="card-title font-weight-light mt-2 ml-2">-->
+<!--            Daily Sales-->
+<!--          </h4>-->
+
+<!--          <p class="d-inline-flex font-weight-light ml-2 mt-1">-->
+<!--            <v-icon-->
+<!--              color="green"-->
+<!--              small-->
+<!--            >-->
+<!--              mdi-arrow-up-->
+<!--            </v-icon>-->
+<!--            <span class="green&#45;&#45;text">55%</span>&nbsp;-->
+<!--            increase in today's sales-->
+<!--          </p>-->
+
+<!--          <template v-slot:actions>-->
+<!--            <v-icon-->
+<!--              class="mr-1"-->
+<!--              small-->
+<!--            >-->
+<!--              mdi-clock-outline-->
+<!--            </v-icon>-->
+<!--            <span class="caption grey&#45;&#45;text font-weight-light">updated 4 minutes ago</span>-->
+<!--          </template>-->
+<!--        </base-material-chart-card>-->
+<!--      </v-col>-->
+
+<!--      <v-col-->
+<!--        cols="12"-->
+<!--        lg="4"-->
+<!--      >-->
+<!--        <base-material-chart-card-->
+<!--          :data="dataCompletedTasksChart.data"-->
+<!--          :options="dataCompletedTasksChart.options"-->
+<!--          hover-reveal-->
+<!--          color="info"-->
+<!--          type="Line"-->
+<!--        >-->
+<!--          <template v-slot:reveal-actions>-->
+<!--            <v-tooltip bottom>-->
+<!--              <template v-slot:activator="{ attrs, on }">-->
+<!--                <v-btn-->
+<!--                  v-bind="attrs"-->
+<!--                  color="info"-->
+<!--                  icon-->
+<!--                  v-on="on"-->
+<!--                >-->
+<!--                  <v-icon-->
+<!--                    color="info"-->
+<!--                  >-->
+<!--                    mdi-refresh-->
+<!--                  </v-icon>-->
+<!--                </v-btn>-->
+<!--              </template>-->
+
+<!--              <span>Refresh</span>-->
+<!--            </v-tooltip>-->
+
+<!--            <v-tooltip bottom>-->
+<!--              <template v-slot:activator="{ attrs, on }">-->
+<!--                <v-btn-->
+<!--                  v-bind="attrs"-->
+<!--                  light-->
+<!--                  icon-->
+<!--                  v-on="on"-->
+<!--                >-->
+<!--                  <v-icon>mdi-pencil</v-icon>-->
+<!--                </v-btn>-->
+<!--              </template>-->
+
+<!--              <span>Change Date</span>-->
+<!--            </v-tooltip>-->
+<!--          </template>-->
+
+<!--          <h3 class="card-title font-weight-light mt-2 ml-2">-->
+<!--            Completed Tasks-->
+<!--          </h3>-->
+
+<!--          <p class="d-inline-flex font-weight-light ml-2 mt-1">-->
+<!--            Last Last Campaign Performance-->
+<!--          </p>-->
+
+<!--          <template v-slot:actions>-->
+<!--            <v-icon-->
+<!--              class="mr-1"-->
+<!--              small-->
+<!--            >-->
+<!--              mdi-clock-outline-->
+<!--            </v-icon>-->
+<!--            <span class="caption grey&#45;&#45;text font-weight-light">campaign sent 26 minutes ago</span>-->
+<!--          </template>-->
+<!--        </base-material-chart-card>-->
+<!--      </v-col>-->
+
+      <v-col
+        cols="12"
+        sm="6"
+        lg="3"
+      >
+        <base-material-stats-card
+          color="info"
+          icon="mdi-poll"
+          title="Items"
+          value="40k"
+          sub-icon="mdi-clock"
+          sub-text="Just Updated"
         />
-        <v-select
-          v-model="categories"
-          :items="categories"
-          item-text="name"
-          item-value="id"
-          attach
-          chips
-          label="Categories"
-          multiple
+      </v-col>
+
+      <v-col
+        cols="12"
+        sm="6"
+        lg="3"
+      >
+        <base-material-stats-card
+          color="primary"
+          icon="mdi-poll"
+          title="Images"
+          value="500k"
+          sub-icon="mdi-tag"
+          sub-text="Tracked from Google Analytics"
         />
       </v-col>
-      <v-col cols="12">
-        <v-data-table
-          dense
-          :headers="headers"
-          :items="items"
-          :items-per-page="5"
-          class="elevation-1"
-          show-select
-        >
-          <template v-slot:top>
-            <v-toolbar
-              flat
-              color="white"
-            >
-              <v-toolbar-title>Sets</v-toolbar-title>
-              <v-divider
-                class="mx-4"
-                inset
-                vertical
-              />
-              <v-spacer />
-              <v-dialog
-                v-model="dialog"
-                max-width="500px"
-              >
-                <template v-slot:activator="{ on }">
-                  <v-btn
-                    color="primary"
-                    dark
-                    class="mb-2"
-                    v-on="on"
-                  >
-                    New Item
-                  </v-btn>
-                </template>
-                <v-card>
-                  <v-card-title>
-                    <span class="headline">{{ formTitle }}</span>
-                  </v-card-title>
 
-                  <v-card-text>
-                    <v-container>
-                      <v-row>
-                        <v-col
-                          cols="12"
-                          sm="6"
-                          md="4"
-                        >
-                          <v-text-field
-                            v-model="editedItem.name"
-                            label="Dessert name"
-                          />
-                        </v-col>
-                        <v-col
-                          cols="12"
-                          sm="6"
-                          md="4"
-                        >
-                          <v-text-field
-                            v-model="editedItem.calories"
-                            label="Calories"
-                          />
-                        </v-col>
-                        <v-col
-                          cols="12"
-                          sm="6"
-                          md="4"
-                        >
-                          <v-text-field
-                            v-model="editedItem.fat"
-                            label="Fat (g)"
-                          />
-                        </v-col>
-                        <v-col
-                          cols="12"
-                          sm="6"
-                          md="4"
-                        >
-                          <v-text-field
-                            v-model="editedItem.carbs"
-                            label="Carbs (g)"
-                          />
-                        </v-col>
-                        <v-col
-                          cols="12"
-                          sm="6"
-                          md="4"
-                        >
-                          <v-text-field
-                            v-model="editedItem.protein"
-                            label="Protein (g)"
-                          />
-                        </v-col>
-                      </v-row>
-                    </v-container>
-                  </v-card-text>
-
-                  <v-card-actions>
-                    <v-spacer />
-                    <v-btn
-                      color="blue darken-1"
-                      text
-                      @click="close"
-                    >
-                      Cancel
-                    </v-btn>
-                    <v-btn
-                      color="blue darken-1"
-                      text
-                      @click="save"
-                    >
-                      Save
-                    </v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-dialog>
-            </v-toolbar>
-          </template>
-          <template v-slot:item.actions="{ item }">
-            <v-icon
-              small
-              class="mr-2"
-              @click="editItem(item)"
-            >
-              mdi-pencil
-            </v-icon>
-            <v-icon
-              small
-              @click="deleteItem(item)"
-            >
-              mdi-delete
-            </v-icon>
-          </template>
-          <template v-slot:item.locations="{ item }">
-            <v-combobox
-              v-model="item.locations"
-              :items="item.locations"
-              item-text="name"
-              item-value="id"
-              outlined
-              multiple
-              chips
-              dense
-              deletable-chips
-            ></v-combobox>
-          </template>
-          <template v-slot:item.communities="{ item }">
-            <v-combobox
-              v-model="item.communities"
-              :items="item.communities"
-              item-text="name"
-              item-value="id"
-              outlined
-              multiple
-              chips
-              dense
-              deletable-chips
-            ></v-combobox>
-          </template>
-        </v-data-table>
-      </v-col>
-    </v-row>
-
-<!--        <v-row>-->
-<!--          <v-col cols="12">-->
-<!--            <v-treeview-->
-<!--              :items="options"-->
-<!--            />-->
-<!--          </v-col>-->
-<!--        </v-row>-->
-
-    <v-row>
-      <v-col cols="12">
-        <vue-excel-editor
-          v-model="opts"
-          filter-row
-          remember
+      <v-col
+        cols="12"
+        sm="6"
+        lg="3"
+      >
+        <base-material-stats-card
+          color="success"
+          icon="mdi-poll"
+          title="Projects"
+          value="5"
+          sub-icon="mdi-calendar"
+          sub-text="Last 24 Hours"
         />
       </v-col>
-    </v-row>
 
-    <v-row>
-      <v-col cols="12">
-        <button @click="addNode">
-          Add Node
-        </button>
-        <vue-tree-list
-          :model="data"
-          default-tree-node-name="new node"
-          default-leaf-node-name="new leaf"
-          :default-expanded="false"
-          @click="onClick"
-          @change-name="onChangeName"
-          @delete-node="onDel"
-          @add-node="onAddNode"
-        >
-          <span
-            slot="addTreeNodeIcon"
-            class="icon"
-          >📂</span>
-          <span
-            slot="addLeafNodeIcon"
-            class="icon"
-          >＋</span>
-          <span
-            slot="editNodeIcon"
-            class="icon"
-          >📃</span>
-          <span
-            slot="delNodeIcon"
-            class="icon"
-          >✂️</span>
-          <span
-            slot="leafNodeIcon"
-            class="icon"
-          >🍃</span>
-          <span
-            slot="treeNodeIcon"
-            class="icon"
-          >🌲</span>
-        </vue-tree-list>
-        <button @click="getNewTree">
-          Get new tree
-        </button>
-        <pre>
-          {{ newTree }}
-        </pre>
+      <v-col
+        cols="12"
+        sm="6"
+        lg="3"
+      >
+        <base-material-stats-card
+          color="orange"
+          icon="mdi-poll"
+          title="Categories"
+          value="8"
+          sub-icon="mdi-alert"
+          sub-icon-color="red"
+          sub-text="Get More Space..."
+        />
       </v-col>
-    </v-row>
 
-    <v-row>
-      <v-col cols="12">
-        <file-manager />
-      </v-col>
-    </v-row>
+<!--      <v-col-->
+<!--        cols="12"-->
+<!--        md="6"-->
+<!--      >-->
+<!--        <base-material-card-->
+<!--          color="warning"-->
+<!--          class="px-5 py-3"-->
+<!--        >-->
+<!--          <template v-slot:heading>-->
+<!--            <div class="display-2 font-weight-light">-->
+<!--              Employees Stats-->
+<!--            </div>-->
 
-    <v-row>
-      <v-col cols="12">
-        <ais-instant-search
-          :search-client="searchClient"
-          index-name="sets_index"
-        >
-          <div class="search-panel">
-            <div class="search-panel__filters">
-              <ais-refinement-list
-                attribute="subjects"
-                searchable
-              />
-            </div>
+<!--            <div class="subtitle-1 font-weight-light">-->
+<!--              New employees on 15th September, 2016-->
+<!--            </div>-->
+<!--          </template>-->
+<!--          <v-card-text>-->
+<!--            <v-data-table-->
+<!--              :headers="headers"-->
+<!--              :items="items"-->
+<!--            />-->
+<!--          </v-card-text>-->
+<!--        </base-material-card>-->
+<!--      </v-col>-->
 
-            <div class="search-panel__results">
-              <ais-search-box
-                placeholder="Search here…"
-                class="searchbox"
-              />
-              <ais-hits>
-                <template
-                  slot="item"
-                  slot-scope="{ item }"
-                >
-                  <v-img
-                    :src="item.images[0]"
-                    contain
-                    max-height="150px"
-                    max-width="150px"
-                  />
-                  <h1>
-                    <ais-highlight
-                      :hit="item"
-                      attribute="name"
-                    />
-                  </h1>
-                  <p>
-                    <ais-highlight
-                      :hit="item"
-                      attribute="description"
-                    />
-                  </p>
-                  <p>
-                    <ais-highlight
-                      :hit="item"
-                      attribute="subjects"
-                    />
-                  </p>
-                  <p>
-                    <ais-highlight
-                      :hit="item"
-                      attribute="properties"
-                    />
-                  </p>
-                </template>
-              </ais-hits>
+<!--      <v-col-->
+<!--        cols="12"-->
+<!--        md="6"-->
+<!--      >-->
+<!--        <base-material-card class="px-5 py-3">-->
+<!--          <template v-slot:heading>-->
+<!--            <v-tabs-->
+<!--              v-model="tabs"-->
+<!--              background-color="transparent"-->
+<!--              slider-color="white"-->
+<!--            >-->
+<!--              <span-->
+<!--                class="subheading font-weight-light mx-3"-->
+<!--                style="align-self: center"-->
+<!--              >Tasks:</span>-->
+<!--              <v-tab class="mr-3">-->
+<!--                <v-icon class="mr-2">-->
+<!--                  mdi-bug-->
+<!--                </v-icon>-->
+<!--                Bugs-->
+<!--              </v-tab>-->
+<!--              <v-tab class="mr-3">-->
+<!--                <v-icon class="mr-2">-->
+<!--                  mdi-code-tags-->
+<!--                </v-icon>-->
+<!--                Website-->
+<!--              </v-tab>-->
+<!--              <v-tab>-->
+<!--                <v-icon class="mr-2">-->
+<!--                  mdi-cloud-->
+<!--                </v-icon>-->
+<!--                Server-->
+<!--              </v-tab>-->
+<!--            </v-tabs>-->
+<!--          </template>-->
 
-              <div class="pagination">
-                <ais-pagination />
-              </div>
-            </div>
-          </div>
-        </ais-instant-search>
-      </v-col>
-    </v-row>
+<!--          <v-tabs-items-->
+<!--            v-model="tabs"-->
+<!--            class="transparent"-->
+<!--          >-->
+<!--            <v-tab-item-->
+<!--              v-for="n in 3"-->
+<!--              :key="n"-->
+<!--            >-->
+<!--              <v-card-text>-->
+<!--                <template v-for="(task, i) in tasks[tabs]">-->
+<!--                  <v-row-->
+<!--                    :key="i"-->
+<!--                    align="center"-->
+<!--                  >-->
+<!--                    <v-col cols="1">-->
+<!--                      <v-list-item-action>-->
+<!--                        <v-checkbox-->
+<!--                          v-model="task.value"-->
+<!--                          color="secondary"-->
+<!--                        />-->
+<!--                      </v-list-item-action>-->
+<!--                    </v-col>-->
 
-    <v-row>
-      <v-col cols="12">
-        <v-form
-          ref="form"
-          lazy-validation
-        >
-          <v-text-field
-            v-model="item.name"
-            :counter="10"
-            label="Name"
-            required
-            outlined
-          />
+<!--                    <v-col cols="9">-->
+<!--                      <div-->
+<!--                        class="font-weight-light"-->
+<!--                        v-text="task.text"-->
+<!--                      />-->
+<!--                    </v-col>-->
 
-          <v-text-field
-            v-model="item.ntl"
-            label="NTL"
-            required
-            outlined
-          />
-
-          <tiptap-vuetify
-            v-model="item.description"
-            :extensions="extensions"
-          />
-        </v-form>
-        <template
-          v-for="image in item.images"
-        >
-          <v-img
-            :key="image.id"
-            aspect-ratio="1.7"
-            min-height="150px"
-            :src="`http://cja.huji.ac.il/${image.small || image.medium || image.def || image.batch_url}`"
-          />
-        </template>
-<!--            <treeselect-->
-<!--              :multiple="true"-->
-<!--              :normalizer="normalizer"-->
-<!--              :show-count="true"-->
-<!--              :options="locations"-->
-<!--            />-->
-<!--            <treeselect-->
-<!--              :multiple="true"-->
-<!--              :normalizer="normalizer"-->
-<!--              :show-count="true"-->
-<!--              :options="origins"-->
-<!--            />-->
-<!--            <treeselect-->
-<!--              :multiple="true"-->
-<!--              :normalizer="normalizer"-->
-<!--              :show-count="true"-->
-<!--              :options="schools"-->
-<!--            />-->
-<!--            <treeselect-->
-<!--              :multiple="true"-->
-<!--              :normalizer="normalizer"-->
-<!--              :show-count="true"-->
-<!--              :options="subjects"-->
-<!--            />-->
-<!--            <treeselect-->
-<!--              :multiple="true"-->
-<!--              :normalizer="normalizer"-->
-<!--              :show-count="true"-->
-<!--              :options="historical_origins"-->
-<!--            />-->
-<!--            <treeselect-->
-<!--              :multiple="true"-->
-<!--              :normalizer="normalizer"-->
-<!--              :show-count="true"-->
-<!--              :options="periods"-->
-<!--            />-->
-<!--            <treeselect-->
-<!--              :multiple="true"-->
-<!--              :normalizer="normalizer"-->
-<!--              :show-count="true"-->
-<!--              :options="collections"-->
-<!--            />-->
-<!--            <treeselect-->
-<!--              :multiple="true"-->
-<!--              :normalizer="normalizer"-->
-<!--              :show-count="true"-->
-<!--              :options="communities"-->
-<!--            />-->
-<!--            <treeselect-->
-<!--              :multiple="true"-->
-<!--              :normalizer="normalizer"-->
-<!--              :show-count="true"-->
-<!--              :options="professions"-->
-<!--            />-->
-<!--            <treeselect-->
-<!--              :multiple="true"-->
-<!--              :normalizer="normalizer"-->
-<!--              :show-count="true"-->
-<!--              :options="artists"-->
-<!--            />-->
-        <template
-          v-for="prop in properties"
-        >
-          <v-text-field
-            v-if="prop.type === 'text'"
-            :key="prop.id"
-            v-model="item[prop.prop_name]"
-            :label="prop.verbose_name"
-            outlined
-          />
-          <v-textarea
-            v-if="prop.type === 'textarea' && prop.content_type === 'plain'"
-            :key="prop.id"
-            v-model="item[prop.prop_name]"
-            :label="prop.verbose_name"
-            outlined
-          />
-          <tiptap-vuetify
-            v-if="prop.type === 'textarea' && prop.content_type === 'htmle'"
-            :key="prop.id"
-            v-model="item[prop.prop_name]"
-            :placeholder="prop.verbose_name"
-            :extensions="extensions"
-          />
-          <v-select
-            v-if="prop.type === 'select'"
-            :key="prop.id"
-            v-model="item[prop.prop_name]"
-            :items="prop.allowed_vals.split(' | ')"
-            chips
-            :label="prop.verbose_name"
-            outlined
-          />
-        </template>
-      </v-col>
+<!--                    <v-col-->
+<!--                      cols="2"-->
+<!--                      class="text-right"-->
+<!--                    >-->
+<!--                      <v-icon class="mx-1">-->
+<!--                        mdi-pencil-->
+<!--                      </v-icon>-->
+<!--                      <v-icon-->
+<!--                        color="error"-->
+<!--                        class="mx-1"-->
+<!--                      >-->
+<!--                        mdi-close-->
+<!--                      </v-icon>-->
+<!--                    </v-col>-->
+<!--                  </v-row>-->
+<!--                </template>-->
+<!--              </v-card-text>-->
+<!--            </v-tab-item>-->
+<!--          </v-tabs-items>-->
+<!--        </base-material-card>-->
+<!--      </v-col>-->
     </v-row>
   </v-container>
 </template>
 
 <script>
-
-  // import the component
-  // import Treeselect from '@riophae/vue-treeselect'
-  // import the styles
-  import '@riophae/vue-treeselect/dist/vue-treeselect.css'
-  import algoliasearch from 'algoliasearch/lite'
-  import 'instantsearch.css/themes/algolia-min.css'
-
-  import { VueTreeList, Tree, TreeNode } from 'vue-tree-list'
-
-  import { TiptapVuetify, Heading, Bold, Italic, Strike, Underline, Code, Paragraph, BulletList, OrderedList, ListItem, Link, Blockquote, HardBreak, HorizontalRule, History } from 'tiptap-vuetify'
-
   export default {
-    name: 'DashboardIndex',
+    name: 'DashboardDashboard',
 
     components: {
-      // Treeselect,
-      VueTreeList,
-      TiptapVuetify,
-      DashboardCoreAppBar: () => import('../views/dashboard/components/core/AppBar'),
+      DashboardCoreAppBar: () => import('./dashboard/components/core/AppBar'),
     },
 
-    data: () => ({
-      collection: {
-        data: [],
-      },
-      options: [],
-      locations: [],
-      origins: [],
-      schools: [],
-      properties: [],
-      subjects: [],
-      historical_origins: [],
-      periods: [],
-      collections: [],
-      communities: [],
-      makers: [],
-      professions: [],
-      artists: [],
-      item: {},
-      projects: [],
-      categories: [],
-
-      expandOnHover: false,
-
-      searchClient: algoliasearch(
-        'G6B5F5SPPO',
-        '5a24886cfcc75d98f6e97c7fe27bc0c7',
-      ),
-
-      newTree: {},
-
-      jsondata: [
-        { user: 'hc', name: 'Harry Cole', phone: '1-415-2345678', gender: 'M', age: 25, birth: '1997-07-01' },
-        { user: 'sm', name: 'Simon Minolta', phone: '1-123-7675682', gender: 'M', age: 20, birth: '1999-11-12' },
-        { user: 'ra', name: 'Raymond Atom', phone: '1-456-9981212', gender: 'M', age: 19, birth: '2000-06-11' },
-        { user: 'ag', name: 'Mary George', phone: '1-556-1245684', gender: 'F', age: 22, birth: '2002-08-01' },
-        { user: 'kl', name: 'Kenny Linus', phone: '1-891-2345685', gender: 'M', age: 29, birth: '1990-09-01' },
-      ],
-
-      dialog: false,
-
-      editedIndex: -1,
-      editedItem: {
-        name: '',
-        calories: 0,
-        fat: 0,
-        carbs: 0,
-        protein: 0,
-      },
-      defaultItem: {
-        name: '',
-        calories: 0,
-        fat: 0,
-        carbs: 0,
-        protein: 0,
-      },
-
-      extensions: [
-        History,
-        Blockquote,
-        Link,
-        Underline,
-        Strike,
-        Italic,
-        ListItem,
-        BulletList,
-        OrderedList,
-        [Heading, {
-          options: {
-            levels: [1, 2, 3],
+    data () {
+      return {
+        dailySalesChart: {
+          data: {
+            labels: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
+            series: [
+              [12, 17, 7, 17, 23, 18, 38],
+            ],
           },
-        }],
-        Bold,
-        Code,
-        HorizontalRule,
-        Paragraph,
-        HardBreak,
-      ],
+          options: {
+            lineSmooth: this.$chartist.Interpolation.cardinal({
+              tension: 0,
+            }),
+            low: 0,
+            high: 50, // creative tim: we recommend you to set the high sa the biggest value + something for a better look
+            chartPadding: {
+              top: 0,
+              right: 0,
+              bottom: 0,
+              left: 0,
+            },
+          },
+        },
+        dataCompletedTasksChart: {
+          data: {
+            labels: ['12am', '3pm', '6pm', '9pm', '12pm', '3am', '6am', '9am'],
+            series: [
+              [230, 750, 450, 300, 280, 240, 200, 190],
+            ],
+          },
+          options: {
+            lineSmooth: this.$chartist.Interpolation.cardinal({
+              tension: 0,
+            }),
+            low: 0,
+            high: 1000, // creative tim: we recommend you to set the high sa the biggest value + something for a better look
+            chartPadding: {
+              top: 0,
+              right: 0,
+              bottom: 0,
+              left: 0,
+            },
+          },
+        },
+        emailsSubscriptionChart: {
+          data: {
+            labels: ['Ja', 'Fe', 'Ma', 'Ap', 'Mai', 'Ju', 'Jul', 'Au', 'Se', 'Oc', 'No', 'De'],
+            series: [
+              [542, 443, 320, 780, 553, 453, 326, 434, 568, 610, 756, 895],
 
-      headers: [
-        { text: 'ID', value: 'id' },
-        { text: 'Name', value: 'name' },
-        { text: 'Category', value: 'category' },
-        { text: 'Locations', value: 'locations' },
-        { text: 'Communities', value: 'communities' },
-        { text: 'Actions', value: 'actions', sortable: false },
-      ],
-
-      normalizer (node) {
-        const n = {
-          id: node.id,
-          label: node.name,
-        }
-        if (node.children && node.children.length) {
-          n.children = node.children
-        }
-        return n
-      },
-    }),
-
-    computed: {
-      opts () {
-        return this.collection.data.map(d => {
-          Object.keys(d).forEach(function (key) {
-            if (d[key] === null) {
-              d[key] = ''
-            }
-          })
-          return d
-        })
-      },
-      items () {
-        return this.collection.data
-      },
-      data () {
-        return new Tree(this.options)
-      },
-      formTitle () {
-        return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
-      },
-    },
-
-    watch: {
-      dialog (val) {
-        val || this.close()
-      },
-    },
-
-    async mounted () {
-      const { data } = await this.$http.get('dashboard?project=catalogue')
-
-      Object.keys(data).forEach(key => {
-        this.$data[key] = data[key]
-      })
+            ],
+          },
+          options: {
+            axisX: {
+              showGrid: false,
+            },
+            low: 0,
+            high: 1000,
+            chartPadding: {
+              top: 0,
+              right: 5,
+              bottom: 0,
+              left: 0,
+            },
+          },
+          responsiveOptions: [
+            ['screen and (max-width: 640px)', {
+              seriesBarDistance: 5,
+              axisX: {
+                labelInterpolationFnc: function (value) {
+                  return value[0]
+                },
+              },
+            }],
+          ],
+        },
+        headers: [
+          {
+            sortable: false,
+            text: 'ID',
+            value: 'id',
+          },
+          {
+            sortable: false,
+            text: 'Name',
+            value: 'name',
+          },
+          {
+            sortable: false,
+            text: 'Salary',
+            value: 'salary',
+            align: 'right',
+          },
+          {
+            sortable: false,
+            text: 'Country',
+            value: 'country',
+            align: 'right',
+          },
+          {
+            sortable: false,
+            text: 'City',
+            value: 'city',
+            align: 'right',
+          },
+        ],
+        items: [
+          {
+            id: 1,
+            name: 'Dakota Rice',
+            country: 'Niger',
+            city: 'Oud-Tunrhout',
+            salary: '$35,738',
+          },
+          {
+            id: 2,
+            name: 'Minerva Hooper',
+            country: 'Curaçao',
+            city: 'Sinaai-Waas',
+            salary: '$23,738',
+          },
+          {
+            id: 3,
+            name: 'Sage Rodriguez',
+            country: 'Netherlands',
+            city: 'Overland Park',
+            salary: '$56,142',
+          },
+          {
+            id: 4,
+            name: 'Philip Chanley',
+            country: 'Korea, South',
+            city: 'Gloucester',
+            salary: '$38,735',
+          },
+          {
+            id: 5,
+            name: 'Doris Greene',
+            country: 'Malawi',
+            city: 'Feldkirchen in Kārnten',
+            salary: '$63,542',
+          },
+        ],
+        tabs: 0,
+        tasks: {
+          0: [
+            {
+              text: 'Sign contract for "What are conference organizers afraid of?"',
+              value: true,
+            },
+            {
+              text: 'Lines From Great Russian Literature? Or E-mails From My Boss?',
+              value: false,
+            },
+            {
+              text: 'Flooded: One year later, assessing what was lost and what was found when a ravaging rain swept through metro Detroit',
+              value: false,
+            },
+            {
+              text: 'Create 4 Invisible User Experiences you Never Knew About',
+              value: true,
+            },
+          ],
+          1: [
+            {
+              text: 'Flooded: One year later, assessing what was lost and what was found when a ravaging rain swept through metro Detroit',
+              value: true,
+            },
+            {
+              text: 'Sign contract for "What are conference organizers afraid of?"',
+              value: false,
+            },
+          ],
+          2: [
+            {
+              text: 'Lines From Great Russian Literature? Or E-mails From My Boss?',
+              value: false,
+            },
+            {
+              text: 'Flooded: One year later, assessing what was lost and what was found when a ravaging rain swept through metro Detroit',
+              value: true,
+            },
+            {
+              text: 'Sign contract for "What are conference organizers afraid of?"',
+              value: true,
+            },
+          ],
+        },
+        list: {
+          0: false,
+          1: false,
+          2: false,
+        },
+      }
     },
 
     methods: {
-
-      editItem (item) {
-        this.editedIndex = this.items.indexOf(item)
-        this.editedItem = Object.assign({}, item)
-        this.dialog = true
+      complete (index) {
+        this.list[index] = !this.list[index]
       },
-
-      deleteItem (item) {
-        const index = this.items.indexOf(item)
-        confirm('Are you sure you want to delete this item?') && this.items.splice(index, 1)
-      },
-
-      onDel (node) {
-        console.log(node)
-        node.remove()
-      },
-
-      onChangeName (params) {
-        console.log(params)
-      },
-
-      onAddNode (params) {
-        console.log(params)
-      },
-
-      onClick (params) {
-        console.log(params)
-      },
-
-      addNode () {
-        var node = new TreeNode({ name: 'new node', isLeaf: false })
-        if (!this.data.children) this.data.children = []
-        this.data.addChildren(node)
-      },
-
-      getNewTree () {
-        var vm = this
-        function _dfs (oldNode) {
-          var newNode = {}
-
-          for (var k in oldNode) {
-            if (k !== 'children' && k !== 'parent') {
-              newNode[k] = oldNode[k]
-            }
-          }
-
-          if (oldNode.children && oldNode.children.length > 0) {
-            newNode.children = []
-            for (var i = 0, len = oldNode.children.length; i < len; i++) {
-              newNode.children.push(_dfs(oldNode.children[i]))
-            }
-          }
-          return newNode
-        }
-
-        vm.newTree = _dfs(vm.data)
-      },
-
-      close () {
-        //
-      },
-
-      save () {
-        //
-      },
-
     },
   }
 </script>
-
-<style>
-  body,
-  h1 {
-    margin: 0;
-    padding: 0;
-  }
-
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
-    Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
-  }
-
-  .header {
-    display: flex;
-    align-items: center;
-    min-height: 50px;
-    padding: 0.5rem 1rem;
-    background-image: linear-gradient(to right, #4dba87, #2f9088);
-    color: #fff;
-    margin-bottom: 1rem;
-  }
-
-  .header a {
-    color: #fff;
-    text-decoration: none;
-  }
-
-  .header-title {
-    font-size: 1.2rem;
-    font-weight: normal;
-  }
-
-  .header-title::after {
-    content: ' ▸ ';
-    padding: 0 0.5rem;
-  }
-
-  .header-subtitle {
-    font-size: 1.2rem;
-  }
-
-  .search-panel {
-    display: flex;
-  }
-
-  .search-panel__filters {
-    flex: 1;
-    margin-right: 1em;
-  }
-
-  .search-panel__results {
-    flex: 3;
-  }
-
-  .searchbox {
-    margin-bottom: 2rem;
-  }
-
-  .pagination {
-    margin: 2rem auto;
-    text-align: center;
-  }
-</style>

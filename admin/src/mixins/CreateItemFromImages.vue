@@ -73,6 +73,7 @@
         }
 
         try {
+          this.isLoading = true
           const { data } = await this.$http.post('items?project=catalogue', payload)
           this.$router.push({ name: 'Item', params: { id: data.id } })
         } catch (e) {

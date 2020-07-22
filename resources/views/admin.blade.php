@@ -11,19 +11,8 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css">
-{{--    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">--}}
     <link rel=stylesheet href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900">
     <link rel=stylesheet href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css">
-{{--    <link href="{{ vuecli('chunk-79b5ab55.css') }}" rel=prefetch>--}}
-{{--    <link href="{{ vuecli('chunk-e6f85250.css') }}"rel=prefetch>--}}
-{{--    <link href="{{ vuecli('chunk-79b5ab55.js') }}" rel=prefetch>--}}
-{{--    <link href="{{ vuecli('chunk-e6f85250.js') }}" rel=prefetch>--}}
-{{--    <link href="{{ vuecli('chunk-vendors.css') }}" rel=preload as=style>--}}
-{{--    <link href="{{ vuecli('dash.css') }}" rel=preload as=style>--}}
-{{--    <link href="{{ vuecli('chunk-vendors.js') }}" rel=preload as=script>--}}
-{{--    <link href="{{ vuecli('dash.js') }}" rel=preload as=script>--}}
-{{--    <link href="{{ vuecli('chunk-vendors.css') }}" rel=stylesheet>--}}
-{{--    <link href="{{ vuecli('dash.css') }}" rel=stylesheet>--}}
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
     <link rel="stylesheet" href="{{ asset('assets/vendor/MediaManager/style.css') }}"/>
     <link rel="icon" href="http://cja.huji.ac.il/favicon.ico" type="image/x-icon" />

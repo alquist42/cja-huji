@@ -35,6 +35,7 @@
           outlined
         />
 
+        <span>Description</span>
         <tiptap-vuetify
           :value="value.description"
           @input="update('description', $event)"
