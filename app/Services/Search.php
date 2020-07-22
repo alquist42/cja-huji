@@ -19,6 +19,7 @@ class Search
             "value",
             "a",
             "about",
+            "around",
             "an",
             "are",
             "as",
@@ -36,6 +37,7 @@ class Search
             "is",
             "it",
             "la",
+            "near",
             "of",
             "on",
             "or",
@@ -60,9 +62,6 @@ class Search
         $collection = collect([]);
         foreach ($filters as $type => $values) {
             $model = '\\App\\Models\\Taxonomy\\' . ucfirst(str_singular($type));
-//            if ($type === 'objects') {
-//                $model = '\\App\\Models\\Taxonomy\\IObject';
-//            }
             $selected = $model::select("id", "_lft", "_rgt")->find($values);
             foreach ($selected as $sModel) {
                 $descendants = $model::select("id","name")->
@@ -181,7 +180,7 @@ class Search
             $text = preg_replace('/[+\-><\(\)~*\"@]+/', ' ', $text);
             $text = explode(" ",$text);
             $text = implode(array_map(function ($u) {
-                if(strlen($u)>2 && !in_array($u, self::INNODB_FT_DEFAULT_STOPWORD)) {
+                if(strlen($u)>2 && !in_array(strtolower($u) , self::INNODB_FT_DEFAULT_STOPWORD)) {
                     return " +" . $u;
                 } return " ".$u;}, $text));
 
@@ -196,7 +195,9 @@ class Search
                 })
                 ->when(!empty($text), function ($q) use ($text) {
                     $q->selectRaw('MATCH (`text`) AGAINST ("'.$text.'") as rel')
-                        ->whereRaw('MATCH (`text`) AGAINST ("'.$text.'" IN BOOLEAN MODE) > 0');
+                        ->whereRaw('MATCH (`text`) AGAINST ("'.$text.'" IN BOOLEAN MODE) > 0')
+                    ;
+
                 })
                 ->when(!empty($filters), function($q) use ($filters){
                     $q->where(function ($query) use ($filters) {
@@ -222,7 +223,10 @@ class Search
                 })
                 ->when(!empty($search), function($q) use ($search){
                     $q->selectRaw('MATCH (`title`) AGAINST (" +'.$search.'") as rel2')
-                        ->whereRaw('MATCH (`title`) AGAINST (" +'.$search.'" IN BOOLEAN MODE) > 0');
+                        ->whereRaw('MATCH (`title`) AGAINST (" +'.$search.'" IN BOOLEAN MODE) > 0')
+                        ->where('title', 'LIKE', "%".$search."%")
+                    ;
+
                 })
 
                 /*----- REMOVE IMAGES FOR FOUNDED SETS -------*/
@@ -233,7 +237,8 @@ class Search
                                 ->from('search')
                              //   ->where('search.type','=','set')
                                 ->when(!empty($text), function ($q) use ($text) {
-                                    $q->whereRaw('MATCH (`text`) AGAINST ("'.$text.'" IN BOOLEAN MODE) > 0');
+                                    $q->whereRaw('MATCH (`text`) AGAINST ("'.$text.'" IN BOOLEAN MODE) > 0')
+                                    ;
                                 })
                                 ->when(!empty($filters), function($q) use ($filters){
                                    $q->where(function ($query) use ($filters) {
@@ -259,7 +264,9 @@ class Search
                                     });
                                 })
                                 ->when(!empty($search), function($q) use ($search){
-                                    $q->whereRaw('MATCH (`title`) AGAINST (" +'.$search.'" IN BOOLEAN MODE) > 0');
+                                    $q->whereRaw('MATCH (`title`) AGAINST (" +'.$search.'" IN BOOLEAN MODE) > 0')
+                                        ->where('title', 'LIKE', "%".$search."%")
+                                    ;
                                 });
 
                         });
@@ -421,11 +428,197 @@ class Search
             return self::findMissedParents($elements,$model);
 
     }
+
+    public function fillSearchIndex(){
+
+        $ids = DB::select( DB::raw("select id from sets ORDER BY id ")); //limit 58684,10000000
+        foreach($ids as $id){
+            $this->addToIndex($id->id);
+        }
+    }
     /*
      * adds one record to index
      * */
 
-    public function addToIndex(){
+    public function addToIndex($id){
+       echo $id . ' ';
+    //   $id=60902;
+        $item = Item::findOrFail($id);
+        $taxonomies = [
+        'subjects',
+        'objects' ,
+        'periods' ,
+        'schools' ,
+        'communities' ,
+        'collections',
+        'sites' ,
+        'makers',
+        'bibliography',
+            'origins',
+            'historical_origins',
+            'locations'
+        ];
+
+        $taxonomiesWithContext = [
+            'origins',
+            'historical_origins',
+            'locations'
+        ];
+
+
+        $subjects='';
+        $objects = '';
+        $periods = '';
+        $schools = '';
+        $communities = '';
+        $collections ='';
+        $sites = '';
+        $makers ='';
+        $bibliography = '';
+        $origins ='';
+        $historical_origins = '';
+        $locations = '';
+
+        $projects = '';
+        $properties = '';
+        $photographers = '';
+        $title = '';
+        $text = '';
+        $category = '';
+        $hasImage = 0;
+
+        if(!empty($item->old_id) && !empty($item->parent_id)){ // parent_id
+            $parent = $item->parent;
+        //    $parentProjects = array_map(function ($u) {return $u['tag_slug'];}, $parent->projects()->get()->toArray());
+            $parentPropsArrays = array_map(function ($u) {return [$u['pivot']['property_id'] => $u['pivot']['value']];}, $parent->properties->toArray());
+
+            foreach($parentPropsArrays as $curProp){
+                $value = reset($curProp);
+                $key = key($curProp);
+                $parentProps[$key][]=$value;
+            }
+            $parentPhotographers = array_map(function ($u) {return $u['photographer_id'];}, $parent->images->toArray());
+
+        }
+
+        foreach($taxonomies as $taxonomy){
+            if(is_null($item->old_id)){
+                $itemTaxonomies = $item->getTaxonomy($taxonomy);
+            } else {
+                $itemTaxonomies = $item->{$taxonomy};
+            }
+
+            foreach ($itemTaxonomies as $curTax){
+                $$taxonomy .= ' ' . $curTax->name;
+
+                if(in_array($taxonomy, $taxonomiesWithContext)){
+                    foreach($curTax-> getAncestors() as $anc){
+                        $$taxonomy .= ' ' .  $anc->name ;
+                    }
+                }
+            }
+        }
+
+        foreach($item->projects()->get() as $project) {
+        //    if(!isset($parentProjects) || !in_array($project->tag_slug, $parentProjects)){
+                $projects .= ' ' . $project->tag_slug;
+        //    }
+
+        }
+
+        foreach($item->properties as $property) {
+            if(!isset($parentProps) ||
+                !isset($parentProps[$property->pivot->property_id]) ||
+                !in_array($property->pivot->value, $parentProps[$property->pivot->property_id])){
+                $properties .= ' ' . $property->pivot->value;
+            }
+        }
+
+        foreach($item->images as $image) {
+            if(!empty($image->def) || !empty($image->medium) || !empty($image->batch_url)){
+                $hasImage = 1;
+            }
+            if($image->photographer){
+                if(!isset($parentPhotographers) || !in_array($image->photographer->id, $parentPhotographers)){
+                    $photographers .= ' ' . $image->photographer->name;
+                }
+            }
+        }
+
+        if(!empty($item->ntl)){
+            if(!isset($parent) || $parent->ntl != $item->ntl){
+                $title = $item->ntl;
+            }
+        } else {
+            if(!isset($parent) || $parent->name != $item->name){
+                $title = $item->name;
+            }
+        }
+
+
+
+     //   if(!isset($parent) || $parent->category != $item->category){
+            $category = $item->category;
+    //    }
+
+        if(!isset($parent) || $parent->addenda != $item->addenda){
+            $text .= $item->addenda . ' ';
+        }
+
+        if(!isset($parent) || $parent->description != $item->description){
+            $text .= $item->description . ' ';
+        }
+
+        if(!isset($parent) || $parent->date != $item->date){
+            $text .= $item->date . ' ';
+        }
+
+        $text .= $item->id . ' ' . $category . ' '. $properties . ' ' . $title . ' ' . $projects . ' ' .
+            (isset($item->name) ? $item->name : '') . ' ' .
+                            $bibliography . ' ' .
+                            $subjects . ' ' .
+                            $objects . ' ' .
+                            $makers . ' ' .
+                            $periods . ' ' .
+                            $origins . ' ' .
+                            $historical_origins . ' ' .
+                            $schools . ' ' .
+                            $communities . ' ' .
+                            $collections . ' ' .
+                            $sites . ' ' .
+                            $locations . ' ' .
+                            $photographers;
+
+
+        DB::insert(("insert into search(
+                     id,set_id,type,category,title,publish_state,projects,text,subject,object,artist,period,
+                     origin,historical_origin,school,community,
+                     collection,site,location,image
+                     )
+                     values(?, ?,?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                     "), array (
+                            $item->id,
+                            $item->parent_id,
+                            'set',
+                            $category,
+                            $title,
+                            $item->publish_state,
+                            $projects,
+                            $text,
+                            $subjects,
+                            $objects,
+                            $makers,
+                            $periods,
+                            $origins,
+                            $historical_origins,
+                            $schools,
+                            $communities,
+                            $collections,
+                            $sites,
+                            $locations,
+                            $hasImage
+        )) ;
+
         // fill set id if item has no children
     }
 
@@ -434,6 +627,16 @@ class Search
      * */
 
     public function removeFromIndex(){
+
+    }
+
+    public static function uniqueWords($str1, $str2){
+        $diacritics = 'קראטוןםפףךלחיעכגדשץתצמנהבסזלםמןАаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТтУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯяaàȁáâǎãāăȃȧäåẚảạḁąᶏậặầằắấǻẫẵǡǟẩẳⱥæǽǣᴂꬱꜳꜵꜷꜹꜻꜽɐɑꭤᶐꬰɒͣᵃªᵄᵆᵅᶛᴬᴭᴀᴁₐbḃƅƀᵬɓƃḅḇᶀꞗȸßẞꞵꞛꞝᵇᵝᴮᴯʙᴃᵦcćĉčċƈçḉɕꞔꞓȼ¢ʗᴐᴒɔꜿᶗꝢꝣ©ͨᶜᶝᵓᴄdďḋᵭðđɗᶑḓḍḏḑᶁɖȡꝱǳʣǆʤʥȸǲǅꝺẟƍƌͩᵈᶞᵟᴰᴅᴆeèȅéēêěȇĕẽėëẻḙḛẹȩęᶒⱸệḝềḕếḗễểɇəǝɘɚᶕꬲꬳꬴᴔꭁꭂ•ꜫɛᶓȝꜣꝫɜᴈᶔɝɞƩͤᵉᵊᵋᵌᶟᴱᴲᴇⱻₑₔfẜẝƒꬵḟẛᶂᵮꞙꝭꝼʩꟻﬀﬁﬂﬃﬄᶠꜰgǵḡĝǧğġģǥꬶᵷɡᶃɠꞡᵍᶢᴳɢʛhħĥȟḣḧɦɧḫḥẖḩⱨꜧꞕƕɥʮʯͪʰʱꭜᶣᵸꟸᴴʜₕiìȉíīĩîǐȋĭïỉɨḭịįᶖḯıɩɪꭠꭡᴉᵻᵼĳỻİꟾꟷͥⁱᶤᶦᵎᶧᶥᴵᵢjȷĵǰɉɟʝĳʲᶡᶨᴶᴊⱼkḱǩꝁꝃꝅƙḳḵⱪķᶄꞣʞĸᵏᴷᴋₖlĺľŀłꝉƚⱡɫꬷꬸɬꬹḽḷḻļɭȴᶅꝲḹꞎꝇꞁỻǈǉʪʫɮˡᶩᶪꭝꭞᶫᴸʟᴌₗmḿṁᵯṃɱᶆꝳꬺꭑᴟɯɰꟺꟿꟽͫᵐᶬᶭᴹᴍₘnǹńñňŉṅᵰṇṉṋņŋɳɲƞꬻꬼȵᶇꝴꞃꞑꞥᴝᴞǋǌⁿᵑᶯᶮᶰᴺᴻɴᴎₙoᴏᴑòȍóǿőōõôȏǒŏȯöỏơꝍọǫⱺꝋɵøᴓǭộợồṑờốṍṓớỗỡṏȭȱȫổởœɶƣɸƍꝏʘꬽꬾꬿꭀꭁꭂꭃꭄꭢꭣ∅ͦᵒᶱºꟹᶲᴼᴽₒpṕṗꝕꝓᵽᵱᶈꝑþꝥꝧƥƪƿȹꟼᵖᴾᴘᴩᵨₚqʠɋꝙꝗȹꞯʘθᶿrŕȑřȓṙɍᵲꝵꞧṛŗṟᶉꞅɼɽṝɾᵳᴦɿſⱹɹɺɻ®ꝶꭇꭈꭉꭊꭋꭌͬʳʶʴʵᴿʀʁᴙᴚꭆᵣsśŝšṡᵴꞩṣşșȿʂᶊṩṥṧƨʃʄʆᶋᶘꭍʅƪﬅﬆˢᶳᶴꜱₛtťṫẗƭⱦᵵŧꝷṱṯṭţƫʈțȶʇꞇꜩʦʧʨᵺͭᵗᶵᵀᴛₜuùȕúűūũûǔȗŭüůủưꭒʉꞹṷṵụṳųᶙɥựǜừṹǘứǚữṻǖửʊᵫᵿꭎꭏꭐꭑͧᵘᶶᶷᵙᶸꭟᵁᴜᵾᵤvṽⱱⱴꝟṿᶌʋʌͮᵛⱽᶹᶺᴠᵥwẁẃŵẇẅẘⱳẉꝡɯɰꟽꟿʍʬꞶꞷʷᵚᶭᵂᴡxẋẍᶍ×ꭓꭔꭕꭖꭗꭘꭙˣ˟ᵡₓᵪyỳýȳỹŷẏÿẙỷƴɏꭚỵỿɣɤꝩʎƛ¥ʸˠᵞʏᵧzźẑžżƶᵶẓẕʐᶎʑȥⱬɀʒǯʓƺᶚƹꝣᵹᶻᶼᶽᶾᴢᴣ';
+
+        $arrItem = str_word_count($str1, 1, $diacritics);
+        $arrParent =    str_word_count (  $str2 , 1,$diacritics );
+        return implode(" ",array_diff($arrItem,$arrParent)) ;
+
 
     }
 
@@ -461,23 +664,21 @@ class Search
             $ids = implode(', ',$ids);
 
         //    var_dump($ids);
-            $name = ($type =='set') ? "COALESCE(s.name,'')," : "";
-            $groupByName = ($type =='set') ? "s.name, " : "";
+          //  $name = ($type =='set') ? "COALESCE(s.name,'')," : "";
             // ". $type =='set'? "COALESCE(s.name,'')," : "" . "
             DB::insert("insert into search(
                      id,type,category,title,publish_state,projects,text,subject,object,artist,period,
                      origin,historical_origin,school,community,
                      collection,site,location,image
                      ) 
-                     SELECT s.id,'{$type}',
+                     SELECT s.id,'set',
                      s.category,
                      s.ntl,
                      s.publish_state,
                      COALESCE(GROUP_CONCAT(DISTINCT  proj.tag_slug SEPARATOR ' '),''),
-                     CONCAT_WS(' ',{$name} COALESCE(s.ntl,''),COALESCE(s.addenda,''),COALESCE(s.description,''),COALESCE(s.id,''),
+                     CONCAT_WS(' ', COALESCE(s.name,''), COALESCE(s.ntl,''),COALESCE(s.addenda,''),COALESCE(s.description,''),COALESCE(s.id,''),
                      COALESCE(GROUP_CONCAT(DISTINCT  sbj.name SEPARATOR ' '),''),
                      COALESCE(GROUP_CONCAT(DISTINCT  obj.name SEPARATOR ' '),''),
-                     COALESCE(GROUP_CONCAT(DISTINCT  p.name SEPARATOR ' '),''),
                      COALESCE(GROUP_CONCAT(DISTINCT  sc.name SEPARATOR ' '),''),
                      COALESCE(GROUP_CONCAT(DISTINCT  com.name SEPARATOR ' '),''),
                      COALESCE(GROUP_CONCAT(DISTINCT  col.name SEPARATOR ' '),''),
@@ -505,15 +706,12 @@ class Search
                      COALESCE(GROUP_CONCAT(DISTINCT  l2.name SEPARATOR ' '),''),
                      (CASE WHEN CONCAT(COALESCE(ii.medium,''), COALESCE(ii.def,''), COALESCE(ii.batch_url,'')) = '' THEN 0 ELSE 1 END)
                     
-                    FROM {$type}s s
+                    FROM sets s
                     LEFT JOIN taxonomy tsbj ON s.`id` = tsbj.`entity_id`  AND tsbj.taxonomy_type = 'subject'
                     LEFT JOIN `subjects` sbj on sbj.`id` = tsbj.`taxonomy_id` 
                     
                     LEFT JOIN taxonomy tobj ON s.`id` = tobj.`entity_id` AND tobj.taxonomy_type = 'object'
                     LEFT JOIN `objects` obj on obj.`id` = tobj.`taxonomy_id`
-                    
-                    LEFT JOIN taxonomy tp ON s.`id` = tp.`entity_id`  AND tp.taxonomy_type = 'period'
-                    LEFT JOIN `periods` p on p.`id` = tp.`taxonomy_id`
                     
                     LEFT JOIN taxonomy tsc ON s.`id` = tsc.`entity_id`  AND tsc.taxonomy_type = 'school'
                     LEFT JOIN `schools` sc on sc.`id` = tsc.`taxonomy_id`
@@ -552,7 +750,7 @@ class Search
                     
                     LEFT JOIN entity_images ei on ei.entity_id = s.id
                     LEFT JOIN images ii on ei.image_id = ii.id
-                    LEFT JOIN projects proj ON proj.taggable_id = s.id AND proj.taggable_type = '{$type}'
+                    LEFT JOIN projects proj ON proj.taggable_id = s.id AND proj.taggable_type = 'set'
                     WHERE s.id in ({$ids})
                     GROUP BY s.id
                   

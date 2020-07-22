@@ -46,8 +46,6 @@ class addToIndex extends Command
      */
     public function handle()
     {
-        $offset = !empty($this->argument('offset')) ? $this->argument('offset') : 0;
-
-        $this->service->fillIndex($this->argument('type'), $offset);
+        $this->service->fillSearchIndex();
     }
 }
