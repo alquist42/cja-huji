@@ -14,7 +14,9 @@ use App\Models\Taxonomy\Origin;
 use App\Models\Taxonomy\Period;
 use App\Models\Taxonomy\School;
 use App\Models\Taxonomy\Site;
+use App\Models\Taxonomy\Bibliography;
 use App\Models\Taxonomy\Subject;
+use App\Models\Project;
 use Illuminate\Database\Eloquent\Model;
 
 class Classifiable extends Model
@@ -109,6 +111,15 @@ class Classifiable extends Model
     public function sites()
     {
         return $this->morphedByMany(Site::class, 'taxonomy','taxonomy','entity_id', 'taxonomy_id');
+
+    }
+
+    /**
+     * @return BelongsToMany
+     */
+    public function bibliography()
+    {
+        return $this->morphedByMany(Bibliography::class, 'taxonomy','taxonomy','entity_id', 'taxonomy_id');
 
     }
     /**
@@ -248,13 +259,36 @@ class Classifiable extends Model
             ->where('taxonomy_type', '=', 'subject');
     }
 
+    /**
+     * @return BelongsToMany
+     */
+    public function site_details()
+    {
+        return $this->morphMany(Details::class, 'entity', null, 'entity_id')
+            ->where('taxonomy_type', '=', 'site');
+    }
+
+    /**
+     * @return BelongsToMany
+     */
+    public function projects()
+    {
+        return $this->morphMany(Project::class, 'taggable', null, 'taggable_id');
+    }
+
 
     public function getTaxonomy($taxonomy, $details = null){
         $taxonomy_singular_name = str_singular($taxonomy);
         if(is_null($details)){
             $details = $taxonomy_singular_name . "_details";
-            $details = $this->{$details}()->get();
+            if(method_exists($this, $details)){
+                $details = $this->{$details}()->get();
+            } else {
+                $details=[];
+            }
+
         }
+
         if(count($this->{$taxonomy}) == 1 && $this->{$taxonomy}->first()->id == -1 && !count($details)){
             return [];
         }
@@ -282,11 +316,9 @@ class Classifiable extends Model
                     'pivot_taxonomy_id'=>-1]);
                 $this->{$taxonomy}->push($taxonomy_obj);
             }
-        //    dd($taxonomy_obj);
+
             $taxonomy_obj->details = $detail->details;
         }
-     //   if($taxonomy=='makers')
-     //   dd($this->{$taxonomy});
 
         return $this->{$taxonomy};
     }

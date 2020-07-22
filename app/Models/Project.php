@@ -16,4 +16,5 @@ class Project extends Model
     public $timestamps = false;
 
     protected $fillable = ['taggable_id', 'taggable_type', 'tag_slug'];
+
 }

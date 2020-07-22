@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Kalnoy\Nestedset\NodeTrait;
+use App\Traits\SearchableByIndex;
 
 class Item extends Classifiable
 {
-    use NodeTrait, SearchableByName;
+    use NodeTrait;
+    use SearchableByName, SearchableByIndex;
 
     const PUBLISH_STATE_NOT_PUBLISHED = 0;
     const PUBLISH_STATE_PREPARED_FOR_PUBLISHING = 1;
@@ -73,6 +75,7 @@ class Item extends Classifiable
         'historical_origins',
         'periods',
         'sites',
+        'bibliography',
 //        'congregations',
         'collections',
         'communities',
@@ -101,6 +104,7 @@ class Item extends Classifiable
         'activity_dates_object',
         'category_object',
         'copyright',
+
 
         'images',
         'images.photographer',

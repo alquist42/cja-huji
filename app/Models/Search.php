@@ -13,7 +13,11 @@ class Search extends Model
      * @var string
      */
     protected $table = 'search';
+    protected $fillable = ['id', 'set_id', 'type', 'category', 'title', 'publish_state', 'projects', 'text', 'subject', 'object', 'artist', 'period', 'origin',
+                            'historical_origin', 'school', 'community', 'collection', 'site', 'location', 'image'];
 
+
+    public $timestamps = false;
     public function sets()
     {
         return $this->morphToMany(Item::class, 'id', 'id');
