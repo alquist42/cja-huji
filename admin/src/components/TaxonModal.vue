@@ -13,12 +13,10 @@
       </v-btn>
     </template>
 
-    <base-material-card class="px-5 py-3">
-      <template v-slot:heading>
-        <div class="display-2 font-weight-light">
-          Select {{ taxon.replace('_', ' ') }}
-        </div>
-      </template>
+    <v-card class="px-5 py-3">
+      <div class="headline font-weight-light">
+        Select {{ taxon.replace('_', ' ') }}
+      </div>
       <v-card-text>
         <v-autocomplete
           autofocus
@@ -54,7 +52,7 @@
           Ok
         </v-btn>
       </v-card-actions>
-    </base-material-card>
+    </v-card>
   </v-dialog>
 </template>
 
@@ -109,7 +107,7 @@
         }
 
         this.isLoading = true
-        const { data } = await this.$http.get(`/api/autocomplete/?project=catalogue&type=${this.taxon}&term=${search}`)
+        const { data } = await this.$http.get(`autocomplete/?project=catalogue&type=${this.taxon}&term=${search}`)
         this.isLoading = false
         this.items = this.excludeUnknown(data || [])
       },

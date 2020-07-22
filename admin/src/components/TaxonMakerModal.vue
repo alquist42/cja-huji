@@ -13,12 +13,10 @@
       </v-btn>
     </template>
 
-    <base-material-card class="px-5 py-3">
-      <template v-slot:heading>
-        <div class="display-2 font-weight-light">
-          Add maker
-        </div>
-      </template>
+    <v-card class="px-5 py-3">
+      <div class="headline font-weight-light">
+        Add maker
+      </div>
       <v-card-text>
         <v-autocomplete
           autofocus
@@ -67,7 +65,7 @@
           Ok
         </v-btn>
       </v-card-actions>
-    </base-material-card>
+    </v-card>
   </v-dialog>
 </template>
 
@@ -111,7 +109,7 @@
         }
 
         this.isLoading.artist = true
-        const { data } = await this.$http.get(`/api/autocomplete/?project=catalogue&type=${type}&term=${search}`)
+        const { data } = await this.$http.get(`autocomplete/?project=catalogue&type=${type}&term=${search}`)
         this.isLoading.artist = false
         this.items[type] = data || []
       },

@@ -109,28 +109,31 @@
         {
           icon: 'mdi-view-dashboard',
           title: 'Overview',
-          href: '/',
+          to: { name: 'Dashboard' },
+          exact: true,
         },
-        {
-          icon: 'mdi-account',
-          title: 'Properties',
-          href: '/staff/properties',
-        },
+        // {
+        //   icon: 'mdi-account',
+        //   title: 'Properties',
+        //   to: { name: 'Properties' },
+        //   exact: true,
+        // },
         {
           title: 'Catalogue',
           icon: 'mdi-format-font',
-          href: '/staff/items',
+          to: { name: 'Items' },
+          exact: false,
         },
         {
           title: 'Media',
           icon: 'mdi-chart-bubble',
-          href: '/staff/media',
+          to: { name: 'Media' },
+          exact: false,
         },
       ],
     }),
 
     computed: {
-      ...mapState(['barColor', 'barImage']),
       drawer: {
         get () {
           return this.$store.state.drawer
@@ -139,15 +142,19 @@
           this.$store.commit('SET_DRAWER', val)
         },
       },
+
       computedItems () {
         return this.items.map(this.mapItem)
       },
+
       profile () {
         return {
           avatar: true,
           title: 'avatar',
         }
       },
+
+      ...mapState(['barColor', 'barImage']),
     },
 
     methods: {

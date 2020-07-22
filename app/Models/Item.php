@@ -189,11 +189,16 @@ class Item extends Classifiable
     }
 
     public function getLeafAttribute() {
-        return $this->leaf();
+        return $this->leaf(true);
     }
 
-    public function leaf() {
+    public function leaf($full) {
         $ancestors = Item::ancestorsAndSelf($this->id);
+
+        if ($full) {
+            return $ancestors->merge($this->descendants)->toTree();
+        }
+
         foreach ($ancestors as $anc) {
             if (empty($anc->parent_id)) {
                 $descendants = $anc->descendantsOf($anc->id);
@@ -214,14 +219,9 @@ class Item extends Classifiable
         }
 
         return $ancestors->merge($descendants)->toTree();
-        // return Item::ancestorsAndSelf($this->id)->merge($this->descendants)->toTree();
     }
 
     public function url(){
         return request()->project . "/items/" . $this->id;
     }
-
-//    public function image_url(){
-//        return  "/images/s-" . $this->id ;
-//    }
 }

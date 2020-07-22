@@ -1,5 +1,8 @@
 <template>
-  <v-app>
+  <v-container
+    fluid
+    tag="section"
+  >
     <v-snackbar
       v-model="snackbar"
       :color="snackbarColor"
@@ -27,29 +30,16 @@
       @confirm="createItemDetachingImages"
     />
 
-    <dashboard-core-app-bar />
+    <dashboard-core-app-bar :loading="isLoading" />
 
-    <dashboard-core-drawer />
+    <div id="media-wrapper" />
 
-    <v-main>
-      <v-container
-        id="user-profile"
-        fluid
-        tag="section"
-      >
-        <metadata-editor-drawer />
-
-        <slot name="media-manager" />
-      </v-container>
-
-      <!--      <dashboard-core-footer />-->
-    </v-main>
-
-    <!--    <dashboard-core-settings />-->
-  </v-app>
+    <metadata-editor-drawer />
+  </v-container>
 </template>
 
 <script>
+  /* global EventHub */
   import CreateItemFromImages from '../mixins/CreateItemFromImages'
   import SnackBar from '../mixins/SnackBar'
 
@@ -57,14 +47,23 @@
     name: 'Media',
 
     components: {
-      DashboardCoreAppBar: () => import('../views/dashboard/components/core/AppBar'),
-      DashboardCoreDrawer: () => import('../views/dashboard/components/core/Drawer'),
-      // DashboardCoreSettings: () => import('./components/core/Settings'),
-      // DashboardCoreView: () => import('../components/core/View'),
+      DashboardCoreAppBar: () => import('./dashboard/components/core/AppBar'),
       MetadataEditorDrawer: () => import('../components/MetadataEditorDrawer'),
       ConfirmationModal: () => import('../components/ConfirmationModal'),
     },
 
     mixins: [CreateItemFromImages, SnackBar],
+
+    data: () => ({
+      isLoading: false,
+    }),
+
+    created () {
+      EventHub.fire('show-media-manager')
+    },
+
+    beforeDestroy () {
+      EventHub.fire('hide-media-manager')
+    },
   }
 </script>

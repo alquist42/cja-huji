@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+
 Route::post('/auth/token', 'Api\AuthController@getAccessToken');
 Route::post('/auth/reset-password', 'Api\AuthController@passwordResetRequest');
 Route::post('/auth/change-password', 'Api\AuthController@changePassword');
@@ -12,7 +14,6 @@ Route::group(['namespace' => 'Api'], function () {
         Route::get('/items/{item}', 'ItemsController@show');
         Route::put('/items/{item}', 'ItemsController@update');
         Route::delete('/items/{item}', 'ItemsController@destroy');
-        Route::patch('/items/{item}/copy/{source}', 'ItemsController@copy');
         Route::put('/items/{item}/images', 'ItemImagesController@update');
 
         //   Route::get('/images', 'ImagesController@index');
@@ -23,11 +24,14 @@ Route::group(['namespace' => 'Api'], function () {
         Route::get('/taxonomy/{type}/{id}', 'TaxonomyController@show');
         Route::get('/autocomplete', 'TaxonomyController@search');
 
+        Route::get('/properties', 'PropertiesController@index');
         Route::get('/categories', 'CategoriesController@index');
         Route::get('/dates', 'DatesController@index');
         Route::get('/copyrights', 'CopyrightsController@index');
         Route::get('/photographers', 'PhotographersController@index');
         Route::get('/projects', 'ProjectsController@index');
+
+        Route::get('/dashboard', 'DashboardController@index');
     });
 
     Route::group(['namespace' => 'MHS', 'prefix' => 'mhs'], function () {

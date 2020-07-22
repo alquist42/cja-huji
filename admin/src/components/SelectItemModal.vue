@@ -3,12 +3,10 @@
     v-model="dialog"
     max-width="800"
   >
-    <base-material-card class="px-5 py-3">
-      <template v-slot:heading>
-        <div class="display-2 font-weight-light">
-          {{ title }}
-        </div>
-      </template>
+    <v-card class="px-5 py-3">
+      <div class="headline font-weight-light">
+        {{ title }}
+      </div>
       <v-card-text>
         <v-autocomplete
           autofocus
@@ -39,7 +37,7 @@
           Copy
         </v-btn>
       </v-card-actions>
-    </base-material-card>
+    </v-card>
   </v-dialog>
 </template>
 
@@ -96,7 +94,7 @@
         }
 
         this.isLoading = true
-        const { data } = await this.$http.get(`/api/items/search/?project=catalogue&search=${search}`)
+        const { data } = await this.$http.get(`items/search/?project=catalogue&search=${search}`)
         this.isLoading = false
         this.items = data
       },

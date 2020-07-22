@@ -46,38 +46,20 @@ class ItemsController extends Controller
 
     public function index(Request $request)
     {
-//        $page = $request->get('page');
+        $sortBy = $request->query('sort_by', null);
+        $sortDesc = $request->query('desc', '0');
 
-        $filters = collect($request->only($this->allowed_filters))->filter(function ($value) {
-            return null !== $value;
-        })->map(function ($value) {
-            return is_array($value) ? $value : [$value];
-        })->toArray();
-
-
-        $data = $this->search->findByTaxonomy($filters);
-        $items = $data['collection'];
-        $pagination =  $data['pagination'];
-
-        return response()->json([
-            'data'=> $items,
-            'meta' => $pagination
-        ]);
-
-
-
-//        return view('index', [
-//            "items" => $items ,
-//            'pagination' => $pagination,
-//            'setsCount' => $data['setsCount'],
-//            'itemsCount' => $data['itemsCount']
-//        ]);
+        return Item::with('images')->when($sortBy, function ($query) use ($sortBy, $sortDesc) {
+            return $query->orderBy($sortBy, ($sortDesc === '0') ? 'asc' : 'desc');
+        })
+            ->where('parent_id', '=', null)
+            ->paginate($request->query('per_page', null));;
     }
 
     public function show(Item $item)
     {
         $item->load(array_diff(Item::$relationships, ['ancestors']));
-        $item->leaf = $item->leaf();
+        $item->leaf = [];
         $item->load(['ancestors' => function ($query) {
             $query->with([
                 'locations',
@@ -108,7 +90,7 @@ class ItemsController extends Controller
 
     public function update(Request $request, Item $item) {
         $item = (new ItemService($item))->saveItem($request->all());
-        $item->leaf = $item->leaf();
+        $item->leaf = [];
         $item->load(['ancestors' => function ($query) {
             $query->with([
                 'locations',
@@ -131,18 +113,6 @@ class ItemsController extends Controller
         $item->delete();
 
         return response('', 204);
-    }
-
-    /**
-     * Copy attributes from other item.
-     *
-     * @param Item $item
-     * @param Item $source
-     * @return Item
-     */
-    public function copy(Item $item, Item $source)
-    {
-        return (new ItemService($item))->copyFrom($source);
     }
 
     public function search(Request $request)

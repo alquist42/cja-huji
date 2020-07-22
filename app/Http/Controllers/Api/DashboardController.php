@@ -1,29 +1,17 @@
 <?php
 
+namespace App\Http\Controllers\Api;
 
-namespace App\Http\Controllers;
-
+use App\Http\Controllers\Controller;
 use App\Models\Category;
-use App\Models\Property;
 use App\Models\Item;
-use App\Models\Taxonomy\Artist;
+use App\Models\Property;
 use App\Models\Taxonomy\Collection;
-use App\Models\Taxonomy\Community;
-use App\Models\Taxonomy\Details;
-use App\Models\Taxonomy\HistoricalOrigin;
-use App\Models\Taxonomy\Location;
-use App\Models\Taxonomy\Maker;
-use App\Models\Taxonomy\Origin;
-use App\Models\Taxonomy\Period;
-use App\Models\Taxonomy\Profession;
-use App\Models\Taxonomy\School;
-use App\Models\Taxonomy\Subject;
 use App\Models\Tenant;
-use Illuminate\Support\Facades\View;
 
-class AdminController extends Controller
+class DashboardController extends Controller
 {
-    public function viewLinks($name = "index")
+    public function index()
     {
         $sets = Item::with(Item::$relationships)->paginate(3);
 
@@ -48,7 +36,8 @@ class AdminController extends Controller
 
 
         $options = Collection::get()->sortBy('name')->values()->toTree();
-        return view('admin', ['name' => 'Dash', 'data' => [
+
+        return [
             'collection' => $sets,
             'options' => $options,
             //'locations' => $locations,
@@ -66,36 +55,6 @@ class AdminController extends Controller
             'item' => $item,
             'projects' => $projects,
             'categories' => $categories,
-        ]]);
-    }
-
-    public function items() {
-        $collection = Item::with(Item::$relationships)->paginate(20, ['*'], 'page', 30);
-
-        return view('admin', [
-            'name' => 'Items',
-            'data' => [
-                'collection' => $collection
-            ]
-        ]);
-    }
-
-    public function item($item) {
-//        $item = Item::with(Item::$relationships)->findOrFail($item);
-        $properties = Property::get()->sortBy('name')->values();
-        return view('admin', [
-            'name' => 'Item',
-            'data' => [
-                'id' => $item,
-                'properties' =>  $properties,
-            ]
-        ]);
-    }
-
-    public function media() {
-        return view('admin', [
-            'name' => 'Media',
-            'data' => [],
-        ]);
+        ];
     }
 }

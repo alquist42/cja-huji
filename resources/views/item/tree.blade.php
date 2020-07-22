@@ -4,7 +4,7 @@
     </div>
     <div class="card-body">
         @php
-            $nodes = $item->leaf();
+            $nodes = $item->leaf(false);
 
             $traverse = function ($categories, $prefix = '<li>', $suffix = '</li>') use (&$traverse, $item) {
                 foreach ($categories as $category) {

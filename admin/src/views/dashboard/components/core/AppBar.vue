@@ -19,34 +19,42 @@
       </v-icon>
     </v-btn>
 
-    <slot />
-
     <v-toolbar-title
       v-if="$route"
       class="hidden-sm-and-down font-weight-light"
-      v-text="$route.name"
+      v-text="$route.meta.title || $route.name"
     />
+
+    <v-progress-linear
+      :active="loading"
+      indeterminate
+      absolute
+      bottom
+      color="accent"
+    ></v-progress-linear>
 
     <v-spacer />
 
-    <v-text-field
-      label="Search"
-      hide-details
-    >
-      <template
-        v-if="$vuetify.breakpoint.mdAndUp"
-        v-slot:append-outer
-      >
-        <v-btn
-          icon
-          class="mt-n2"
-        >
-          <v-icon>mdi-magnify</v-icon>
-        </v-btn>
-      </template>
-    </v-text-field>
+<!--    <v-text-field-->
+<!--      label="Search"-->
+<!--      hide-details-->
+<!--    >-->
+<!--      <template-->
+<!--        v-if="$vuetify.breakpoint.mdAndUp"-->
+<!--        v-slot:append-outer-->
+<!--      >-->
+<!--        <v-btn-->
+<!--          icon-->
+<!--          class="mt-n2"-->
+<!--        >-->
+<!--          <v-icon>mdi-magnify</v-icon>-->
+<!--        </v-btn>-->
+<!--      </template>-->
+<!--    </v-text-field>-->
 
     <div class="mx-3" />
+
+    <slot name="controls" />
 
   <!--    <v-btn-->
   <!--      class="ml-2"-->
@@ -150,6 +158,11 @@
 
     props: {
       value: {
+        type: Boolean,
+        default: false,
+      },
+
+      loading: {
         type: Boolean,
         default: false,
       },
