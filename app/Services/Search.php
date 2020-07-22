@@ -440,8 +440,8 @@ class Search
      * adds one record to index
      * */
 
-    public function addToIndex($id){
-       echo $id . ' ';
+    public static function addToIndex($id){
+    //   echo $id . ' ';
     //   $id=60902;
         $item = Item::findOrFail($id);
         $taxonomies = [
@@ -589,37 +589,27 @@ class Search
                             $locations . ' ' .
                             $photographers;
 
-
-        DB::insert(("insert into search(
-                     id,set_id,type,category,title,publish_state,projects,text,subject,object,artist,period,
-                     origin,historical_origin,school,community,
-                     collection,site,location,image
-                     )
-                     values(?, ?,?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                     "), array (
-                            $item->id,
-                            $item->parent_id,
-                            'set',
-                            $category,
-                            $title,
-                            $item->publish_state,
-                            $projects,
-                            $text,
-                            $subjects,
-                            $objects,
-                            $makers,
-                            $periods,
-                            $origins,
-                            $historical_origins,
-                            $schools,
-                            $communities,
-                            $collections,
-                            $sites,
-                            $locations,
-                            $hasImage
-        )) ;
-
-        // fill set id if item has no children
+        \App\Models\Search::updateOrCreate(['id' => $item->id], [
+            'set_id' => $item->parent_id,
+            'type' => 'set',
+            'category' => $category,
+            'title' => $title,
+            'publish_state' => $item->publish_state,
+            'projects' => $projects,
+            'text' => $text,
+            'subject' => $subjects,
+            'object' => $objects,
+            'artist' => $makers,
+            'period' => $periods,
+            'origin' => $origins,
+            'historical_origin' => $historical_origins,
+            'school' => $schools,
+            'community' => $communities,
+            'collection' => $collections,
+            'site' => $sites,
+            'location' => $locations,
+            'image' => $hasImage
+        ]);
     }
 
     /*
