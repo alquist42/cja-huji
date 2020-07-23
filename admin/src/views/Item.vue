@@ -340,31 +340,10 @@
           :disabled="isLoading"
         />
 
-        <base-material-card class="px-5 py-3">
-          <template v-slot:heading>
-            <div class="display-2 font-weight-light">
-              Item's Composition
-            </div>
-          </template>
-          <v-card-text>
-            <v-treeview
-              open-on-click
-              :active="compositionTreeActive"
-              :open="compositionTreeOpen"
-              :items="item.leaf"
-            >
-              <template #append="{ item: treeItem }">
-                <a
-                  v-if="id !== treeItem.id"
-                  :href="`/staff/items/${treeItem.id}`"
-                  style="text-decoration: none;"
-                >
-                  <v-icon>mdi-arrow-right-bold-box</v-icon>
-                </a>
-              </template>
-            </v-treeview>
-          </v-card-text>
-        </base-material-card>
+        <item-composition
+          v-model="item"
+          :disabled="isLoading"
+        />
 
         <base-material-card class="px-5 py-3">
           <template v-slot:heading>
@@ -426,6 +405,7 @@
       ItemImages: () => import('../components/Partials/Item/Images'),
       ItemSettings: () => import('../components/Partials/Item/Settings'),
       ItemBaseFields: () => import('../components/Partials/Item/BaseFields'),
+      ItemComposition: () => import('../components/Partials/Item/Composition'),
     },
 
     mixins: [CreateItemFromImages, SnackBar],
@@ -581,14 +561,6 @@
         }
       },
 
-      compositionTreeOpen () {
-        return this.item.ancestors.map(item => item.id).concat([this.id])
-      },
-
-      compositionTreeActive () {
-        return this.item.leaf.length ? [this.id] : []
-      },
-
       taxonomyInheritance () {
         // eslint-disable-next-line
         let taxonomyInheritance = {}
@@ -640,6 +612,11 @@
       hasImages () {
         return this.item.images.length
       },
+    },
+
+    beforeRouteUpdate (to, from, next) {
+      next()
+      this.getItem()
     },
 
     mounted () {
