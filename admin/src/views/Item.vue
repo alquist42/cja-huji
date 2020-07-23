@@ -345,32 +345,10 @@
           :disabled="isLoading"
         />
 
-        <base-material-card class="px-5 py-3">
-          <template v-slot:heading>
-            <div class="display-2 font-weight-light">
-              Map
-            </div>
-          </template>
-          <v-card-text>
-            <v-text-field
-              v-model="item.geo_lat"
-              label="Latitude"
-              type="number"
-              outlined
-            />
-            <v-text-field
-              v-model="item.geo_lng"
-              label="Longitude"
-              type="number"
-              outlined
-            />
-            <v-text-field
-              v-model="item.geo_options"
-              outlined
-              label="Geolocation options"
-            />
-          </v-card-text>
-        </base-material-card>
+        <item-map
+          v-model="item"
+          :disabled="isLoading"
+        />
       </v-col>
     </v-row>
   </v-container>
@@ -406,6 +384,7 @@
       ItemSettings: () => import('../components/Partials/Item/Settings'),
       ItemBaseFields: () => import('../components/Partials/Item/BaseFields'),
       ItemComposition: () => import('../components/Partials/Item/Composition'),
+      ItemMap: () => import('../components/Partials/Item/Map'),
     },
 
     mixins: [CreateItemFromImages, SnackBar],
