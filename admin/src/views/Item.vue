@@ -340,42 +340,15 @@
       </v-col>
 
       <v-col cols="4">
-        <base-material-card class="px-5 py-3">
-          <template v-slot:heading>
-            <v-row no-gutters>
-              <v-col class="flex-grow-1 display-2 font-weight-light">
-                Images: {{ item.images ? item.images.length : '0' }}
-              </v-col>
-              <v-col
-                cols="auto"
-                class="d-flex align-center"
-              >
-                <v-btn
-                  icon
-                  :disabled="isLoading || !id"
-                  @click="openMediaManagerModal"
-                >
-                  <v-icon>mdi-pencil</v-icon>
-                </v-btn>
-              </v-col>
-            </v-row>
-          </template>
-          <v-card-text>
-            <v-carousel height="250">
-              <v-carousel-item
-                v-for="image in item.images"
-                :key="image.id"
-              >
-                <v-img
-                  :lazy-src="`/storage/${image.small || image.medium || image.def || image.batch_url}`"
-                  :src="`http://cja.huji.ac.il/${image.small || image.medium || image.def || image.batch_url}`"
-                  max-height="250px"
-                  contain
-                />
-              </v-carousel-item>
-            </v-carousel>
-          </v-card-text>
-        </base-material-card>
+        <item-images :images="item.images">
+          <v-btn
+            icon
+            :disabled="isLoading || !id"
+            @click="openMediaManagerModal"
+          >
+            <v-icon>mdi-pencil</v-icon>
+          </v-btn>
+        </item-images>
 
         <base-material-card class="px-5 py-3">
           <template v-slot:heading>
@@ -573,7 +546,8 @@
       TaxonMakerModal: () => import('../components/TaxonMakerModal'),
       SelectItemModal: () => import('../components/SelectItemModal'),
       ConfirmationModal: () => import('../components/ConfirmationModal'),
-      ItemBasic: () => import('../components/ItemBasic'),
+      ItemBasic: () => import('../components/Partials/Item/Basic'),
+      ItemImages: () => import('../components/Partials/Item/Images'),
     },
 
     mixins: [CreateItemFromImages, SnackBar],
