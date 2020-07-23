@@ -329,48 +329,10 @@
           @success="showSnackbarSuccess($event)"
         />
 
-        <base-material-card class="px-5 py-3">
-          <template v-slot:heading>
-            <div class="display-2 font-weight-light">
-              Settings
-            </div>
-          </template>
-          <v-card-text>
-            <v-select
-              v-model="item.category_object"
-              :items="possibleCategories"
-              label="Category"
-              item-text="name"
-              item-value="slug"
-              return-object
-              outlined
-            />
-            <v-select
-              v-model="item.projects"
-              :items="possibleProjects"
-              label="Projects"
-              item-text="title"
-              item-value="tag_slug"
-              return-object
-              multiple
-              chips
-              deletable-chips
-              small-chips
-              outlined
-            />
-            <v-select
-              v-model="item.publish_state"
-              :items="possiblePublishStates"
-              label="Publish state"
-              outlined
-            />
-            <v-text-field
-              v-model="item.publish_state_reason"
-              label="Publish state reason"
-              outlined
-            />
-          </v-card-text>
-        </base-material-card>
+        <item-settings
+          v-model="item"
+          :disabled="isLoading"
+        />
 
         <base-material-card class="px-5 py-3">
           <template v-slot:heading>
@@ -496,8 +458,6 @@
 </template>
 
 <script>
-  /* global EventHub */
-
   import { singular } from 'pluralize'
   import { TiptapVuetify, Heading, Bold, Italic, Strike, Underline, Code, Paragraph, BulletList, OrderedList, ListItem, Link, Blockquote, HardBreak, HorizontalRule, History } from 'tiptap-vuetify'
   import _sortBy from 'lodash/sortBy'
@@ -505,8 +465,6 @@
   import SnackBar from '../mixins/SnackBar'
 
   const PUBLISH_STATE_NOT_PUBLISHED = 0
-  const PUBLISH_STATE_PREPARED_FOR_PUBLISHING = 1
-  const PUBLISH_STATE_PUBLISHED = 2
 
   const groupBy = function (xs, key) {
     return xs.reduce(function (rv, x) {
@@ -526,6 +484,7 @@
       ConfirmationModal: () => import('../components/ConfirmationModal'),
       ItemBasic: () => import('../components/Partials/Item/Basic'),
       ItemImages: () => import('../components/Partials/Item/Images'),
+      ItemSettings: () => import('../components/Partials/Item/Settings'),
     },
 
     mixins: [CreateItemFromImages, SnackBar],
@@ -656,8 +615,6 @@
       ],
 
       properties: [],
-      categories: [],
-      projects: [],
       dates: [],
       searchDate: null,
       isLoadingDates: false,
@@ -693,39 +650,6 @@
           const field = `${singular(name)}_details`
           return this.item[field] && this.item[field][0] && this.item[field][0].details
         }
-      },
-
-      possiblePublishStates () {
-        return [
-          {
-            value: PUBLISH_STATE_NOT_PUBLISHED,
-            text: 'Not published',
-          },
-          {
-            value: PUBLISH_STATE_PREPARED_FOR_PUBLISHING,
-            text: 'Prepared for publishing',
-          },
-          {
-            value: PUBLISH_STATE_PUBLISHED,
-            text: 'Published',
-          },
-        ]
-      },
-
-      possibleCategories () {
-        const sortedCategories = _sortBy(this.categories, 'name')
-
-        return [
-          {
-            slug: null,
-            name: 'None',
-          },
-          ...sortedCategories,
-        ]
-      },
-
-      possibleProjects () {
-        return _sortBy(this.projects, 'title')
       },
 
       compositionTreeOpen () {
@@ -868,14 +792,8 @@
             this.item = response.data
           }
 
-          response = await this.$http.get('categories?project=catalogue')
-          this.categories = response.data
-
           response = await this.$http.get('properties?project=catalogue')
           this.properties = response.data
-
-          response = await this.$http.get('projects?project=catalogue')
-          this.projects = response.data
 
           this.updatePropertiesPanels()
           console.log(this.item)

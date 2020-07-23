@@ -43,6 +43,7 @@
       >
         <v-text-field
           :value="value.name"
+          :disabled="disabled"
           label="Name"
           required
           outlined
@@ -51,6 +52,7 @@
 
         <v-text-field
           :value="value.ntl"
+          :disabled="disabled"
           label="NTL"
           required
           outlined
@@ -60,6 +62,7 @@
         <span>Description</span>
         <tiptap-vuetify
           :value="value.description"
+          :disabled="disabled"
           :extensions="extensions"
           @input="update('description', $event)"
         />
