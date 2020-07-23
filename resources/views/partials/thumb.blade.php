@@ -1,16 +1,16 @@
 @php
-$set = \App\Models\Item::where('id', $id)->first();
+$item = \App\Models\Item::where('id', $id)->first();
 @endphp
-@if(isset($set))
+@if(isset($item))
 <div class="card mb-3" style="max-width: 540px;">
-    <a href="/{{ request()->project }}/items/{{ $set->id }}">
+    <a href="/{{ request()->project }}/items/{{ $item->id }}">
         <div class="row no-gutters">
             <div class="col-md-4">
-                <img src="http://cja.huji.ac.il/{{ $set->images()->first()->url() }}" class="card-img" alt="{{ $set->name() }}">
+                <img src="/images/{{ $item->id }}-{{ $item->images()->first()->id }}-thumb.png" class="card-img" alt="{{ $item->name() }}">
             </div>
             <div class="col-md-8">
                 <div class="card-body">
-                    <h5 class="card-title">{{ $set->name() }}</h5>
+                    <h5 class="card-title">{{ $item->name() }}</h5>
                 </div>
             </div>
         </div>
