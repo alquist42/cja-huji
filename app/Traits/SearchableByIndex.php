@@ -12,5 +12,8 @@ trait SearchableByIndex
         static::saved(function ($model) {
             Search::addToIndex($model->id);
         });
+    static::deleted(function ($model) {
+        Search::removeFromIndex($model->id);
+    });
     }
 }

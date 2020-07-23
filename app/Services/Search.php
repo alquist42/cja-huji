@@ -616,8 +616,8 @@ class Search
      * removes one record from index
      * */
 
-    public function removeFromIndex(){
-
+    public function removeFromIndex($id){
+        \App\Models\Search::where('id','=',$id)->delete();
     }
 
     public static function uniqueWords($str1, $str2){
