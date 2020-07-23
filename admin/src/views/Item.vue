@@ -20,14 +20,6 @@
       </template>
     </v-snackbar>
 
-    <select-item-modal
-      :exclude="id"
-      :value="copyAttributesFromObjectDialog"
-      title="Select object to copy attributes from"
-      @cancel="copyAttributesFromObjectDialog = false"
-      @input="copyAttributesFromObjectDialog = false; copyAttributesFrom($event)"
-    />
-
     <confirmation-modal
       :value="deleteItemConfirmationDialog"
       title="Delete item"
@@ -104,23 +96,13 @@
 
     <v-row>
       <v-col cols="8">
-        <item-basic v-model="item">
-          <v-tooltip left>
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                v-bind="attrs"
-                icon
-                :loading="isCopyingAttributes"
-                :disabled="isLoading"
-                v-on="on"
-                @click="copyAttributesFromObjectDialog = true"
-              >
-                <v-icon>mdi-content-copy</v-icon>
-              </v-btn>
-            </template>
-            <span>Copy all attributes from object</span>
-          </v-tooltip>
-        </item-basic>
+        <item-basic
+          v-model="item"
+          :disabled="isLoading"
+          @is-copying-attributes:update="isCopyingAttributes = $event"
+          @attributes-copied="handleAttributesCopied"
+          @attributes-copying-error="showSnackbarError('An error occurred')"
+        />
         <base-material-card class="px-5 py-3">
           <template v-slot:heading>
             <div class="display-2 font-weight-light">
@@ -544,7 +526,6 @@
       DashboardCoreAppBar: () => import('./dashboard/components/core/AppBar'),
       TaxonModal: () => import('../components/TaxonModal'),
       TaxonMakerModal: () => import('../components/TaxonMakerModal'),
-      SelectItemModal: () => import('../components/SelectItemModal'),
       ConfirmationModal: () => import('../components/ConfirmationModal'),
       ItemBasic: () => import('../components/Partials/Item/Basic'),
       ItemImages: () => import('../components/Partials/Item/Images'),
@@ -553,7 +534,6 @@
     mixins: [CreateItemFromImages, SnackBar],
 
     data: () => ({
-      copyAttributesFromObjectDialog: false,
       deleteItemConfirmationDialog: false,
       isGettingItem: false,
       isSaving: false,
@@ -1094,35 +1074,10 @@
         this.item[taxonName] = [{ id: -1, name: 'unknown' }]
       },
 
-      async copyAttributesFrom (itemId) {
-        this.isCopyingAttributes = true
-        try {
-          const { data } = await this.$http.get(`items/${itemId}?project=catalogue`)
-
-          const keepOriginal = [
-            'id',
-            'old_id',
-            'parent_id',
-            'images',
-            'children',
-            'ancestors',
-            'descendants',
-            'leaf',
-          ]
-          Object.keys(this.item).forEach(field => {
-            if (!keepOriginal.includes(field)) {
-              this.item[field] = data[field]
-            }
-          })
-
-          this.updatePropertiesPanels()
-          this.showSnackbarSuccess('Attributes have been copied')
-        } catch (e) {
-          this.showSnackbarError('An error occurred')
-          console.log(e)
-        } finally {
-          this.isCopyingAttributes = false
-        }
+      handleAttributesCopied (item) {
+        this.item = item
+        this.updatePropertiesPanels()
+        this.showSnackbarSuccess('Attributes have been copied')
       },
 
       async deleteItem () {

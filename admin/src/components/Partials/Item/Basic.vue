@@ -1,5 +1,12 @@
 <template>
   <base-material-card class="px-5 py-3">
+    <select-item-modal
+      :exclude="value.id"
+      v-model="copyAttributesFromObjectDialog"
+      title="Select object to copy attributes from"
+      @selected="copyAttributesFrom"
+    />
+
     <template v-slot:heading>
       <v-row no-gutters>
         <v-col class="flex-grow-1 display-2 font-weight-light">
@@ -10,7 +17,22 @@
           cols="auto"
           class="d-flex align-center"
         >
-          <slot />
+          <v-tooltip left>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                v-bind="attrs"
+                icon
+                :loading="isCopyingAttributes"
+                :disabled="disabled"
+                v-on="on"
+                @click="copyAttributesFromObjectDialog = true"
+              >
+                <v-icon>mdi-content-copy</v-icon>
+              </v-btn>
+            </template>
+            <span>Copy all attributes from object</span>
+          </v-tooltip>
+          <!--<slot />-->
         </v-col>
       </v-row>
     </template>
@@ -54,12 +76,18 @@
 
     components: {
       TiptapVuetify,
+      SelectItemModal: () => import('../../../components/SelectItemModal'),
     },
 
     props: {
       value: {
         type: Object,
         required: true,
+      },
+
+      disabled: {
+        type: Boolean,
+        default: false,
       },
     },
 
@@ -85,9 +113,49 @@
         Paragraph,
         HardBreak,
       ],
+      copyAttributesFromObjectDialog: false,
+      isCopyingAttributes: false,
     }),
 
+    watch: {
+      isCopyingAttributes (val) {
+        this.$emit('is-copying-attributes:update', val)
+      },
+    },
+
     methods: {
+      async copyAttributesFrom (itemId) {
+        this.copyAttributesFromObjectDialog = false
+        this.isCopyingAttributes = true
+        try {
+          const { data } = await this.$http.get(`items/${itemId}?project=catalogue`)
+
+          const keepOriginal = [
+            'id',
+            'old_id',
+            'parent_id',
+            'images',
+            'children',
+            'ancestors',
+            'descendants',
+            'leaf',
+          ]
+          const item = { ...this.value }
+          Object.keys(item).forEach(field => {
+            if (!keepOriginal.includes(field)) {
+              item[field] = data[field]
+            }
+          })
+
+          this.$emit('attributes-copied', item)
+        } catch (e) {
+          this.$emit('attributes-copying-error')
+          console.log(e)
+        } finally {
+          this.isCopyingAttributes = false
+        }
+      },
+
       update (key, value) {
         this.$emit('input', { ...this.value, [key]: value })
       },

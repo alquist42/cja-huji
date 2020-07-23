@@ -1,6 +1,7 @@
 <template>
   <v-dialog
-    v-model="dialog"
+    :value="value"
+    @input="$emit('input', $event)"
     max-width="800"
   >
     <v-card class="px-5 py-3">
@@ -64,7 +65,6 @@
 
     data () {
       return {
-        dialog: false,
         items: [],
         selectedItem: null,
         isLoading: false,
@@ -74,13 +74,6 @@
     },
 
     watch: {
-      value: {
-        immediate: true,
-        handler (val) {
-          this.dialog = val
-        },
-      },
-
       searchInput (search) {
         clearTimeout(this.searchTimeoutId)
         this.searchTimeoutId = setTimeout(() => this.autocomplete(search), 300)
@@ -100,11 +93,11 @@
       },
 
       closeDialog () {
-        this.$emit('cancel')
+        this.$emit('input', false)
       },
 
       save () {
-        this.$emit('input', this.selectedItem)
+        this.$emit('selected', this.selectedItem)
       },
     },
   }
