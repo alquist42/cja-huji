@@ -483,13 +483,6 @@
               label="Artifact at risk"
               inset
             />
-            <v-text-field
-              v-for="field in fields"
-              :key="field"
-              v-model="item[field]"
-              outlined
-              :label="field"
-            />
           </v-card-text>
         </base-material-card>
 
