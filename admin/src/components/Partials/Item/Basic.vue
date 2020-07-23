@@ -149,7 +149,7 @@
 
           this.$emit('attributes-copied', item)
         } catch (e) {
-          this.$emit('attributes-copying-error')
+          this.$emit('error')
           console.log(e)
         } finally {
           this.isCopyingAttributes = false

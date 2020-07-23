@@ -101,7 +101,7 @@
           :disabled="isLoading"
           @is-copying-attributes:update="isCopyingAttributes = $event"
           @attributes-copied="handleAttributesCopied"
-          @attributes-copying-error="showSnackbarError('An error occurred')"
+          @error="showSnackbarError('An error occurred')"
         />
         <base-material-card class="px-5 py-3">
           <template v-slot:heading>
@@ -322,15 +322,12 @@
       </v-col>
 
       <v-col cols="4">
-        <item-images :images="item.images">
-          <v-btn
-            icon
-            :disabled="isLoading || !id"
-            @click="openMediaManagerModal"
-          >
-            <v-icon>mdi-pencil</v-icon>
-          </v-btn>
-        </item-images>
+        <item-images
+          v-model="item"
+          :disabled="isLoading"
+          @error="showSnackbarError('An error occurred')"
+          @success="showSnackbarSuccess($event)"
+        />
 
         <base-material-card class="px-5 py-3">
           <template v-slot:heading>
@@ -856,22 +853,8 @@
       },
     },
 
-    created () {
-      EventHub.listen('MediaManagerModal-include-images-in-item', (images) => this.includeImages(images))
-      EventHub.listen('MediaManagerModal-exclude-images-from-item', (images) => this.excludeImages(images))
-      EventHub.listen('MediaManagerModal-files-deleted', (/* files */) => this.updateImages())
-    },
-
     mounted () {
       this.getItem()
-    },
-
-    beforeDestroy () {
-      EventHub.removeListenersFrom([
-        'MediaManagerModal-include-images-in-item',
-        'MediaManagerModal-exclude-images-from-item',
-        'MediaManagerModal-files-deleted',
-      ])
     },
 
     methods: {
@@ -1007,63 +990,6 @@
             value: newValue,
           },
         })
-      },
-
-      openMediaManagerModal () {
-        EventHub.fire('show-media-manager-dialog', this.id)
-      },
-
-      async includeImages (includingImages) {
-        // eslint-disable-next-line
-        let images = this.item.images.slice(0)
-
-        includingImages.forEach(includingImage => {
-          if (!this.item.images.find(img => img.id === includingImage.image.id)) {
-            images.push(includingImage)
-          }
-        })
-
-        try {
-          const { data } = await this.$http.put(`items/${this.id}/images?project=catalogue`, { images })
-
-          this.item.images = data
-          this.showSnackbarSuccess('Images have been included')
-        } catch (e) {
-          this.showSnackbarError()
-        }
-      },
-
-      async excludeImages (excludingImages) {
-        // eslint-disable-next-line
-        let images = this.item.images.slice(0)
-
-        excludingImages.forEach(excludingImage => {
-          const index = images.findIndex(img => img.id === excludingImage.image.id)
-
-          if (index !== -1) {
-            images.splice(index, 1)
-          }
-        })
-
-        try {
-          const { data } = await this.$http.put(`items/${this.id}/images?project=catalogue`, { images })
-
-          this.item.images = data
-          EventHub.fire('MediaManagerModal-images-excluded-from-item')
-          this.showSnackbarSuccess('Images have been excluded')
-        } catch (e) {
-          this.showSnackbarError()
-        }
-      },
-
-      async updateImages () {
-        try {
-          const { data } = await this.$http.get(`items/${this.id}?project=catalogue`)
-
-          this.item.images = data.images
-        } catch (e) {
-          console.error(e)
-        }
       },
 
       enableTaxonomyInheritance (taxonName) {
