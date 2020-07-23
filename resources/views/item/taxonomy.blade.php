@@ -28,12 +28,12 @@ $bibliographies = $item->getTaxonomy('bibliography');
 
             @if (count($objects) > 0)
                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span>Object</span>
-                    <span class="text-right">
+                    <span class="mr-3">Object</span>
+                    <span class="text-left">
                         @foreach ($objects as $object)
                             <a href="/{{ request()->project }}/browse/objects/{{ $object->id }}">{{ $object->name }}</a>
                             @if($object->details) <span>({{ $object->details }})</span> @endif
-                            @if(!$loop->last) <br> @endif
+                            @if(!$loop->last) | @endif
                         @endforeach
                     </span>
                 </li>
@@ -41,8 +41,8 @@ $bibliographies = $item->getTaxonomy('bibliography');
 
             @if(count($makers))
                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span>Artist/ Maker</span>
-                    <span class="text-right">
+                    <span class="mr-3">Artist/ Maker</span>
+                    <span class="text-left">
                         @foreach ($makers as $maker)
                             @if($maker->artist->id != -1)
                                 <a  href="/{{ request()->project }}/browse/artists/{{ $maker->artist->id }}">{{ $maker->artist->name }}</a>@if(!$loop->last), @endif
@@ -61,12 +61,12 @@ $bibliographies = $item->getTaxonomy('bibliography');
 
             @if (count($subjects) > 0)
                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span>Iconographic Subject</span>
-                    <span class="text-right">
+                    <span class="mr-3">Iconographic Subject</span>
+                    <span class="text-left">
                         @foreach ($subjects as $subject)
                             <a href="/{{ request()->project }}/browse/subjects/{{ $subject->id }}">{{ $subject->name }}</a>
                             @if($subject->details) <span>({{ $subject->details }})</span> @endif
-                            @if(!$loop->last) <br> @endif
+                            @if(!$loop->last) | @endif
                         @endforeach
                     </span>
                 </li>
@@ -74,8 +74,8 @@ $bibliographies = $item->getTaxonomy('bibliography');
 
             @if($item->creation_date)
                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span>Date</span>
-                    <span class="text-right">
+                    <span class="mr-3">Date</span>
+                    <span class="text-left">
                         @if($item->creation_date) {{$item->creation_date->name}} @endif
                     </span>
                 </li>
@@ -83,12 +83,12 @@ $bibliographies = $item->getTaxonomy('bibliography');
 
             @if (count($periods) > 0)
                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span>Period</span>
-                    <span class="text-right">
+                    <span class="mr-3">Period</span>
+                    <span class="text-left">
                         @foreach ($periods as $period)
                             <a href="/{{ request()->project }}/browse/periods/{{ $period->id }}">{{ $period->name }}</a>
                             @if($period->details) <span>({{ $period->details }})</span> @endif
-                            @if(!$loop->last) <br> @endif
+                            @if(!$loop->last) | @endif
                         @endforeach
                     </span>
                 </li>
@@ -96,11 +96,11 @@ $bibliographies = $item->getTaxonomy('bibliography');
 
             @if ((count($origins) > 0))
                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span>Origin</span>
-                    <span class="text-right">
+                    <span class="mr-3">Origin</span>
+                    <span class="text-left">
                         @foreach ($origins as $origin)
                             @foreach ($origin-> getAncestors() as $anc)
-                                <a href="/{{ request()->project }}/browse/origins/{{ $anc->id }}">{{ $anc->name }}</a> <br>
+                                <a href="/{{ request()->project }}/browse/origins/{{ $anc->id }}">{{ $anc->name }}</a> |
                             @endforeach
                             <a href="/{{ request()->project }}/browse/origins/{{ $origin->id }}">{{ $origin->name }}</a>
                                 @if($origin->details) <span>({{ $origin->details }})</span> @endif
@@ -112,8 +112,8 @@ $bibliographies = $item->getTaxonomy('bibliography');
 
             @if($item->copyright)
                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span>Object Copyright</span>
-                    <span class="text-right">
+                    <span class="mr-3">Object Copyright</span>
+                    <span class="text-left">
                         @if($item->copyright){{$item->copyright->name}} @endif
                     </span>
                 </li>
@@ -121,11 +121,11 @@ $bibliographies = $item->getTaxonomy('bibliography');
 
             @if(count($communities))
                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span>Community</span>
-                    <span class="text-right">
+                    <span class="mr-3">Community</span>
+                    <span class="text-left">
                         @foreach ($communities as $community)
                             @foreach ($community-> getAncestors() as $comm)
-                                <a href="/{{ request()->project }}/browse/communities/{{ $comm->id }}">{{ $comm->name }}</a> <br>
+                                <a href="/{{ request()->project }}/browse/communities/{{ $comm->id }}">{{ $comm->name }}</a> |
                             @endforeach
                             <a href="/{{ request()->project }}/browse/communities/{{ $community->id }}">{{ $community->name }}</a>
                             @if($community->details) <span>({{ $community->details }})</span> @endif
@@ -137,11 +137,11 @@ $bibliographies = $item->getTaxonomy('bibliography');
 
             @if (count($collections))
                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span>Collection</span>
-                    <span class="text-right">
+                    <span class="mr-3">Collection</span>
+                    <span class="text-left">
                         @foreach ($collections as $collection)
                             @foreach ($collection-> getAncestors() as $anc)
-                                <a href="/{{ request()->project }}/browse/collections/{{ $anc->id }}">{{ $anc->name }}</a> <br>
+                                <a href="/{{ request()->project }}/browse/collections/{{ $anc->id }}">{{ $anc->name }}</a> |
                             @endforeach
                             <a href="/{{ request()->project }}/browse/collections/{{ $collection->id }}">{{ $collection->name }}</a>
                             @if($collection->details) <span>({{ $collection->details }})</span> @endif
@@ -153,43 +153,41 @@ $bibliographies = $item->getTaxonomy('bibliography');
 
             @if (count($sites))
                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span>Collection</span>
-                    <span class="text-right">
-                    @foreach ($sites as $site)
+                    <span class="mr-3">Collection</span>
+                    <span class="text-left">
+                        @foreach ($sites as $site)
                             <a href="/{{ request()->project }}/browse/site/{{ $site->id }}">{{ $site->name }}</a>
                             @if($site->details) <span>({{ $site->details }})</span> @endif
-                            @if(!$loop->last) <br> @endif
+                            @if(!$loop->last) | @endif
                         @endforeach
-                </span>
+                    </span>
                 </li>
             @endif
 
             @if(count($locations) > 0)
                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span>Location</span>
-                    <span class="text-right">
+                    <span class="mr-3">Location</span>
+                    <span class="text-left">
                         @foreach ($locations as $location)
                             @foreach ($location->getAncestors() as $anc)
-                                <a href="/{{ request()->project }}/browse/locations/{{ $anc->id }}">{{ $anc->name }}</a> <br>
+                                <a href="/{{ request()->project }}/browse/locations/{{ $anc->id }}">{{ $anc->name }}</a> |
                             @endforeach
                             <a href="/{{ request()->project }}/browse/locations/{{ $location->id }}">{{ $location->name }}</a>
                             @if($location->details) <span>({{ $location->details }})</span> @endif
                             @if(!$loop->last) <br/> @endif
                         @endforeach
-
-{{--                        @if($item->location_detail()) <br> {{$item->location_detail()}} @endif--}}
                     </span>
                 </li>
             @endif
 
             @if(count($schools) > 0)
                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span>School / Style</span>
-                    <span class="text-right">
+                    <span class="mr-3">School / Style</span>
+                    <span class="text-left">
                         @foreach ($schools as $school)
                             <a href="/{{ request()->project }}/browse/schools/{{ $school->id }}">{{ $school->name }}</a>
                             @if($school->details) <span>({{ $school->details }})</span> @endif
-                            @if(!$loop->last) <br> @endif
+                            @if(!$loop->last) | @endif
                         @endforeach
 
                     </span>
@@ -197,11 +195,11 @@ $bibliographies = $item->getTaxonomy('bibliography');
             @endif
             @if (count($bibliographies))
                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span>Bibliography</span>
-                    <span class="text-right">
-                @foreach ($bibliographies as $bibliography)
+                    <span class="mr-3">Bibliography</span>
+                    <span class="text-left">
+                        @foreach ($bibliographies as $bibliography)
                             {{ $bibliography->name }}
-                            @if(!$loop->last) <br> @endif
+                            @if(!$loop->last) | @endif
                         @endforeach
             </span>
                 </li>
@@ -210,8 +208,8 @@ $bibliographies = $item->getTaxonomy('bibliography');
             {{--Properties--}}
             @foreach ($item->properties as $property)
                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span>{{ $property->verbose_name }}</span>
-                    <span class="text-right">{!!  $property->pivot->value !!}</span>
+                    <span class="mr-3">{{ $property->verbose_name }}</span>
+                    <span class="text-left">{!!  $property->pivot->value !!}</span>
                 </li>
             @endforeach
         </ul>

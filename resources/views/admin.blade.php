@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css">
     <link rel=stylesheet href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900">
     <link rel=stylesheet href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css">
+    <link href="{{ vuecli('chunk-vendors.css') }}" rel=stylesheet>
+    <link href="{{ vuecli('app.css') }}" rel=stylesheet>
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
     <link rel="stylesheet" href="{{ asset('assets/vendor/MediaManager/style.css') }}"/>
     <link rel="icon" href="http://cja.huji.ac.il/favicon.ico" type="image/x-icon" />

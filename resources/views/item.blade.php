@@ -3,29 +3,19 @@
 @section('content')
     <div class="content">
         <div class="container-fluid">
+            <div class="h1 text-center mt-5">
+                Obj. ID: {{ $item->id }} {{ $item->name() }}
+                @foreach ($item->object_details as $object_detail), {{$object_detail->details}}@endforeach
+                @foreach ($item->origins as $origin), {{ $origin->name }}
+                @endforeach
+                @foreach ($item->origin_details as $origin_detail) | {{$origin_detail->details}}@endforeach
+                @if($item->creation_date), {{$item->creation_date->name}} @endif
+            </div>
             <div class="row mt-5">
-                <div class="col-xl-8 col-lg-8 col-md-12 col-sm-12 col-12">
+                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
                     <div class="card">
-                        <div class="card-header">
-                            Obj. ID: {{ $item->id }} {{ $item->name() }}
-                            @foreach ($item->object_details as $object_detail), {{$object_detail->details}}@endforeach
-                            @foreach ($item->origins as $origin), {{ $origin->name }}
-                            @endforeach
-                            @foreach ($item->origin_details as $origin_detail) | {{$origin_detail->details}}@endforeach
-                            @if($item->creation_date), {{$item->creation_date->name}} @endif
-                        </div>
-
                         @include('item.image')
                     </div>
-
-                    @if($item->addenda())
-                        <div class="card mt-4">
-                            <div class="card-body small">
-                                <p>Temp: Addenda</p>
-                                {{ $item->addenda() }}
-                            </div>
-                        </div>
-                    @endif
 
                     @if(count($item->items()))
                         <h3 class="text-center mt-5">Related Items ({{ count($item->items()) }})</h3>
@@ -49,7 +39,7 @@
                     }
                 </style>
 
-                <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
+                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
 
                     @include('item.taxonomy')
 

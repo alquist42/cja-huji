@@ -8,7 +8,11 @@ $(document).ready(function () {
 
     const images = document.querySelector('.images-gallery')
     if (images) {
-        new window.Viewer(images, {})
+        window.gallery = new window.Viewer(images, {
+          url (image) {
+            return image.src.replace('-medium', '-original')
+          },
+        })
     }
 
     $('#select_categories').click(function (e) {
