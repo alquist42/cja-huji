@@ -103,6 +103,7 @@
           @attributes-copied="handleAttributesCopied"
           @error="showSnackbarError('An error occurred')"
         />
+
         <base-material-card class="px-5 py-3">
           <template v-slot:heading>
             <div class="display-2 font-weight-light">
@@ -334,71 +335,10 @@
           :disabled="isLoading"
         />
 
-        <base-material-card class="px-5 py-3">
-          <template v-slot:heading>
-            <div class="display-2 font-weight-light">
-              Base Fields
-            </div>
-          </template>
-          <v-card-text>
-            <v-combobox
-              v-model="item.creation_date"
-              :items="dates"
-              :search-input.sync="searchDate"
-              item-value="id"
-              item-text="name"
-              label="Creation date"
-              placeholder="Start typing to search"
-              outlined
-              :loading="isLoadingDates"
-            />
-            <v-combobox
-              v-model="item.reconstruction_dates_object"
-              :items="reconstructionDates"
-              :search-input.sync="searchReconstructionDates"
-              item-value="id"
-              item-text="name"
-              label="Reconstruction dates"
-              placeholder="Start typing to search"
-              outlined
-              :loading="isLoadingReconstructionDates"
-            />
-            <v-combobox
-              v-model="item.activity_dates_object"
-              :items="activityDates"
-              :search-input.sync="searchActivityDates"
-              item-value="id"
-              item-text="name"
-              label="Activity dates"
-              placeholder="Start typing to search"
-              outlined
-              :loading="isLoadingActivityDates"
-            />
-            <v-combobox
-              v-model="item.copyright"
-              :items="copyrights"
-              :search-input.sync="searchCopyright"
-              item-value="id"
-              item-text="name"
-              label="Copyright"
-              placeholder="Start typing to search"
-              outlined
-              :loading="isLoadingCopyright"
-            />
-            <v-textarea
-              v-model="item.remarks"
-              label="Remarks"
-              outlined
-              counter="200"
-              no-resize
-            />
-            <v-switch
-              v-model="item.artifact_at_risk"
-              label="Artifact at risk"
-              inset
-            />
-          </v-card-text>
-        </base-material-card>
+        <item-base-fields
+          v-model="item"
+          :disabled="isLoading"
+        />
 
         <base-material-card class="px-5 py-3">
           <template v-slot:heading>
@@ -485,6 +425,7 @@
       ItemBasic: () => import('../components/Partials/Item/Basic'),
       ItemImages: () => import('../components/Partials/Item/Images'),
       ItemSettings: () => import('../components/Partials/Item/Settings'),
+      ItemBaseFields: () => import('../components/Partials/Item/BaseFields'),
     },
 
     mixins: [CreateItemFromImages, SnackBar],
@@ -615,18 +556,6 @@
       ],
 
       properties: [],
-      dates: [],
-      searchDate: null,
-      isLoadingDates: false,
-      reconstructionDates: [],
-      searchReconstructionDates: null,
-      isLoadingReconstructionDates: false,
-      activityDates: [],
-      searchActivityDates: null,
-      isLoadingActivityDates: false,
-      copyrights: [],
-      searchCopyright: null,
-      isLoadingCopyright: false,
     }),
 
     computed: {
@@ -710,70 +639,6 @@
 
       hasImages () {
         return this.item.images.length
-      },
-    },
-
-    watch: {
-      async searchDate (val) {
-        if (this.isLoadingDates) return
-
-        this.isLoadingDates = true
-        try {
-          const response = await this.$http.get(`dates?project=catalogue&search=${val}`)
-          this.dates = response.data
-        } catch (e) {
-          console.log(e)
-        } finally {
-          this.isLoadingDates = false
-        }
-      },
-
-      async searchReconstructionDates (val) {
-        if (this.isLoadingReconstructionDates) return
-
-        this.isLoadingReconstructionDates = true
-        try {
-          const response = await this.$http.get(`dates?project=catalogue&search=${val}`)
-          this.reconstructionDates = response.data
-        } catch (e) {
-          console.log(e)
-        } finally {
-          this.isLoadingReconstructionDates = false
-        }
-      },
-
-      async searchActivityDates (val) {
-        if (this.isLoadingActivityDates) return
-
-        this.isLoadingActivityDates = true
-        try {
-          const response = await this.$http.get(`dates?project=catalogue&search=${val}`)
-          this.activityDates = response.data
-        } catch (e) {
-          console.log(e)
-        } finally {
-          this.isLoadingActivityDates = false
-        }
-      },
-
-      async searchCopyright (val) {
-        if (this.isLoadingCopyright) return
-
-        this.isLoadingCopyright = true
-        try {
-          const response = await this.$http.get(`copyrights?project=catalogue&search=${val}`)
-          this.copyrights = response.data
-        } catch (e) {
-          console.log(e)
-        } finally {
-          this.isLoadingCopyright = false
-        }
-      },
-
-      'item.category_object' (val) {
-        if (val) {
-          this.item.category = val.slug
-        }
       },
     },
 

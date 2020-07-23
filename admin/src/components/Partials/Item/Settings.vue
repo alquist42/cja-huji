@@ -131,7 +131,13 @@
 
     methods: {
       update (key, value) {
-        this.$emit('input', { ...this.value, [key]: value })
+        const item = { ...this.value, [key]: value }
+
+        if (key === 'category_object') {
+          item.category = value.slug
+        }
+
+        this.$emit('input', item)
       },
     },
   }
