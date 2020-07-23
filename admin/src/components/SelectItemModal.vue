@@ -9,6 +9,7 @@
       </div>
       <v-card-text>
         <v-autocomplete
+          v-model="selectedItem"
           autofocus
           outlined
           clearable
@@ -18,7 +19,6 @@
           item-value="id"
           :items="items"
           :loading="isLoading"
-          v-model="selectedItem"
         />
       </v-card-text>
       <v-card-actions>

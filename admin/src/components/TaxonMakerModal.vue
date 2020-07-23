@@ -9,7 +9,9 @@
         v-bind="attrs"
         v-on="on"
       >
-        <v-icon color="grey">mdi-plus-thick</v-icon>
+        <v-icon color="grey">
+          mdi-plus-thick
+        </v-icon>
       </v-btn>
     </template>
 
@@ -19,6 +21,7 @@
       </div>
       <v-card-text>
         <v-autocomplete
+          v-model="maker.artist"
           autofocus
           outlined
           clearable
@@ -31,9 +34,9 @@
           item-value="id"
           :items="items.artists"
           :loading="isLoading.artists"
-          v-model="maker.artist"
         />
         <v-autocomplete
+          v-model="maker.profession"
           outlined
           clearable
           cache-items
@@ -45,7 +48,6 @@
           item-value="id"
           :items="items.professions"
           :loading="isLoading.professions"
-          v-model="maker.profession"
         />
       </v-card-text>
       <v-card-actions>

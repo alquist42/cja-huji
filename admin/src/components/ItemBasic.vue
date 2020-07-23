@@ -21,25 +21,25 @@
       >
         <v-text-field
           :value="value.name"
-          @input="update('name', $event)"
           label="Name"
           required
           outlined
+          @input="update('name', $event)"
         />
 
         <v-text-field
           :value="value.ntl"
-          @input="update('ntl', $event)"
           label="NTL"
           required
           outlined
+          @input="update('ntl', $event)"
         />
 
         <span>Description</span>
         <tiptap-vuetify
           :value="value.description"
-          @input="update('description', $event)"
           :extensions="extensions"
+          @input="update('description', $event)"
         />
       </v-form>
     </v-card-text>
