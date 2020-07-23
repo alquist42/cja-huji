@@ -73,7 +73,8 @@ class ImageService
      */
     public function getWholeTree($itemId)
     {
-        $itemsIds = Item::ancestorsAndSelf($itemId)->pluck('id');
+        $itemsIds = Item::ancestorsAndSelf($itemId)
+            ->merge(Item::descendantsOf($itemId))->pluck('id');
 
         return Image::select('images.*')
             ->join('entity_images', function ($join) use ($itemsIds) {
