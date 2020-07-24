@@ -3,10 +3,13 @@
 
 namespace App\Models\Taxonomy;
 
+use App\Traits\SearchableByName;
 use Illuminate\Database\Eloquent\Model;
 
 class Profession extends Model
 {
+    use SearchableByName;
+
     /**
      * DB Table name
      *

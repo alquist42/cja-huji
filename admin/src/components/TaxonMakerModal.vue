@@ -119,7 +119,7 @@
         }
 
         this.isLoading.artist = true
-        const { data } = await this.$http.get(`autocomplete/?project=catalogue&type=${type}&term=${search}`)
+        const { data } = await this.$http.get(`${type}/?project=catalogue&search=${search}`)
         this.isLoading.artist = false
         this.items[type] = data || []
       },
