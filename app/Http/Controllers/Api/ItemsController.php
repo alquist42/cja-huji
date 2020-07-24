@@ -72,7 +72,8 @@ class ItemsController extends Controller
                 'collections',
                 'communities',
                 'sites',
-                'makers',
+                'makers.artist',
+                'makers.profession',
             ]);
         }]);
 
