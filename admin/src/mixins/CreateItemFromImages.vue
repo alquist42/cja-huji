@@ -8,6 +8,7 @@
     mixins: [NestedFiles],
 
     data: () => ({
+      isCreatingChild: false,
       detachImagesConfirmationDialog: false,
       createFrom: {
         images: [],
@@ -25,6 +26,11 @@
 
     methods: {
       async handleEvent (filesAndFolders) {
+        if (this.isDirty || this.isLoading) {
+          if (!confirm('If you proceed - the changes you made will not be saved. Are you sure?')) return
+          this.isDirty = false
+        }
+
         this.createFrom.images = await this.getAllNestedFiles(filesAndFolders)
         this.createFrom.usedBy = this.getUsage(this.createFrom.images)
 
@@ -73,11 +79,13 @@
         }
 
         try {
-          this.isLoading = true
+          this.isCreatingChild = true
           const { data } = await this.$http.post('items?project=catalogue', payload)
           this.$router.push({ name: 'Item', params: { id: data.id } })
         } catch (e) {
           this.showSnackbarError()
+        } finally {
+          this.isCreatingChild = false
         }
       },
     },

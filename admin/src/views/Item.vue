@@ -124,7 +124,6 @@
           :disabled="isLoading"
           @error="showSnackbarError('An error occurred')"
           @success="showSnackbarSuccess($event)"
-          @input="isDirty = true"
         />
 
         <item-settings
@@ -268,7 +267,7 @@
       // },
 
       isLoading () {
-        return this.isGettingItem || this.isSaving || this.isCreatingChild || this.isCopyingAttributes
+        return this.isGettingItem || this.isSaving || this.isCreatingChild || this.isCopyingAttributes || this.isCreatingChild
       },
 
       hasImages () {
@@ -277,12 +276,34 @@
     },
 
     beforeRouteUpdate (to, from, next) {
+      if (this.isDirty || this.isLoading) {
+        if (!confirm('If you proceed - the changes you made will not be saved. Are you sure?')) return
+      }
+
       next()
       this.getItem()
     },
 
+    beforeRouteLeave (to, from, next) {
+      if (!this.isDirty && !this.isLoading) {
+        next()
+      }
+
+      const answer = confirm('If you proceed - the changes you made will not be saved. Are you sure?')
+      if (answer) {
+        next()
+      } else {
+        next(false)
+      }
+    },
+
     mounted () {
       this.getItem()
+      window.addEventListener('beforeunload', this.beforeLeave)
+    },
+
+    beforeDestroy () {
+      window.removeEventListener('beforeunload', this.beforeLeave)
     },
 
     methods: {
@@ -293,6 +314,7 @@
             const { data } = await this.$http.get(`items/${this.id}?project=catalogue`)
             this.item = data
           }
+          this.isDirty = false
           console.log(this.item)
         } catch (e) {
           console.log(e)
@@ -400,6 +422,11 @@
       },
 
       async createChild (fromImages = []) {
+        if (this.isDirty || this.isLoading) {
+          if (!confirm('If you proceed - the changes you made will not be saved. Are you sure?')) return
+          this.isDirty = false
+        }
+
         const fields = [
           'name',
           'publish_state',
@@ -450,6 +477,13 @@
           console.log(e)
         } finally {
           this.isCreatingChild = false
+        }
+      },
+
+      beforeLeave (event) {
+        if (this.isDirty || this.isLoading) {
+          event.preventDefault()
+          event.returnValue = ''
         }
       },
     },
