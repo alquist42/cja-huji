@@ -25,7 +25,11 @@
 
                             <div class="card">
                               {{--  <img class="card-img-top image-fluid" src="http://cja.huji.ac.il/{{ $item->images[0]->url() }}" alt=" {{ $item->name() }}">--}}
-                                <img class="card-img-top image-fluid" src="/images/{{ $item->id }}-{{ $item->images->first()->id }}-small.png" alt=" {{ $item->name() }}">
+                                @if(count($item->images))
+                                    <img class="card-img-top image-fluid" src="/images/{{ $item->id }}-{{ $item->images->first()->id }}-small.png" alt=" {{ $item->name() }}">
+                                @else
+                                    <img class="card-img-top image-fluid" src="/not_uploaded.jpg" alt="no image">
+                                @endif
                                 <div class="card-body">
                                     <h5 class="card-title {{--text-truncate--}}">
                                         <a href="/{{ $item->url() }}">
