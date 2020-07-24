@@ -104,157 +104,10 @@
           @error="showSnackbarError('An error occurred')"
         />
 
-        <base-material-card class="px-5 py-3">
-          <template v-slot:heading>
-            <div class="display-2 font-weight-light">
-              Taxonomy
-            </div>
-          </template>
-          <v-card-text>
-            <v-row
-              v-for="taxon in taxons"
-              :key="taxon"
-              no-gutters
-              class="mb-2"
-            >
-              <v-col
-                cols="12"
-                class="pb-0"
-              >
-                <template v-if="hasParent">
-                  <v-tooltip
-                    v-if="taxonomyInheritance[taxon] !== 'enabled'"
-                    top
-                  >
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-btn
-                        v-bind="attrs"
-                        icon
-                        v-on="on"
-                        @click="enableTaxonomyInheritance(taxon)"
-                      >
-                        <v-icon color="grey">
-                          mdi-lock-open
-                        </v-icon>
-                      </v-btn>
-                    </template>
-                    <span>Enable taxonomy inheritance</span>
-                  </v-tooltip>
-                  <v-tooltip
-                    v-else
-                    top
-                  >
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-btn
-                        v-bind="attrs"
-                        icon
-                        v-on="on"
-                        @click="disableTaxonomyInheritance(taxon)"
-                      >
-                        <v-icon color="grey">
-                          mdi-lock
-                        </v-icon>
-                      </v-btn>
-                    </template>
-                    <span>Disable taxonomy inheritance</span>
-                  </v-tooltip>
-                </template>
-                <span class="overline">
-                  {{ taxon.replace('_', ' ') }}
-                </span>
-                <span
-                  v-if="taxonomyInheritance[taxon] === 'enabled'"
-                  class="caption"
-                >
-                  (inherited)
-                </span>
-                <taxon-modal
-                  :taxon="taxon"
-                  :value="item[taxon] || []"
-                  @input="updateTaxon(taxon, $event)"
-                />
-              </v-col>
-              <v-row no-gutters>
-                <v-col>
-                  <template v-if="taxonomyInheritance[taxon] === 'disabled-own'">
-                    <v-chip
-                      v-for="obj in item[taxon]"
-                      :key="obj.id"
-                      class="mb-1 mr-1"
-                      close
-                      color="green lighten-2"
-                      @click:close="removeTaxonItem(taxon, obj.id)"
-                    >
-                      {{ obj.name }}
-                    </v-chip>
-                    ({{ details(taxon) }})
-                  </template>
-                  <v-chip
-                    v-else-if="taxonomyInheritance[taxon] === 'disabled-none'"
-                    class="mb-1 mr-1"
-                    outlined
-                    disabled
-                  >
-                    none
-                  </v-chip>
-                  <template v-else-if="item.ancestors && item.ancestors[0]">
-                    <template v-if="ancestorsTaxonomy[taxon].length">
-                      <v-chip
-                        v-for="obj in ancestorsTaxonomy[taxon]"
-                        :key="obj.id"
-                        class="mb-1 mr-1"
-                      >
-                        {{ obj.name }}
-                      </v-chip>
-                      <!--({{ details(taxon) }})-->
-                    </template>
-                    <v-chip
-                      v-else
-                      class="mb-1 mr-1"
-                      outlined
-                      disabled
-                    >
-                      none
-                    </v-chip>
-                  </template>
-                  <v-chip
-                    v-else
-                    class="mb-1 mr-1"
-                    outlined
-                    disabled
-                  >
-                    none
-                  </v-chip>
-                </v-col>
-              </v-row>
-            </v-row>
-            <v-row
-              no-gutters
-              class="mb-2"
-            >
-              <v-col
-                cols="12"
-                class="pb-0"
-              >
-                <span class="overline">Makers</span>
-                <taxon-maker-modal @input="addMaker" />
-              </v-col>
-              <v-col cols="12">
-                <v-chip
-                  v-for="obj in item.makers"
-                  :key="obj.id"
-                  class="mb-1 mr-1"
-                  close
-                  color="green lighten-2"
-                  @click:close="removeTaxonItem('makers', obj.id)"
-                >
-                  {{ obj.artist.name }} ({{ obj.profession.name }})
-                </v-chip>
-                ({{ details('makers') }})
-              </v-col>
-            </v-row>
-          </v-card-text>
-        </base-material-card>
+        <item-taxonomy
+          v-model="item"
+          :disabled="isLoading"
+        />
 
         <base-material-card class="px-5 py-3">
           <template v-slot:heading>
@@ -376,8 +229,6 @@
     components: {
       TiptapVuetify,
       DashboardCoreAppBar: () => import('./dashboard/components/core/AppBar'),
-      TaxonModal: () => import('../components/TaxonModal'),
-      TaxonMakerModal: () => import('../components/TaxonMakerModal'),
       ConfirmationModal: () => import('../components/ConfirmationModal'),
       ItemBasic: () => import('../components/Partials/Item/Basic'),
       ItemImages: () => import('../components/Partials/Item/Images'),
@@ -385,6 +236,7 @@
       ItemBaseFields: () => import('../components/Partials/Item/BaseFields'),
       ItemComposition: () => import('../components/Partials/Item/Composition'),
       ItemMap: () => import('../components/Partials/Item/Map'),
+      ItemTaxonomy: () => import('../components/Partials/Item/Taxonomy'),
     },
 
     mixins: [CreateItemFromImages, SnackBar],
@@ -533,59 +385,8 @@
       //   const parent = this.item.parent.origins
       // },
 
-      details () {
-        return (name) => {
-          const field = `${singular(name)}_details`
-          return this.item[field] && this.item[field][0] && this.item[field][0].details
-        }
-      },
-
-      taxonomyInheritance () {
-        // eslint-disable-next-line
-        let taxonomyInheritance = {}
-
-        this.taxons.forEach(taxonName => {
-          const taxons = this.item[taxonName]
-          if (!taxons || taxons.length === 0) {
-            taxonomyInheritance[taxonName] = 'enabled' // blank - inheritance enabled
-          } else if (taxons[0].id === -1) {
-            taxonomyInheritance[taxonName] = 'disabled-none' // -1 (unknown) - inheritance disabled - but show nothing
-          } else {
-            taxonomyInheritance[taxonName] = 'disabled-own' // other own value - inheritance disabled
-          }
-        })
-
-        return taxonomyInheritance
-      },
-
-      ancestorsTaxonomy () {
-        // eslint-disable-next-line
-        let taxonomy = {}
-
-        this.taxons.forEach(taxonName => {
-          let taxonValue = []
-
-          for (const ancestor of this.item.ancestors) {
-            if (ancestor[taxonName].length) {
-              if (ancestor[taxonName][0].id !== -1) {
-                taxonValue = ancestor[taxonName]
-              }
-              break
-            }
-          }
-
-          taxonomy[taxonName] = taxonValue
-        })
-
-        return taxonomy
-      },
-
       isLoading () {
         return this.isGettingItem || this.isSaving || this.isCreatingChild || this.isCopyingAttributes
-      },
-
-      hasParent () {
-        return this.item.ancestors.length
       },
 
       hasImages () {
@@ -693,20 +494,6 @@
         }
       },
 
-      updateTaxon (taxonName, taxonItems) {
-        this.item[taxonName] = []
-
-        taxonItems.forEach(taxonItem => this.item[taxonName].push(taxonItem))
-      },
-
-      removeTaxonItem (taxonName, itemId) {
-        this.item[taxonName] = this.item[taxonName].filter(taxonItem => taxonItem.id !== itemId)
-      },
-
-      addMaker (maker) {
-        this.item.makers.push(maker)
-      },
-
       getItemPropValue (propName) {
         const p = this.item.properties && this.item.properties.find(p => p.prop_name === propName)
 
@@ -729,14 +516,6 @@
             value: newValue,
           },
         })
-      },
-
-      enableTaxonomyInheritance (taxonName) {
-        this.item[taxonName] = []
-      },
-
-      disableTaxonomyInheritance (taxonName) {
-        this.item[taxonName] = [{ id: -1, name: 'unknown' }]
       },
 
       handleAttributesCopied (item) {

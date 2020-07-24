@@ -8,6 +8,7 @@
         icon
         v-bind="attrs"
         v-on="on"
+        :disabled="disabled"
       >
         <v-icon color="grey">
           mdi-pencil
@@ -71,6 +72,11 @@
       value: {
         type: Array,
         required: true,
+      },
+
+      disabled: {
+        type: Boolean,
+        default: false,
       },
     },
 

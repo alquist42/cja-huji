@@ -8,6 +8,7 @@
         icon
         v-bind="attrs"
         v-on="on"
+        :disabled="disabled"
       >
         <v-icon color="grey">
           mdi-plus-thick
@@ -74,6 +75,13 @@
 <script>
   export default {
     name: 'TaxonMakerModal',
+
+    props: {
+      disabled: {
+        type: Boolean,
+        default: false,
+      },
+    },
 
     data () {
       return {
