@@ -18,7 +18,7 @@ $bibliographies = $item->getTaxonomy('bibliography');
     <div class="card-header">
         <h5 class="d-flex justify-content-between align-items-center">
             <span>Category</span>
-            <span>{{ $item->category_object->name}}</span>
+            <span>@if($item->category_object){{ $item->category_object->name}}@endif</span>
         </h5>
     </div>
 
