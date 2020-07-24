@@ -7,7 +7,7 @@
     </template>
     <v-card-text>
       <v-combobox
-        v-model="value.creation_date"
+        :value="value.creation_date"
         :items="dates"
         :disabled="disabled"
         :search-input.sync="searchDate"
@@ -17,9 +17,10 @@
         placeholder="Start typing to search"
         outlined
         :loading="isLoadingDates"
+        @input="update('creation_date', $event)"
       />
       <v-combobox
-        v-model="value.reconstruction_dates_object"
+        :value="value.reconstruction_dates_object"
         :items="reconstructionDates"
         :disabled="disabled"
         :search-input.sync="searchReconstructionDates"
@@ -29,9 +30,10 @@
         placeholder="Start typing to search"
         outlined
         :loading="isLoadingReconstructionDates"
+        @input="update('reconstruction_dates_object', $event)"
       />
       <v-combobox
-        v-model="value.activity_dates_object"
+        :value="value.activity_dates_object"
         :items="activityDates"
         :disabled="disabled"
         :search-input.sync="searchActivityDates"
@@ -41,9 +43,10 @@
         placeholder="Start typing to search"
         outlined
         :loading="isLoadingActivityDates"
+        @input="update('activity_dates_object', $event)"
       />
       <v-combobox
-        v-model="value.copyright"
+        :value="value.copyright"
         :items="copyrights"
         :disabled="disabled"
         :search-input.sync="searchCopyright"
@@ -53,20 +56,23 @@
         placeholder="Start typing to search"
         outlined
         :loading="isLoadingCopyright"
+        @input="update('copyright', $event)"
       />
       <v-textarea
-        v-model="value.remarks"
+        :value="value.remarks"
         :disabled="disabled"
         label="Remarks"
         outlined
         counter="200"
         no-resize
+        @input="update('remarks', $event)"
       />
       <v-switch
-        v-model="value.artifact_at_risk"
+        :value="value.artifact_at_risk"
         :disabled="disabled"
         label="Artifact at risk"
         inset
+        @change="update('artifact_at_risk', $event)"
       />
     </v-card-text>
   </base-material-card>
