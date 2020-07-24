@@ -109,70 +109,10 @@
           :disabled="isLoading"
         />
 
-        <base-material-card class="px-5 py-3">
-          <template v-slot:heading>
-            <div class="display-2 font-weight-light">
-              Properties
-            </div>
-          </template>
-          <v-card-text>
-            <v-expansion-panels
-              v-model="panel"
-              multiple
-            >
-              <v-expansion-panel
-                v-for="categName in Object.keys(propers)"
-                :key="categName"
-              >
-                <v-expansion-panel-header>
-                  <span class="overline">{{ categName.replace('_', ' ') }}</span>
-                </v-expansion-panel-header>
-                <v-expansion-panel-content>
-                  <template v-for="(prop, i) in propers[categName]">
-                    <v-text-field
-                      v-if="prop.type === 'text'"
-                      :key="prop.id"
-                      :label="prop.verbose_name"
-                      outlined
-                      :value="getItemPropValue(prop.prop_name)"
-                      @input="setItemPropValue(prop, $event)"
-                    >
-                      <template v-slot:prepend>
-                        <v-badge :content="i+1" />
-                      </template>
-                    </v-text-field>
-                    <v-textarea
-                      v-if="prop.type === 'textarea' && prop.content_type === 'plain'"
-                      :key="prop.id"
-                      :label="prop.verbose_name"
-                      outlined
-                      :value="getItemPropValue(prop.prop_name)"
-                      @input="setItemPropValue(prop, $event)"
-                    />
-                    <tiptap-vuetify
-                      v-if="prop.type === 'textarea' && prop.content_type === 'htmle'"
-                      :key="prop.id"
-                      :placeholder="prop.verbose_name"
-                      :extensions="extensions"
-                      :value="getItemPropValue(prop.prop_name)"
-                      @input="setItemPropValue(prop, $event)"
-                    />
-                    <v-select
-                      v-if="prop.type === 'select'"
-                      :key="prop.id"
-                      :items="prop.allowed_vals.split(' | ')"
-                      chips
-                      :label="prop.verbose_name"
-                      outlined
-                      :value="getItemPropValue(prop.prop_name)"
-                      @input="setItemPropValue(prop, $event)"
-                    />
-                  </template>
-                </v-expansion-panel-content>
-              </v-expansion-panel>
-            </v-expansion-panels>
-          </v-card-text>
-        </base-material-card>
+        <item-properties
+          v-model="item"
+          :disabled="isLoading"
+        />
       </v-col>
 
       <v-col cols="4">
@@ -209,25 +149,15 @@
 
 <script>
   import { singular } from 'pluralize'
-  import { TiptapVuetify, Heading, Bold, Italic, Strike, Underline, Code, Paragraph, BulletList, OrderedList, ListItem, Link, Blockquote, HardBreak, HorizontalRule, History } from 'tiptap-vuetify'
-  import _sortBy from 'lodash/sortBy'
   import CreateItemFromImages from '../mixins/CreateItemFromImages'
   import SnackBar from '../mixins/SnackBar'
 
   const PUBLISH_STATE_NOT_PUBLISHED = 0
 
-  const groupBy = function (xs, key) {
-    return xs.reduce(function (rv, x) {
-      (rv[x[key]] = rv[x[key]] || []).push(x)
-      return rv
-    }, {})
-  }
-
   export default {
     name: 'Item',
 
     components: {
-      TiptapVuetify,
       DashboardCoreAppBar: () => import('./dashboard/components/core/AppBar'),
       ConfirmationModal: () => import('../components/ConfirmationModal'),
       ItemBasic: () => import('../components/Partials/Item/Basic'),
@@ -237,6 +167,7 @@
       ItemComposition: () => import('../components/Partials/Item/Composition'),
       ItemMap: () => import('../components/Partials/Item/Map'),
       ItemTaxonomy: () => import('../components/Partials/Item/Taxonomy'),
+      ItemProperties: () => import('../components/Partials/Item/Properties'),
     },
 
     mixins: [CreateItemFromImages, SnackBar],
@@ -302,8 +233,6 @@
         subjects: [],
       },
 
-      panel: [],
-
       taxonomy: {
         locations: [],
         origins: [],
@@ -318,66 +247,11 @@
         makers: [],
         properties: [],
       },
-
-      taxons: [
-        'subjects',
-        'objects',
-        'periods',
-        'origins',
-        'historical_origins',
-        'communities',
-        'collections',
-        // 'congregations',
-        'locations',
-        'sites',
-        'schools',
-        // 'location_details',
-        // 'origin_details',
-        // 'school_details',
-        // 'object_details',
-        // 'subject_details',
-        // 'historical_origin_details',
-        // 'period_details',
-        // 'site_details',
-        // 'congregation_details',
-        // 'collection_details',
-        // 'community_details',
-      ],
-
-      extensions: [
-        History,
-        Blockquote,
-        Link,
-        Underline,
-        Strike,
-        Italic,
-        ListItem,
-        BulletList,
-        OrderedList,
-        [Heading, {
-          options: {
-            levels: [1, 2, 3],
-          },
-        }],
-        Bold,
-        Code,
-        HorizontalRule,
-        Paragraph,
-        HardBreak,
-      ],
-
-      properties: [],
     }),
 
     computed: {
       id () {
         return parseInt(this.$route.params.id)
-      },
-
-      propers () {
-        const sortedProperties = _sortBy(this.properties, 'categ_name')
-
-        return groupBy(sortedProperties, 'categ_name')
       },
 
       // origins () {
@@ -407,17 +281,10 @@
       async getItem () {
         this.isGettingItem = true
         try {
-          let response
-
           if (this.id) {
-            response = await this.$http.get(`items/${this.id}?project=catalogue`)
-            this.item = response.data
+            const { data } = await this.$http.get(`items/${this.id}?project=catalogue`)
+            this.item = data
           }
-
-          response = await this.$http.get('properties?project=catalogue')
-          this.properties = response.data
-
-          this.updatePropertiesPanels()
           console.log(this.item)
         } catch (e) {
           console.log(e)
@@ -426,23 +293,34 @@
         }
       },
 
-      updatePropertiesPanels () {
-        this.panel = []
-
-        Object.keys(this.propers).forEach((categName, categIndex) => {
-          this.propers[categName].forEach((prop) => {
-            const pr = this.item.properties.find(p => p.prop_name === prop.prop_name)
-            console.log(categName, pr, prop.prop_name, categIndex)
-            if (pr) {
-              this.panel.push(categIndex)
-            }
-          })
-        })
-      },
-
       async save () {
+        const taxons = [
+          'subjects',
+          'objects',
+          'periods',
+          'origins',
+          'historical_origins',
+          'communities',
+          'collections',
+          // 'congregations',
+          'locations',
+          'sites',
+          'schools',
+          // 'location_details',
+          // 'origin_details',
+          // 'school_details',
+          // 'object_details',
+          // 'subject_details',
+          // 'historical_origin_details',
+          // 'period_details',
+          // 'site_details',
+          // 'congregation_details',
+          // 'collection_details',
+          // 'community_details',
+        ]
+
         Object.keys(this.item).forEach(field => {
-          if (this.taxons.includes(field)) {
+          if (taxons.includes(field)) {
             this.taxonomy[field] = this.item[field].map(t => {
               const d = `${singular(field)}_details`
 
@@ -494,33 +372,8 @@
         }
       },
 
-      getItemPropValue (propName) {
-        const p = this.item.properties && this.item.properties.find(p => p.prop_name === propName)
-
-        return p ? p.pivot.value : ''
-      },
-
-      setItemPropValue (prop, newValue) {
-        const propIndex = this.item.properties.findIndex(p => p.prop_name === prop.prop_name)
-
-        if (propIndex !== -1) {
-          this.item.properties[propIndex].pivot.value = newValue
-
-          return
-        }
-
-        this.item.properties.push({
-          ...prop,
-          pivot: {
-            property_id: prop.id,
-            value: newValue,
-          },
-        })
-      },
-
       handleAttributesCopied (item) {
         this.item = item
-        this.updatePropertiesPanels()
         this.showSnackbarSuccess('Attributes have been copied')
       },
 
