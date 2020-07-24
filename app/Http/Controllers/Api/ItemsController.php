@@ -53,7 +53,7 @@ class ItemsController extends Controller
             return $query->orderBy($sortBy, ($sortDesc === '0') ? 'asc' : 'desc');
         })
             ->where('parent_id', '=', null)
-            ->paginate($request->query('per_page', null));;
+            ->paginate($request->query('per_page', null));
     }
 
     public function show(Item $item)
@@ -72,6 +72,7 @@ class ItemsController extends Controller
                 'collections',
                 'communities',
                 'sites',
+                'makers',
             ]);
         }]);
 

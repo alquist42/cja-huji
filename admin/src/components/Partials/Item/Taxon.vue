@@ -15,7 +15,7 @@
               icon
               :disabled="disabled"
               v-on="on"
-              @click="toggleTaxonomyInheritance"
+              @click="toggleInheritance"
             >
               <v-icon color="grey">
                 {{ inheritance === 'enabled' ? 'mdi-lock' : 'mdi-lock-open' }}
@@ -161,7 +161,7 @@
     },
 
     methods: {
-      toggleTaxonomyInheritance () {
+      toggleInheritance () {
         if (this.inheritance === 'enabled') {
           this.$emit('input', { ...this.value, [this.name]: [{ id: -1, name: 'unknown' }] })
         } else {
