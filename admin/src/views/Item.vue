@@ -47,7 +47,7 @@
           :disabled="!isDirty || isLoading"
           @click="save"
         >
-          Save
+          {{ id ? 'Save' : 'Create' }}
         </v-btn>
         <v-btn
           v-if="id"
@@ -289,7 +289,7 @@
 
     beforeRouteLeave (to, from, next) {
       if (!this.isDirty && !this.isChanging) {
-        next()
+        return next()
       }
 
       const answer = confirm('If you proceed - the changes you made will not be saved. Are you sure?')
@@ -393,6 +393,8 @@
               item: this.item,
               taxonomy: this.taxonomy,
             })
+            this.isSaving = false
+            this.isDirty = false
             await this.$router.replace({ name: 'Item', params: { id: data.id } })
             this.getItem()
           }
