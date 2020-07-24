@@ -64,11 +64,10 @@
           </v-icon>
         </v-btn>
         <v-btn
-          v-if="id && !hasImages"
           class="ml-2"
           color="error"
           outlined
-          :disabled="isLoading"
+          :disabled="isLoading || hasImages || !id"
           @click="deleteItemConfirmationDialog = true"
         >
           Delete
@@ -271,7 +270,7 @@
       },
 
       hasImages () {
-        return this.item.images.length
+        return !!this.item.images.length
       },
     },
 
