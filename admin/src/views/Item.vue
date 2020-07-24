@@ -44,7 +44,7 @@
         <v-btn
           outlined
           :loading="isSaving"
-          :disabled="isLoading"
+          :disabled="!isDirty || isLoading"
           @click="save"
         >
           Save
@@ -102,16 +102,19 @@
           @is-copying-attributes:update="isCopyingAttributes = $event"
           @attributes-copied="handleAttributesCopied"
           @error="showSnackbarError('An error occurred')"
+          @input="isDirty = true"
         />
 
         <item-taxonomy
           v-model="item"
           :disabled="isLoading"
+          @input="isDirty = true"
         />
 
         <item-properties
           v-model="item"
           :disabled="isLoading"
+          @input="isDirty = true"
         />
       </v-col>
 
@@ -121,26 +124,31 @@
           :disabled="isLoading"
           @error="showSnackbarError('An error occurred')"
           @success="showSnackbarSuccess($event)"
+          @input="isDirty = true"
         />
 
         <item-settings
           v-model="item"
           :disabled="isLoading"
+          @input="isDirty = true"
         />
 
         <item-base-fields
           v-model="item"
           :disabled="isLoading"
+          @input="isDirty = true"
         />
 
         <item-composition
           v-model="item"
           :disabled="isLoading"
+          @input="isDirty = true"
         />
 
         <item-map
           v-model="item"
           :disabled="isLoading"
+          @input="isDirty = true"
         />
       </v-col>
     </v-row>
@@ -178,6 +186,7 @@
       isSaving: false,
       isCreatingChild: false,
       isCopyingAttributes: false,
+      isDirty: false,
       item: {
         activity_dates: null,
         activity_dates_object: null,
@@ -232,7 +241,6 @@
         subject_details: [],
         subjects: [],
       },
-
       taxonomy: {
         locations: [],
         origins: [],
@@ -363,6 +371,7 @@
             await this.$router.replace({ name: 'Item', params: { id: data.id } })
             this.getItem()
           }
+          this.isDirty = false
           this.showSnackbarSuccess('Item has been saved')
         } catch (e) {
           this.showSnackbarError('An error occurred')
@@ -374,6 +383,7 @@
 
       handleAttributesCopied (item) {
         this.item = item
+        this.isDirty = true
         this.showSnackbarSuccess('Attributes have been copied')
       },
 
@@ -434,7 +444,7 @@
             images: fromImages,
           })
           this.showSnackbarSuccess('Child has been created')
-          window.location.href = `/staff/items/${data.id}`
+          this.$router.push({ name: 'Item', params: { id: data.id } })
         } catch (e) {
           this.showSnackbarError('An error occurred')
           console.log(e)
