@@ -266,7 +266,11 @@
       // },
 
       isLoading () {
-        return this.isGettingItem || this.isSaving || this.isCreatingChild || this.isCopyingAttributes || this.isCreatingChild
+        return this.isGettingItem || this.isCreatingChild || this.isChanging
+      },
+
+      isChanging () {
+        return this.isSaving || this.isCopyingAttributes
       },
 
       hasImages () {
@@ -275,7 +279,7 @@
     },
 
     beforeRouteUpdate (to, from, next) {
-      if (this.isDirty || this.isLoading) {
+      if (this.isDirty || this.isChanging) {
         if (!confirm('If you proceed - the changes you made will not be saved. Are you sure?')) return
       }
 
@@ -284,7 +288,7 @@
     },
 
     beforeRouteLeave (to, from, next) {
-      if (!this.isDirty && !this.isLoading) {
+      if (!this.isDirty && !this.isChanging) {
         next()
       }
 
@@ -421,7 +425,7 @@
       },
 
       async createChild (fromImages = []) {
-        if (this.isDirty || this.isLoading) {
+        if (this.isDirty || this.isChanging) {
           if (!confirm('If you proceed - the changes you made will not be saved. Are you sure?')) return
           this.isDirty = false
         }
@@ -480,7 +484,7 @@
       },
 
       beforeLeave (event) {
-        if (this.isDirty || this.isLoading) {
+        if (this.isDirty || this.isChanging) {
           event.preventDefault()
           event.returnValue = ''
         }
