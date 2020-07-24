@@ -130,7 +130,6 @@
 
     watch: {
       'value.properties' (val) {
-        console.log('value.properties', [...val])
         const different = val.some(property => {
           const cachedProperty = this.cachedProperties.find(p => p.id === property.id)
           if (!cachedProperty) return true
@@ -144,19 +143,19 @@
       },
     },
 
-    async mounted () {
-      this.isGettingData = true
-      try {
-        const { data } = await this.$http.get('properties?project=catalogue')
-        this.properties = data
-      } catch (e) {
-        console.log(e)
-      } finally {
-        this.isGettingData = false
-      }
-    },
-
     methods: {
+      async getProperties () {
+        this.isGettingData = true
+        try {
+          const { data } = await this.$http.get('properties?project=catalogue')
+          this.properties = data
+        } catch (e) {
+          console.log(e)
+        } finally {
+          this.isGettingData = false
+        }
+      },
+
       groupBy (xs, key) {
         return xs.reduce(function (rv, x) {
           (rv[x[key]] = rv[x[key]] || []).push(x)
@@ -164,8 +163,11 @@
         }, {})
       },
 
-      updatePanels () {
+      async updatePanels () {
         this.panel = []
+        if (!this.properties.length) {
+          await this.getProperties()
+        }
 
         Object.keys(this.propers).forEach((categName, categIndex) => {
           this.propers[categName].forEach((prop) => {
