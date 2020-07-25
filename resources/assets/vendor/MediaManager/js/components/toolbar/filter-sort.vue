@@ -13,7 +13,7 @@
                      filterNameIs(item) ? 'has-text-weight-bold has-text-link' : 'has-text-grey-dark',
                      haveFileType(item) ? 'link' : 'has-text-grey-light disabled'
                  ]"
-                 @click.stop="setFilterName(item)">
+                 @click="setFilterName(item)">
                 {{ trans(item) }}
             </div>
 
@@ -25,7 +25,7 @@
                  :class="[
                      customFilterNameIs(item.key) ? 'has-text-weight-bold has-text-link' : 'has-text-grey-dark'
                  ]"
-                 @click.stop="setCustomFilterName(item.key)">
+                 @click="setCustomFilterName(item.key)">
                 {{ item.text }}
             </div>
 
@@ -35,7 +35,7 @@
                  :key="`sort-${item}`"
                  class="dropdown-item link"
                  :class="sortNameIs(item) ? 'has-text-weight-bold has-text-link' : 'has-text-grey-dark'"
-                 @click.stop="setSortName(item)">
+                 @click="setSortName(item)">
                 {{ trans(item) }}
             </div>
         </template>
