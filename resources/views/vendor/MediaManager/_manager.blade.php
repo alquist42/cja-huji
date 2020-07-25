@@ -190,17 +190,17 @@
                             </div>
 
                             {{-- editor --}}
-                            <div class="control" v-show="!isBulkSelecting()">
-                                <button class="button is-link"
-                                    ref="editor"
-                                    :disabled="editor_btn_disable"
-                                    v-tippy
-                                    title="e"
-                                    @click.stop="imageEditor()">
-                                    <span class="icon"><icon name="object-ungroup" scale="1.2"></icon></span>
-                                    <span>{{ trans('MediaManager::messages.editor.main') }}</span>
-                                </button>
-                            </div>
+{{--                            <div class="control" v-show="!isBulkSelecting()">--}}
+{{--                                <button class="button is-link"--}}
+{{--                                    ref="editor"--}}
+{{--                                    :disabled="editor_btn_disable"--}}
+{{--                                    v-tippy--}}
+{{--                                    title="e"--}}
+{{--                                    @click.stop="imageEditor()">--}}
+{{--                                    <span class="icon"><icon name="object-ungroup" scale="1.2"></icon></span>--}}
+{{--                                    <span>{{ trans('MediaManager::messages.editor.main') }}</span>--}}
+{{--                                </button>--}}
+{{--                            </div>--}}
 
                             {{-- delete --}}
                             <div class="control">
@@ -237,33 +237,33 @@
                             </div>
 
                             {{-- lock --}}
-                            <div class="control">
-                                <button class="button is-warning"
-                                    ref="lock"
-                                    :disabled="lock_btn_disable"
-                                    v-tippy
-                                    title="(L) ock"
-                                    @click.stop="lockFileForm()">
-                                    <span class="icon">
-                                        <icon :name="IsLocked(selectedFile) ? 'lock' : 'unlock'"></icon>
-                                    </span>
-                                </button>
-                            </div>
+{{--                            <div class="control">--}}
+{{--                                <button class="button is-warning"--}}
+{{--                                    ref="lock"--}}
+{{--                                    :disabled="lock_btn_disable"--}}
+{{--                                    v-tippy--}}
+{{--                                    title="(L) ock"--}}
+{{--                                    @click.stop="lockFileForm()">--}}
+{{--                                    <span class="icon">--}}
+{{--                                        <icon :name="IsLocked(selectedFile) ? 'lock' : 'unlock'"></icon>--}}
+{{--                                    </span>--}}
+{{--                                </button>--}}
+{{--                            </div>--}}
 
                             {{-- visibility --}}
-                            <div class="control">
-                                <button class="button"
-                                    :class="IsVisible(selectedFile) ? 'is-light' : 'is-danger'"
-                                    ref="visibility"
-                                    :disabled="vis_btn_disable"
-                                    v-tippy
-                                    title="(V) isibility"
-                                    @click.stop="FileVisibilityForm()">
-                                    <span class="icon">
-                                        <icon :name="IsVisible(selectedFile) ? 'eye' : 'eye-slash'"></icon>
-                                    </span>
-                                </button>
-                            </div>
+{{--                            <div class="control">--}}
+{{--                                <button class="button"--}}
+{{--                                    :class="IsVisible(selectedFile) ? 'is-light' : 'is-danger'"--}}
+{{--                                    ref="visibility"--}}
+{{--                                    :disabled="vis_btn_disable"--}}
+{{--                                    v-tippy--}}
+{{--                                    title="(V) isibility"--}}
+{{--                                    @click.stop="FileVisibilityForm()">--}}
+{{--                                    <span class="icon">--}}
+{{--                                        <icon :name="IsVisible(selectedFile) ? 'eye' : 'eye-slash'"></icon>--}}
+{{--                                    </span>--}}
+{{--                                </button>--}}
+{{--                            </div>--}}
                         </div>
                     </div>
 
@@ -865,6 +865,42 @@
                                             </tr>
                                         </tbody>
                                     </table>
+                                    <table>
+                                        <tbody>
+                                            <tr>
+                                                <td class="t-key">Scan:</td>
+                                                <td class="t-val">
+                                                    <a href="#" @click.prevent="openMetadataEditor">
+                                                        @{{ selectedFile.image.nli_picname || 'unknown' }}
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table>
+                                        <tbody>
+                                            <tr>
+                                                <td class="t-key">Negative:</td>
+                                                <td class="t-val">
+                                                    <a href="#" @click.prevent="openMetadataEditor">
+                                                        @{{ selectedFile.image.negative || 'unknown' }}
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table>
+                                        <tbody>
+                                            <tr>
+                                                <td class="t-key">Permissions:</td>
+                                                <td class="t-val">
+                                                    <a href="#" @click.prevent="openMetadataEditor">
+                                                        @{{ selectedFile.image.rights }}
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </template>
                                 <table v-else>
                                     <tbody>
@@ -942,14 +978,14 @@
                                             </tr>
                                         </tbody>
                                     </table>
-                                    <table>
-                                        <tbody>
-                                            <tr>
-                                                <td class="t-key">{{ trans('MediaManager::messages.visibility.main') }}:</td>
-                                                <td class="t-val">@{{ selectedFile.visibility }}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+{{--                                    <table>--}}
+{{--                                        <tbody>--}}
+{{--                                            <tr>--}}
+{{--                                                <td class="t-key">{{ trans('MediaManager::messages.visibility.main') }}:</td>--}}
+{{--                                                <td class="t-val">@{{ selectedFile.visibility }}</td>--}}
+{{--                                            </tr>--}}
+{{--                                        </tbody>--}}
+{{--                                    </table>--}}
                                     <table>
                                         <tbody>
                                             <tr>

@@ -36,7 +36,8 @@ class Image extends Classifiable
         'publish_state',
         'publish_state_reason',
 
-        'nli_pickname',
+        'negative',
+        'nli_picname',
 
         'rights',
 

@@ -377,9 +377,9 @@ export default {
                                 }
 
                                 // image editor
-                                if (key == 'e') {
-                                    this.$refs.editor.click()
-                                }
+                                // if (key == 'e') {
+                                //     this.$refs.editor.click()
+                                // }
                             }
                             // end of when there are files
 
@@ -429,14 +429,14 @@ export default {
                             }
 
                             // lock files
-                            if (key == 'l') {
-                                this.$refs.lock.click()
-                            }
+                            // if (key == 'l') {
+                            //     this.$refs.lock.click()
+                            // }
 
                             // set visibility
-                            if (key == 'v') {
-                                this.$refs.visibility.click()
-                            }
+                            // if (key == 'v') {
+                            //     this.$refs.visibility.click()
+                            // }
                         }
                         // end of we have files
 
