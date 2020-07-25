@@ -20,7 +20,7 @@ trait Upload
     public function upload(Request $request)
     {
         $upload_path = $request->upload_path;
-        if ($upload_path === 'ITEM\'S (virtual folder)') {
+        if ($attach_to_item = $upload_path === 'ITEM\'S (virtual folder)') {
             $upload_path = 'images_db/virtual_uploads/'.$request->item_id;
         }
         $random_name = filter_var($request->random_names, FILTER_VALIDATE_BOOLEAN);
@@ -73,9 +73,10 @@ trait Upload
 
                     // fire event
                     event('MMFileUploaded', [
-                        'file_path'  => $full_path,
-                        'mime_type'  => $file_type,
-                        'options'    => $file_options,
+                        'file_path'      => $full_path,
+                        'mime_type'      => $file_type,
+                        'options'        => $file_options,
+                        'attach_to_item' => $attach_to_item ? $request->item_id : null,
                     ]);
 
                     $broadcast = true;

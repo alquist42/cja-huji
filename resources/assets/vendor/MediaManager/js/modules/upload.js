@@ -204,6 +204,10 @@ export default {
                         uploaded++
 
                         if (item.success) {
+                            if (manager.customFilterNameIs('item-s')) {
+                              EventHub.fire('MediaManagerModal-files-uploaded')
+                            }
+
                             last = item.file_name
                             let msg = manager.restrictModeIsOn
                                 ? `"${item.file_name}"`

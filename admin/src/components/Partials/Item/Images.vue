@@ -85,6 +85,7 @@
       EventHub.listen('MediaManagerModal-include-images-in-item', this.handleEvent)
       EventHub.listen('MediaManagerModal-exclude-images-from-item', this.excludeImages)
       EventHub.listen('MediaManagerModal-files-deleted', this.updateImages)
+      EventHub.listen('MediaManagerModal-files-uploaded', this.updateImages)
     },
 
     beforeDestroy () {
@@ -92,6 +93,7 @@
         'MediaManagerModal-include-images-in-item',
         'MediaManagerModal-exclude-images-from-item',
         'MediaManagerModal-files-deleted',
+        'MediaManagerModal-files-uploaded',
       ])
     },
 
