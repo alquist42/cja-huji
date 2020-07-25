@@ -141,7 +141,7 @@
                             <div class="control" v-if="!isBulkSelecting() && (customFilterNameIs('item-s') || !customFilterName)">
                                 <button class="button"
                                     ref="upload"
-                                    :disabled="isLoading || !customFilterNameIs('item-s')"
+                                    :disabled="isLoading || (customFilterName && !customFilterNameIs('item-s'))"
                                     @click.stop="toggleUploadPanel()"
                                     v-tippy
                                     title="u">

@@ -188,6 +188,9 @@ export default {
 
                     formData.set('files_map', JSON.stringify(filesMap))
                     formData.set('item_id', manager.itemId)
+                    if (formData.get('upload_path') === null) {
+                      formData.set('upload_path', manager.files.path)
+                    }
                 },
                 processingmultiple() {
                     manager.showProgress = true
