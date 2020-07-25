@@ -157,8 +157,9 @@
         }
       },
 
-      async excludeImages (excludingImages) {
-        const images = this.value.images.slice(0)
+      async excludeImages (filesAndFolders) {
+        const excludingImages = await this.getAllNestedFiles(filesAndFolders)
+        const images = [...this.value.images]
 
         excludingImages.forEach(excludingImage => {
           const index = images.findIndex(img => img.id === excludingImage.image.id)
