@@ -230,7 +230,7 @@ export default {
                         }
 
                         if (this.folders.join('/') === 'ORPHANS (virtual folder)') {
-                            return this.getCustomFiles('orphan_files')
+                          return this.setCustomFilterName('orphans')
                         }
 
                         if (this.folders.join('/') === 'ITEM\'S (virtual folder)' || this.folders.join('/') === 'WHOLE TREE (virtual folder)') {

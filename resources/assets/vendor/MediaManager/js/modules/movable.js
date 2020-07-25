@@ -20,6 +20,8 @@ export default {
         },
         // helpers
         addToMovableList(item = null) {
+            if (this.customFilterName) return
+
             let list = [].concat(
                 this.movableList,
                 item

@@ -135,13 +135,13 @@
                 {{-- left toolbar --}}
                 <div class="level-left">
                     {{-- first --}}
-                    <div class="level-item">
+                    <div class="level-item" v-if="!customFilterName">
                         <div class="field" :class="{'has-addons': !isBulkSelecting()}">
                             {{-- upload --}}
                             <div class="control" v-if="!isBulkSelecting()">
                                 <button class="button"
                                     ref="upload"
-                                    :disabled="isLoading"
+                                    :disabled="isLoading || customFilterName"
                                     @click.stop="toggleUploadPanel()"
                                     v-tippy
                                     title="u">
@@ -153,7 +153,7 @@
                             {{-- new folder --}}
                             <div class="control">
                                 <button class="button"
-                                    :disabled="isLoading"
+                                    :disabled="isLoading || customFilterName"
                                     @click.stop="createNewFolder()">
                                     <span class="icon"><icon name="folder"></icon></span>
                                     <span>{{ trans('MediaManager::messages.add.folder') }}</span>
@@ -166,10 +166,10 @@
                     <div class="level-item">
                         <div class="field has-addons">
                             {{-- move --}}
-                            <div class="control">
+                            <div class="control" v-if="!customFilterName">
                                 <button class="button is-link"
                                     ref="move"
-                                    :disabled="isLoading || !movableItemsCount"
+                                    :disabled="isLoading || !movableItemsCount || customFilterName"
                                     v-tippy
                                     title="m / p"
                                     @click.stop="moveItem()">
@@ -179,15 +179,15 @@
                             </div>
 
                             {{-- rename --}}
-                            <div class="control" v-if="!isBulkSelecting()">
-                                <button class="button is-link"
-                                    ref="rename"
-                                    :disabled="ops_btn_disable"
-                                    @click.stop="renameItem()">
-                                    <span class="icon"><icon name="terminal"></icon></span>
-                                    <span>{{ trans('MediaManager::messages.rename.main') }}</span>
-                                </button>
-                            </div>
+{{--                            <div class="control" v-if="!isBulkSelecting()">--}}
+{{--                                <button class="button is-link"--}}
+{{--                                    ref="rename"--}}
+{{--                                    :disabled="ops_btn_disable"--}}
+{{--                                    @click.stop="renameItem()">--}}
+{{--                                    <span class="icon"><icon name="terminal"></icon></span>--}}
+{{--                                    <span>{{ trans('MediaManager::messages.rename.main') }}</span>--}}
+{{--                                </button>--}}
+{{--                            </div>--}}
 
                             {{-- editor --}}
 {{--                            <div class="control" v-show="!isBulkSelecting()">--}}
@@ -577,7 +577,7 @@
                 </div>
 
                 {{-- movable list --}}
-                <div v-if="allItemsCount && !isLoading && !waitingForUpload"
+                <div v-if="allItemsCount && !isLoading && !waitingForUpload && !customFilterName"
                     class="movable-list extra-func-btns">
                     <v-touch class="btn-plain"
                         v-tippy="{arrow: true, hideOnClick: false}"
