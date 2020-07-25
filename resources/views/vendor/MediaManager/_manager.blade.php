@@ -135,13 +135,13 @@
                 {{-- left toolbar --}}
                 <div class="level-left">
                     {{-- first --}}
-                    <div class="level-item" v-if="!customFilterName">
+                    <div class="level-item">
                         <div class="field" :class="{'has-addons': !isBulkSelecting()}">
                             {{-- upload --}}
-                            <div class="control" v-if="!isBulkSelecting()">
+                            <div class="control" v-if="!isBulkSelecting() && (customFilterNameIs('item-s') || !customFilterName)">
                                 <button class="button"
                                     ref="upload"
-                                    :disabled="isLoading || customFilterName"
+                                    :disabled="isLoading || !customFilterNameIs('item-s')"
                                     @click.stop="toggleUploadPanel()"
                                     v-tippy
                                     title="u">
@@ -151,7 +151,7 @@
                             </div>
 
                             {{-- new folder --}}
-                            <div class="control">
+                            <div class="control" v-if="!customFilterName">
                                 <button class="button"
                                     :disabled="isLoading || customFilterName"
                                     @click.stop="createNewFolder()">

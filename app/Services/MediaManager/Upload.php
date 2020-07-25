@@ -20,6 +20,9 @@ trait Upload
     public function upload(Request $request)
     {
         $upload_path = $request->upload_path;
+        if ($upload_path === 'ITEM\'S (virtual folder)') {
+            $upload_path = 'images_db/virtual_uploads/'.$request->item_id;
+        }
         $random_name = filter_var($request->random_names, FILTER_VALIDATE_BOOLEAN);
         $result      = [];
         $broadcast   = false;

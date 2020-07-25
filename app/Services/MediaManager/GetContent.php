@@ -48,7 +48,7 @@ trait GetContent
                 $this->lockList(),
                 [
                     'files'  => [
-                        'path'  => 'ORPHANS',
+                        'path'  => 'ORPHANS (virtual folder)',
                         'items' => $this->paginate($this->getFilesMetadataForImages($orphanImages), $this->paginationAmount),
                     ],
                 ]
@@ -65,7 +65,7 @@ trait GetContent
                 $this->lockList(),
                 [
                     'files'  => [
-                        'path'  => 'ITEM\'S',
+                        'path'  => 'ITEM\'S (virtual folder)',
                         'items' => $this->paginate($this->getFilesMetadataForImages($itemImages), $this->paginationAmount),
                     ],
                 ]
@@ -82,7 +82,7 @@ trait GetContent
                 $this->lockList(),
                 [
                     'files'  => [
-                        'path'  => 'ORPHANS',
+                        'path'  => 'WHOLE TREE (virtual folder)',
                         'items' => $this->paginate($this->getFilesMetadataForImages($treeImages), $this->paginationAmount),
                     ],
                 ]

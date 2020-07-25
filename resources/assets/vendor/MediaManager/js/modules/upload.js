@@ -187,6 +187,7 @@ export default {
                     formData.append('custom_attrs', JSON.stringify(manager.uploadPreviewOptionsList))
 
                     formData.set('files_map', JSON.stringify(filesMap))
+                    formData.set('item_id', manager.itemId)
                 },
                 processingmultiple() {
                     manager.showProgress = true
