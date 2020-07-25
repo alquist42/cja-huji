@@ -167,6 +167,10 @@ export default {
                         return done(manager.trans('already_exists'))
                     }
 
+                    if (manager.customFilterName && !manager.customFilterNameIs('item-s')) {
+                        return done('It is not possible to upload in this virtual folder')
+                    }
+
                     let path = file.fullPath ? file.fullPath.substring(0, file.fullPath.length - file.name.length) : ''
                     if (path.endsWith('/')) {
                       path = path.substring(0, path.length - 1)
@@ -227,9 +231,21 @@ export default {
                         uploaded = 0
                         allFiles = 0
 
-                        last
-                            ? manager.getFiles(null, last)
-                            : manager.getFiles()
+                        switch (manager.customFilterName) {
+                            case 'orphans':
+                                manager.getCustomFiles('orphan_files')
+                                break
+                            case 'item-s':
+                                manager.getCustomFiles('item_files')
+                                break
+                            case 'whole-tree':
+                                manager.getCustomFiles('tree_files')
+                                break
+                            default:
+                                last
+                                    ? manager.getFiles(null, last)
+                                    : manager.getFiles()
+                        }
                     }
                 }
             }
