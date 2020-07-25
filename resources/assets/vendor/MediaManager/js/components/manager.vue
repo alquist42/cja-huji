@@ -520,7 +520,19 @@ export default {
             EventHub.fire('clear-global-search')
             this.resetInput('searchFor')
 
-            return this.getFiles(null, this.selectedFile ? this.selectedFile.name : null)
+            switch (this.customFilterName) {
+                case 'orphans':
+                    this.getCustomFiles('orphan_files')
+                    break
+                case 'item-s':
+                    this.getCustomFiles('item_files')
+                    break
+                case 'whole-tree':
+                    this.getCustomFiles('tree_files')
+                    break
+                default:
+                  this.getFiles(null, this.selectedFile ? this.selectedFile.name : null)
+            }
         },
         clearAll() {
             if (!this.isLoading) {
