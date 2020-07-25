@@ -81,7 +81,14 @@ class ImageService
                 $join->on('images.id', '=', 'entity_images.image_id')
                     ->whereIn('entity_images.entity_id', $itemsIds);
             })
-            ->with(['copyright', 'photographer'])
+            ->with([
+                'copyright',
+                'photographer',
+                'items' => function ($query) {
+                    $query->select('entity_images.entity_id as id');
+                }
+            ])
+            ->distinct()
             ->get();
     }
 }
