@@ -615,7 +615,7 @@
                     {{-- files --}}
                     <ul class="__files-boxs" ref="filesList">
                         <li v-for="(file, index) in orderBy(filterBy(allFiles, searchFor, 'name'), sortName, sortDirection)"
-                            :key="file.image.id"
+                            :key="file.name + (file.image ? file.image.id : '')"
                             :data-file-index="index"
                             @click.stop="setSelected(file, index, $event)">
                             <v-touch class="__file-box mm-animated"
