@@ -13,6 +13,7 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        $itemsRoot = Item::whereNull('parent_id')->count();
         $items = Item::selectRaw('publish_state, count(*) as count')
             ->groupBy('publish_state')
             ->get();
@@ -45,6 +46,7 @@ class DashboardController extends Controller
             'totals' => [
                 'items' => [
                     'all' => $itemsNotPublished + $itemsPrepared + $itemsPublished,
+                    'root' => $itemsRoot,
                     'not_published' => $itemsNotPublished + $itemsPrepared,
                 ],
                 'images' => [

@@ -226,7 +226,7 @@
           color="info"
           icon="mdi-archive"
           title="Items"
-          :value="data.totals.items.all.toString()"
+          :value="`${data.totals.items.all.toString()}/${data.totals.items.root.toString()}`"
           sub-icon="mdi-clock"
           :sub-text="`Not published yet: ${data.totals.items.not_published}`"
         />
@@ -420,6 +420,7 @@
           totals: {
             items: {
               all: '',
+              root: '',
               not_published: '',
             },
             images: {
