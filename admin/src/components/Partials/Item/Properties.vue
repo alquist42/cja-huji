@@ -42,7 +42,7 @@
                 @input="setPropValue(prop, $event)"
               />
               <tiptap-vuetify
-                v-if="prop.type === 'textarea' && prop.content_type === 'htmle'"
+                v-if="prop.type === 'textarea' && ['htmle', 'html'].includes(prop.content_type)"
                 :key="prop.id"
                 :placeholder="prop.verbose_name"
                 :extensions="extensions"
