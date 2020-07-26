@@ -80,6 +80,7 @@
 
         try {
           this.isCreatingChild = true
+          EventHub.fire('MediaManagerModal-modal-creating-child')
           const { data } = await this.$http.post('items?project=catalogue', payload)
           EventHub.fire('MediaManagerModal-modal-created-child')
           this.$router.push({ name: 'Item', params: { id: data.id } })

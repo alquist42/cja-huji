@@ -23,7 +23,7 @@
 
     created () {
       EventHub.listen('MediaManagerModal-show', () => this.toggleModalFor('images'))
-      EventHub.listen('MediaManagerModal-modal-created-child', () => this.hideInputModal())
+      EventHub.listen('MediaManagerModal-modal-creating-child', () => this.hideInputModal())
 
       EventHub.listen('MediaManagerModal-create-new-item', (data) => {
         console.log('MediaManagerModal-create-new-item Event', data)

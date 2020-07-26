@@ -9,6 +9,7 @@ Route::post('/auth/change-password', 'Api\AuthController@changePassword');
 Route::group(['namespace' => 'Api'], function () {
     Route::group(['middleware' => 'project'], function () {
         Route::get('/items', 'ItemsController@index');
+        Route::get('/items/browse', 'ItemsController@browse');
         Route::get('/items/search', 'ItemsController@search');
         Route::post('/items', 'ItemsController@store');
         Route::get('/items/{item}', 'ItemsController@show');

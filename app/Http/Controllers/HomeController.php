@@ -61,17 +61,31 @@ class HomeController extends Controller
      */
     private function wpc()
     {
-        $countries = Location::select('locations.id', 'locations.name')
-            ->join('projects', function ($join) {
-                $join->on('projects.taggable_id', 'locations.id')
-                    ->where([
-                        ['tag_slug', 'like', '%WPC%'],
-                        ['taggable_type', '=', 'location'],
-                    ]);
+        $countries = Location::select('p.*')
+            ->join('taxonomy', function ($join)  {
+                $join->on('taxonomy.taxonomy_id', '=', 'locations.id')
+                    ->where('taxonomy.taxonomy_type', 'location');
+
             })
-            ->whereNull('parent_id')
+            ->join('sets', function ($join) {
+                $join->on('sets.id', '=', 'taxonomy.entity_id');
+                //  ->where('taxonomy.entity_type', '=', 'set');
+            })
+            ->join('projects', function ($join)  {
+                $join->on('sets.id', '=', 'projects.taggable_id')
+                //    ->where('projects.taggable_type', '=', 'location')
+                    ->where('projects.tag_slug', 'WPC');
+            })
+            ->join('locations as p', function ($join) {
+                $join->on([['locations._rgt', '>=', 'p._lft'],
+                    ['locations._rgt','<=', 'p._rgt'
+                    ]])
+                    ->whereNull('p.parent_id');
+            })
             // Building does not exist
-            ->where('locations.id', '!=', 758)
+            ->whereNotIn('locations.id', [758,-1])
+            ->distinct()
+            ->orderBy('p.name')
             ->get()
             ->map(function ($country) {
                 if (strpos($country->name, ' ') !== false) {

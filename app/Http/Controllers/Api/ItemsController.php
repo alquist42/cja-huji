@@ -56,6 +56,27 @@ class ItemsController extends Controller
             ->paginate($request->query('per_page', null));
     }
 
+    public function browse(Request $request)
+    {
+        $page = $request->get('page');
+
+        $filters = collect($request->only($this->allowed_filters))->filter(function ($value) {
+            return null !== $value;
+        })->map(function ($value) {
+            return is_array($value) ? $value : [$value];
+        })->toArray();
+
+
+        $data = $this->search->findByTaxonomy($filters);
+        $items = $data['collection'];
+        $pagination =  $data['pagination'];
+
+        return response()->json([
+            'data'=> $items,
+            'meta' => $pagination
+        ]);
+    }
+
     public function show(Item $item)
     {
         $item->load(array_diff(Item::$relationships, ['ancestors']));
