@@ -24,6 +24,11 @@ class DashboardController extends Controller
         $itemsPublished = $items->where('publish_state', Item::PUBLISH_STATE_PUBLISHED)
             ->first()
             ->count;
+        $itemsLastModified = Item::select('id', 'name', 'date', 'publish_state')
+            ->with('creation_date')
+//            ->latest('updated_at')
+            ->take(10)
+            ->get();
 
         $imagesNotAttached = Image::select('images.id')
             ->leftJoin('entity_images', 'images.id', '=', 'entity_images.image_id')
@@ -43,6 +48,7 @@ class DashboardController extends Controller
                 'projects' => count((new Tenant)->projects()),
                 'categories' => Category::where('in_search', true)->count(),
             ],
+            'items' => $itemsLastModified,
         ];
 
 //        $sets = Item::with(Item::$relationships)->paginate(3);
