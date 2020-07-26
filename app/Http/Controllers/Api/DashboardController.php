@@ -42,6 +42,11 @@ class DashboardController extends Controller
             ->whereNull('entity_id')
             ->count();
 
+        $lastAudits = Audit::with('user')
+            ->latest()
+            ->take(15)
+            ->get();
+
         return [
             'totals' => [
                 'items' => [
@@ -57,6 +62,7 @@ class DashboardController extends Controller
                 'categories' => Category::where('in_search', true)->count(),
             ],
             'items' => $itemsLastModified,
+            'activities' => $lastAudits,
         ];
 
 //        $sets = Item::with(Item::$relationships)->paginate(3);
