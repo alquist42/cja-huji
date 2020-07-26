@@ -185,7 +185,8 @@
       isCreatingChild: false,
       isCopyingAttributes: false,
       isDirty: false,
-      item: {
+      item: null,
+      default: {
         activity_dates: null,
         activity_dates_object: null,
         addenda: '',
@@ -298,6 +299,17 @@
       } else {
         next(false)
       }
+    },
+
+    watch: {
+      '$route.params.id': function (id) {
+        this.item = this.default
+        this.item.id = id
+      },
+    },
+
+    created () {
+      this.item = this.default
     },
 
     mounted () {

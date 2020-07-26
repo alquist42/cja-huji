@@ -72,6 +72,7 @@
           value: 'images',
           sortable: false,
         },
+        { text: 'ID', value: 'id' },
         { text: 'Name', value: 'name' },
         // {
         //   text: 'Parent', value: 'parent_id',
