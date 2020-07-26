@@ -36,8 +36,7 @@
           :key="image.id"
         >
           <v-img
-            :lazy-src="`/storage/${image.def}`"
-            :src="`/images/${value.id}-${image.id}-thumb.png`"
+            :src="`/storage/${image.def}`"
             max-height="250px"
             contain
           />
