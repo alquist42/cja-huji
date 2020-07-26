@@ -3,8 +3,12 @@
 
 namespace App\Models\Taxonomy;
 
+use App\Traits\SearchableByName;
+
 class Artist extends Taxonomy
 {
+    use SearchableByName;
+
     /**
      * DB Table name
      *

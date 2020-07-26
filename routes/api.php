@@ -14,6 +14,7 @@ Route::group(['namespace' => 'Api'], function () {
         Route::get('/items/{item}', 'ItemsController@show');
         Route::put('/items/{item}', 'ItemsController@update');
         Route::delete('/items/{item}', 'ItemsController@destroy');
+        Route::get('/items/{item}/images', 'ItemImagesController@index');
         Route::put('/items/{item}/images', 'ItemImagesController@update');
 
         //   Route::get('/images', 'ImagesController@index');
@@ -30,6 +31,8 @@ Route::group(['namespace' => 'Api'], function () {
         Route::get('/copyrights', 'CopyrightsController@index');
         Route::get('/photographers', 'PhotographersController@index');
         Route::get('/projects', 'ProjectsController@index');
+        Route::get('/artists', 'ArtistsController@index');
+        Route::get('/professions', 'ProfessionsController@index');
 
         Route::get('/dashboard', 'DashboardController@index');
     });

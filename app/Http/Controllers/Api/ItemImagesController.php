@@ -9,6 +9,11 @@ use App\Http\Controllers\Controller;
 
 class ItemImagesController extends Controller
 {
+    public function index(Item $item)
+    {
+        return $item->images;
+    }
+
     public function update(Item $item, Request $request)
     {
         (new ItemService($item))->updateImages($request->input('images'));

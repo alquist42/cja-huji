@@ -8,8 +8,11 @@
         icon
         v-bind="attrs"
         v-on="on"
+        :disabled="disabled"
       >
-        <v-icon color="grey">mdi-pencil</v-icon>
+        <v-icon color="grey">
+          mdi-pencil
+        </v-icon>
       </v-btn>
     </template>
 
@@ -19,6 +22,7 @@
       </div>
       <v-card-text>
         <v-autocomplete
+          v-model="selectedItems"
           autofocus
           outlined
           clearable
@@ -33,7 +37,6 @@
           item-value="id"
           :items="items"
           :loading="isLoading"
-          v-model="selectedItems"
         />
       </v-card-text>
       <v-card-actions>
@@ -69,6 +72,11 @@
       value: {
         type: Array,
         required: true,
+      },
+
+      disabled: {
+        type: Boolean,
+        default: false,
       },
     },
 

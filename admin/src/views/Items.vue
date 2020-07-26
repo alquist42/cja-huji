@@ -17,11 +17,11 @@
     <v-row justify="center">
       <v-col cols="12">
         <v-data-table
+          v-model="selected"
           dense
           :headers="headers"
           :items="items"
           class="elevation-1"
-          v-model="selected"
           :options.sync="options"
           :server-items-length="totalItems"
           :footer-props="{ itemsPerPageOptions: [5, 10, 15, 25, 50, 100] }"

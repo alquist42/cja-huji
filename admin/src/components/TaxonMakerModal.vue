@@ -8,8 +8,11 @@
         icon
         v-bind="attrs"
         v-on="on"
+        :disabled="disabled"
       >
-        <v-icon color="grey">mdi-plus-thick</v-icon>
+        <v-icon color="grey">
+          mdi-plus-thick
+        </v-icon>
       </v-btn>
     </template>
 
@@ -19,6 +22,7 @@
       </div>
       <v-card-text>
         <v-autocomplete
+          v-model="maker.artist"
           autofocus
           outlined
           clearable
@@ -31,9 +35,9 @@
           item-value="id"
           :items="items.artists"
           :loading="isLoading.artists"
-          v-model="maker.artist"
         />
         <v-autocomplete
+          v-model="maker.profession"
           outlined
           clearable
           cache-items
@@ -45,7 +49,6 @@
           item-value="id"
           :items="items.professions"
           :loading="isLoading.professions"
-          v-model="maker.profession"
         />
       </v-card-text>
       <v-card-actions>
@@ -72,6 +75,13 @@
 <script>
   export default {
     name: 'TaxonMakerModal',
+
+    props: {
+      disabled: {
+        type: Boolean,
+        default: false,
+      },
+    },
 
     data () {
       return {
@@ -109,7 +119,7 @@
         }
 
         this.isLoading.artist = true
-        const { data } = await this.$http.get(`autocomplete/?project=catalogue&type=${type}&term=${search}`)
+        const { data } = await this.$http.get(`${type}/?project=catalogue&search=${search}`)
         this.isLoading.artist = false
         this.items[type] = data || []
       },
