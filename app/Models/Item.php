@@ -8,9 +8,11 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Kalnoy\Nestedset\NodeTrait;
 use App\Traits\SearchableByIndex;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class Item extends Classifiable
+class Item extends Classifiable implements Auditable
 {
+    use \OwenIt\Auditing\Auditable;
     use NodeTrait;
     use SearchableByName, SearchableByIndex;
 

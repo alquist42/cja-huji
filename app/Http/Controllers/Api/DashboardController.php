@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Image;
 use App\Models\Item;
 use App\Models\Tenant;
+use OwenIt\Auditing\Models\Audit;
 
 class DashboardController extends Controller
 {
@@ -24,11 +25,16 @@ class DashboardController extends Controller
         $itemsPublished = $items->where('publish_state', Item::PUBLISH_STATE_PUBLISHED)
             ->first()
             ->count;
-        $itemsLastModified = Item::select('id', 'name', 'date', 'publish_state')
-            ->with('creation_date')
-//            ->latest('updated_at')
+        $lastItemsAudits = Audit::selectRaw('auditable_id, auditable_type, max(created_at) as created_at')
+            ->where('auditable_type', 'set')
+            ->with('auditable.creation_date')
+            ->groupBy('auditable_id')
+            ->latest()
             ->take(10)
             ->get();
+        $itemsLastModified = $lastItemsAudits->map(function ($audit) {
+            return $audit->auditable;
+        });
 
         $imagesNotAttached = Image::select('images.id')
             ->leftJoin('entity_images', 'images.id', '=', 'entity_images.image_id')

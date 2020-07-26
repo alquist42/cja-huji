@@ -300,6 +300,9 @@
               <template v-slot:item.creation_date="{ value }">
                 {{ value ? value.name : '' }}
               </template>
+              <template v-slot:item.publish_state="{ value }">
+                {{ publishState(value) }}
+              </template>
             </v-data-table>
           </v-card-text>
         </base-material-card>
@@ -399,6 +402,10 @@
 </template>
 
 <script>
+  const PUBLISH_STATE_NOT_PUBLISHED = 0
+  const PUBLISH_STATE_PREPARED_FOR_PUBLISHING = 1
+  const PUBLISH_STATE_PUBLISHED = 2
+
   export default {
     name: 'DashboardDashboard',
 
@@ -594,6 +601,19 @@
 
       complete (index) {
         this.list[index] = !this.list[index]
+      },
+
+      publishState (val) {
+        switch (val) {
+          case PUBLISH_STATE_NOT_PUBLISHED:
+            return 'Not published'
+          case PUBLISH_STATE_PREPARED_FOR_PUBLISHING:
+            return 'Prepared for publishing'
+          case PUBLISH_STATE_PUBLISHED:
+            return 'Published'
+        }
+
+        return 'Unknown'
       },
     },
   }
