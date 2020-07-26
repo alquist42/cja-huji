@@ -35,6 +35,7 @@ class EventServiceProvider extends ServiceProvider
             $image = Image::create([
                 'def' => $file_path,
                 'rights' => '111',
+                'nli_picname' => pathinfo($file_path, PATHINFO_FILENAME)
             ]);
 
             if ($attach_to_item) {
