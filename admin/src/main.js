@@ -34,6 +34,7 @@ Vue.prototype.$http = axios.create({
   headers: {
     'X-Requested-With': 'XMLHttpRequest',
     'X-CSRF-TOKEN': document.head.querySelector('meta[name="csrf-token"]').content,
+    Authorization: 'Bearer ' + document.head.querySelector('meta[name="api-token"]').content,
   },
 })
 
