@@ -40,13 +40,15 @@ class ImagesController extends Controller
         //    $url = $image->url();
         $url = str_replace(" ", "%20", $url);
 
-        if (config('filesystems.disks.public.prefetch')) {
-            if (!Storage::disk('public')->exists($url)) {
+        if (!Storage::disk('public')->exists($url)) {
+            if (config('filesystems.disks.public.prefetch')) {
                 $this->saveImage($url);
+                $url = config('filesystems.disks.public.root') . '/' . $url;
+            } else {
+                $url = 'http://cja.huji.ac.il/' . $url;
             }
-            $url = config('filesystems.disks.public.root') . '/' . $url;
         } else {
-            $url = 'http://cja.huji.ac.il/' . $url;
+            $url = config('filesystems.disks.public.root') . '/' . $url;
         }
 
         $img = Image::make($url);
@@ -67,12 +69,12 @@ class ImagesController extends Controller
         }
         if ($addWatermark) {
             $wm = \Image::make('cr_wm.png');
-          
+
             $ratio = round($img->width() / $wm->width());
             $wm->resize(($wm->width() * $ratio / 3), null, function ($constraint) {
                 $constraint->aspectRatio();
             });
-            
+
             $img->insert($wm, 'top-left', 0, 0);
         }
 

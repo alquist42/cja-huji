@@ -338,41 +338,41 @@
                         </div>
 
                         {{-- search --}}
-                        <div class="level-item" v-if="allItemsCount">
-                            <div class="control">
-                                <div class="field has-addons">
-                                    <p class="control" v-if="!restrictModeIsOn">
-                                        <global-search-btn
-                                            route="{{ route('staff.media.global_search') }}"
-                                            :is-loading="isLoading"
-                                            :trans="trans"
-                                            :show-notif="showNotif">
-                                        </global-search-btn>
-                                    </p>
+{{--                        <div class="level-item" v-if="allItemsCount">--}}
+{{--                            <div class="control">--}}
+{{--                                <div class="field has-addons">--}}
+{{--                                    <p class="control" v-if="!restrictModeIsOn">--}}
+{{--                                        <global-search-btn--}}
+{{--                                            route="{{ route('staff.media.global_search') }}"--}}
+{{--                                            :is-loading="isLoading"--}}
+{{--                                            :trans="trans"--}}
+{{--                                            :show-notif="showNotif">--}}
+{{--                                        </global-search-btn>--}}
+{{--                                    </p>--}}
 
-                                    <p class="control has-icons-left">
-                                        <input class="input"
-                                            :disabled="isLoading"
-                                            type="text"
-                                            ref="search"
-                                            v-model="searchFor"
-                                            :placeholder="trans('find')">
-                                        <span class="icon is-left">
-                                            <icon name="search"></icon>
-                                        </span>
-                                    </p>
+{{--                                    <p class="control has-icons-left">--}}
+{{--                                        <input class="input"--}}
+{{--                                            :disabled="isLoading"--}}
+{{--                                            type="text"--}}
+{{--                                            ref="search"--}}
+{{--                                            v-model="searchFor"--}}
+{{--                                            :placeholder="trans('find')">--}}
+{{--                                        <span class="icon is-left">--}}
+{{--                                            <icon name="search"></icon>--}}
+{{--                                        </span>--}}
+{{--                                    </p>--}}
 
-                                    <p class="control">
-                                        <button class="button is-black" :disabled="!searchFor"
-                                            v-tippy
-                                            title="{{ trans('MediaManager::messages.clear', ['attr' => trans('MediaManager::messages.search.main')]) }}"
-                                            @click.stop="resetInput('searchFor')">
-                                            <span class="icon"><icon name="times"></icon></span>
-                                        </button>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
+{{--                                    <p class="control">--}}
+{{--                                        <button class="button is-black" :disabled="!searchFor"--}}
+{{--                                            v-tippy--}}
+{{--                                            title="{{ trans('MediaManager::messages.clear', ['attr' => trans('MediaManager::messages.search.main')]) }}"--}}
+{{--                                            @click.stop="resetInput('searchFor')">--}}
+{{--                                            <span class="icon"><icon name="times"></icon></span>--}}
+{{--                                        </button>--}}
+{{--                                    </p>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
                     </template>
                 </div>
 
