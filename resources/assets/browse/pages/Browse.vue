@@ -254,7 +254,7 @@
         this.meta = {}
         this.loading = true
 
-        const { data } = await axios.get(`/api/items?${this.type}[]=${this.selected}&project=${window.project}&page=${page}`)
+        const { data } = await axios.get(`/api/items/browse?${this.type}[]=${this.selected}&project=${window.project}&page=${page}`)
 
         this.items = data.data
         this.meta = data.meta
