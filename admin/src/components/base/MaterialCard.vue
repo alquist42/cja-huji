@@ -17,7 +17,8 @@
       <v-sheet
         v-else
         :class="{
-          'py-1': !$slots.image,
+          'py-1': !$slots.image && !icon,
+          'py-7': icon,
           'px-7': true,
         }"
         :color="color"
