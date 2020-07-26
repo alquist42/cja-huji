@@ -230,7 +230,7 @@ export default {
                         }
 
                         if (this.folders.join('/') === 'ORPHANS (virtual folder)') {
-                            return this.getCustomFiles('orphan_files')
+                          return this.setCustomFilterName('orphans')
                         }
 
                         if (this.folders.join('/') === 'ITEM\'S (virtual folder)' || this.folders.join('/') === 'WHOLE TREE (virtual folder)') {
@@ -377,9 +377,9 @@ export default {
                                 }
 
                                 // image editor
-                                if (key == 'e') {
-                                    this.$refs.editor.click()
-                                }
+                                // if (key == 'e') {
+                                //     this.$refs.editor.click()
+                                // }
                             }
                             // end of when there are files
 
@@ -429,14 +429,14 @@ export default {
                             }
 
                             // lock files
-                            if (key == 'l') {
-                                this.$refs.lock.click()
-                            }
+                            // if (key == 'l') {
+                            //     this.$refs.lock.click()
+                            // }
 
                             // set visibility
-                            if (key == 'v') {
-                                this.$refs.visibility.click()
-                            }
+                            // if (key == 'v') {
+                            //     this.$refs.visibility.click()
+                            // }
                         }
                         // end of we have files
 
@@ -520,7 +520,19 @@ export default {
             EventHub.fire('clear-global-search')
             this.resetInput('searchFor')
 
-            return this.getFiles(null, this.selectedFile ? this.selectedFile.name : null)
+            switch (this.customFilterName) {
+                case 'orphans':
+                    this.getCustomFiles('orphan_files')
+                    break
+                case 'item-s':
+                    this.getCustomFiles('item_files')
+                    break
+                case 'whole-tree':
+                    this.getCustomFiles('tree_files')
+                    break
+                default:
+                  this.getFiles(null, this.selectedFile ? this.selectedFile.name : null)
+            }
         },
         clearAll() {
             if (!this.isLoading) {

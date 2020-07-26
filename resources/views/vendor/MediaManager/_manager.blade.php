@@ -138,10 +138,10 @@
                     <div class="level-item">
                         <div class="field" :class="{'has-addons': !isBulkSelecting()}">
                             {{-- upload --}}
-                            <div class="control" v-if="!isBulkSelecting()">
+                            <div class="control" v-if="!isBulkSelecting() && (customFilterNameIs('item-s') || !customFilterName)">
                                 <button class="button"
                                     ref="upload"
-                                    :disabled="isLoading"
+                                    :disabled="isLoading || (customFilterName && !customFilterNameIs('item-s'))"
                                     @click.stop="toggleUploadPanel()"
                                     v-tippy
                                     title="u">
@@ -151,9 +151,9 @@
                             </div>
 
                             {{-- new folder --}}
-                            <div class="control">
+                            <div class="control" v-if="!customFilterName">
                                 <button class="button"
-                                    :disabled="isLoading"
+                                    :disabled="isLoading || customFilterName"
                                     @click.stop="createNewFolder()">
                                     <span class="icon"><icon name="folder"></icon></span>
                                     <span>{{ trans('MediaManager::messages.add.folder') }}</span>
@@ -166,10 +166,10 @@
                     <div class="level-item">
                         <div class="field has-addons">
                             {{-- move --}}
-                            <div class="control">
+                            <div class="control" v-if="!customFilterName">
                                 <button class="button is-link"
                                     ref="move"
-                                    :disabled="isLoading || !movableItemsCount"
+                                    :disabled="isLoading || !movableItemsCount || customFilterName"
                                     v-tippy
                                     title="m / p"
                                     @click.stop="moveItem()">
@@ -179,28 +179,28 @@
                             </div>
 
                             {{-- rename --}}
-                            <div class="control" v-if="!isBulkSelecting()">
-                                <button class="button is-link"
-                                    ref="rename"
-                                    :disabled="ops_btn_disable"
-                                    @click.stop="renameItem()">
-                                    <span class="icon"><icon name="terminal"></icon></span>
-                                    <span>{{ trans('MediaManager::messages.rename.main') }}</span>
-                                </button>
-                            </div>
+{{--                            <div class="control" v-if="!isBulkSelecting()">--}}
+{{--                                <button class="button is-link"--}}
+{{--                                    ref="rename"--}}
+{{--                                    :disabled="ops_btn_disable"--}}
+{{--                                    @click.stop="renameItem()">--}}
+{{--                                    <span class="icon"><icon name="terminal"></icon></span>--}}
+{{--                                    <span>{{ trans('MediaManager::messages.rename.main') }}</span>--}}
+{{--                                </button>--}}
+{{--                            </div>--}}
 
                             {{-- editor --}}
-                            <div class="control" v-show="!isBulkSelecting()">
-                                <button class="button is-link"
-                                    ref="editor"
-                                    :disabled="editor_btn_disable"
-                                    v-tippy
-                                    title="e"
-                                    @click.stop="imageEditor()">
-                                    <span class="icon"><icon name="object-ungroup" scale="1.2"></icon></span>
-                                    <span>{{ trans('MediaManager::messages.editor.main') }}</span>
-                                </button>
-                            </div>
+{{--                            <div class="control" v-show="!isBulkSelecting()">--}}
+{{--                                <button class="button is-link"--}}
+{{--                                    ref="editor"--}}
+{{--                                    :disabled="editor_btn_disable"--}}
+{{--                                    v-tippy--}}
+{{--                                    title="e"--}}
+{{--                                    @click.stop="imageEditor()">--}}
+{{--                                    <span class="icon"><icon name="object-ungroup" scale="1.2"></icon></span>--}}
+{{--                                    <span>{{ trans('MediaManager::messages.editor.main') }}</span>--}}
+{{--                                </button>--}}
+{{--                            </div>--}}
 
                             {{-- delete --}}
                             <div class="control">
@@ -237,33 +237,33 @@
                             </div>
 
                             {{-- lock --}}
-                            <div class="control">
-                                <button class="button is-warning"
-                                    ref="lock"
-                                    :disabled="lock_btn_disable"
-                                    v-tippy
-                                    title="(L) ock"
-                                    @click.stop="lockFileForm()">
-                                    <span class="icon">
-                                        <icon :name="IsLocked(selectedFile) ? 'lock' : 'unlock'"></icon>
-                                    </span>
-                                </button>
-                            </div>
+{{--                            <div class="control">--}}
+{{--                                <button class="button is-warning"--}}
+{{--                                    ref="lock"--}}
+{{--                                    :disabled="lock_btn_disable"--}}
+{{--                                    v-tippy--}}
+{{--                                    title="(L) ock"--}}
+{{--                                    @click.stop="lockFileForm()">--}}
+{{--                                    <span class="icon">--}}
+{{--                                        <icon :name="IsLocked(selectedFile) ? 'lock' : 'unlock'"></icon>--}}
+{{--                                    </span>--}}
+{{--                                </button>--}}
+{{--                            </div>--}}
 
                             {{-- visibility --}}
-                            <div class="control">
-                                <button class="button"
-                                    :class="IsVisible(selectedFile) ? 'is-light' : 'is-danger'"
-                                    ref="visibility"
-                                    :disabled="vis_btn_disable"
-                                    v-tippy
-                                    title="(V) isibility"
-                                    @click.stop="FileVisibilityForm()">
-                                    <span class="icon">
-                                        <icon :name="IsVisible(selectedFile) ? 'eye' : 'eye-slash'"></icon>
-                                    </span>
-                                </button>
-                            </div>
+{{--                            <div class="control">--}}
+{{--                                <button class="button"--}}
+{{--                                    :class="IsVisible(selectedFile) ? 'is-light' : 'is-danger'"--}}
+{{--                                    ref="visibility"--}}
+{{--                                    :disabled="vis_btn_disable"--}}
+{{--                                    v-tippy--}}
+{{--                                    title="(V) isibility"--}}
+{{--                                    @click.stop="FileVisibilityForm()">--}}
+{{--                                    <span class="icon">--}}
+{{--                                        <icon :name="IsVisible(selectedFile) ? 'eye' : 'eye-slash'"></icon>--}}
+{{--                                    </span>--}}
+{{--                                </button>--}}
+{{--                            </div>--}}
                         </div>
                     </div>
 
@@ -577,7 +577,7 @@
                 </div>
 
                 {{-- movable list --}}
-                <div v-if="allItemsCount && !isLoading && !waitingForUpload"
+                <div v-if="allItemsCount && !isLoading && !waitingForUpload && !customFilterName"
                     class="movable-list extra-func-btns">
                     <v-touch class="btn-plain"
                         v-tippy="{arrow: true, hideOnClick: false}"
@@ -615,7 +615,7 @@
                     {{-- files --}}
                     <ul class="__files-boxs" ref="filesList">
                         <li v-for="(file, index) in orderBy(filterBy(allFiles, searchFor, 'name'), sortName, sortDirection)"
-                            :key="file.name"
+                            :key="file.name + (file.image ? file.image.id : '')"
                             :data-file-index="index"
                             @click.stop="setSelected(file, index, $event)">
                             <v-touch class="__file-box mm-animated"
@@ -865,6 +865,42 @@
                                             </tr>
                                         </tbody>
                                     </table>
+                                    <table>
+                                        <tbody>
+                                            <tr>
+                                                <td class="t-key">Scan:</td>
+                                                <td class="t-val">
+                                                    <a href="#" @click.prevent="openMetadataEditor">
+                                                        @{{ selectedFile.image.nli_picname || 'unknown' }}
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table>
+                                        <tbody>
+                                            <tr>
+                                                <td class="t-key">Negative:</td>
+                                                <td class="t-val">
+                                                    <a href="#" @click.prevent="openMetadataEditor">
+                                                        @{{ selectedFile.image.negative || 'unknown' }}
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table>
+                                        <tbody>
+                                            <tr>
+                                                <td class="t-key">Permissions:</td>
+                                                <td class="t-val">
+                                                    <a href="#" @click.prevent="openMetadataEditor">
+                                                        @{{ selectedFile.image.rights }}
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </template>
                                 <table v-else>
                                     <tbody>
@@ -942,14 +978,14 @@
                                             </tr>
                                         </tbody>
                                     </table>
-                                    <table>
-                                        <tbody>
-                                            <tr>
-                                                <td class="t-key">{{ trans('MediaManager::messages.visibility.main') }}:</td>
-                                                <td class="t-val">@{{ selectedFile.visibility }}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+{{--                                    <table>--}}
+{{--                                        <tbody>--}}
+{{--                                            <tr>--}}
+{{--                                                <td class="t-key">{{ trans('MediaManager::messages.visibility.main') }}:</td>--}}
+{{--                                                <td class="t-val">@{{ selectedFile.visibility }}</td>--}}
+{{--                                            </tr>--}}
+{{--                                        </tbody>--}}
+{{--                                    </table>--}}
                                     <table>
                                         <tbody>
                                             <tr>

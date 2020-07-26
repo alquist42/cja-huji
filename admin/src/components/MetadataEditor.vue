@@ -37,9 +37,53 @@
         counter="20"
         placeholder="Specify date in any format"
       />
+      <v-text-field
+        v-model="nli_picname"
+        label="Scan"
+        outlined
+        counter="50"
+      />
+      <v-text-field
+        v-model="negative"
+        label="Negative"
+        outlined
+        counter="50"
+      />
+      <v-subheader>
+        <v-tooltip top>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              v-bind="attrs"
+              icon
+              v-on="on"
+              @click="togglePermissionsInheritance"
+            >
+              <v-icon color="grey">
+                {{ permissionsInherited ? 'mdi-lock' : 'mdi-lock-open' }}
+              </v-icon>
+            </v-btn>
+          </template>
+          <span>{{ permissionsInherited ? 'Disable' : 'Enable' }} permissions inheritance</span>
+        </v-tooltip>
+        Permissions {{ permissionsInherited ? 'inherited' : '' }}
+      </v-subheader>
+      <template v-if="!permissionsInherited">
+        <v-switch
+          v-model="permissionSmall"
+          label="Small"
+        />
+        <v-switch
+          v-model="permissionMedium"
+          label="Medium"
+        />
+        <v-switch
+          v-model="permissionOriginal"
+          label="Original"
+        />
+      </template>
     </v-card-text>
 
-    <v-card-actions class="pt-0">
+    <v-card-actions>
       <v-btn
         outlined
         color="warning"
@@ -95,7 +139,49 @@
       isLoadingCopyright: false,
 
       date: '',
+      nli_picname: '',
+      negative: '',
+      rights: '',
     }),
+
+    computed: {
+      permissionsInherited () {
+        return !this.rights || this.rights === '2'
+      },
+
+      permissionSmall: {
+        get () {
+          if (this.rights.length < 3) return false
+
+          return this.rights.substring(0, 1) === '1'
+        },
+        set (val) {
+          this.rights = this.buildPermissionsString(val, this.permissionMedium, this.permissionOriginal)
+        },
+      },
+
+      permissionMedium: {
+        get () {
+          if (this.rights.length < 3) return false
+
+          return this.rights.substring(1, 2) === '1'
+        },
+        set (val) {
+          this.rights = this.buildPermissionsString(this.permissionSmall, val, this.permissionOriginal)
+        },
+      },
+
+      permissionOriginal: {
+        get () {
+          if (this.rights.length < 3) return false
+
+          return this.rights.substring(2) === '1'
+        },
+        set (val) {
+          this.rights = this.buildPermissionsString(this.permissionSmall, this.permissionMedium, val)
+        },
+      },
+    },
 
     watch: {
       async searchPhotographer (val) {
@@ -146,6 +232,9 @@
         }
 
         this.date = image.date
+        this.nli_picname = image.nli_picname
+        this.negative = image.negative
+        this.rights = image.rights
       },
 
       closeEditor () {
@@ -158,6 +247,9 @@
             photographer_id: this.photographer_id,
             copyright_id: this.copyright_id,
             date: this.date,
+            nli_picname: this.nli_picname,
+            negative: this.negative,
+            rights: this.rights,
           },
           images: await this.getAllNestedFiles(this.selectedFiles),
         }
@@ -173,6 +265,22 @@
         } finally {
           this.isSaving = false
         }
+      },
+
+      togglePermissionsInheritance () {
+        if (this.permissionsInherited) {
+          this.rights = '000'
+        } else {
+          this.rights = '2'
+        }
+      },
+
+      buildPermissionsString (permissionSmall, permissionMedium, permissionOriginal) {
+        const small = permissionSmall ? '1' : '0'
+        const medium = permissionMedium ? '1' : '0'
+        const original = permissionOriginal ? '1' : '0'
+
+        return small + medium + original
       },
     },
   }

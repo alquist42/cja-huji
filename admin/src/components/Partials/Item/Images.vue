@@ -20,6 +20,16 @@
       </v-row>
     </template>
     <v-card-text>
+      <confirmation-modal
+        :value="detachImagesConfirmationDialog"
+        title="Detach images"
+        message="Images are attached to other items. Detach from them?"
+        btn-cancel-text="No"
+        btn-confirm-text="Yes"
+        @cancel="includeImagesWithoutDetaching"
+        @confirm="includeImagesWithDetaching"
+      />
+
       <v-carousel height="250">
         <v-carousel-item
           v-for="image in value.images"
@@ -40,8 +50,16 @@
 <script>
   /* global EventHub */
 
+  import NestedFiles from '../../../mixins/NestedFiles'
+
   export default {
     name: 'ItemImages',
+
+    components: {
+      ConfirmationModal: () => import('../../../components/ConfirmationModal'),
+    },
+
+    mixins: [NestedFiles],
 
     props: {
       value: {
@@ -55,10 +73,19 @@
       },
     },
 
+    data: () => ({
+      detachImagesConfirmationDialog: false,
+      createFrom: {
+        images: [],
+        usedBy: [],
+      },
+    }),
+
     created () {
-      EventHub.listen('MediaManagerModal-include-images-in-item', this.includeImages)
+      EventHub.listen('MediaManagerModal-include-images-in-item', this.handleEvent)
       EventHub.listen('MediaManagerModal-exclude-images-from-item', this.excludeImages)
       EventHub.listen('MediaManagerModal-files-deleted', this.updateImages)
+      EventHub.listen('MediaManagerModal-files-uploaded', this.updateImages)
     },
 
     beforeDestroy () {
@@ -66,6 +93,7 @@
         'MediaManagerModal-include-images-in-item',
         'MediaManagerModal-exclude-images-from-item',
         'MediaManagerModal-files-deleted',
+        'MediaManagerModal-files-uploaded',
       ])
     },
 
@@ -74,17 +102,55 @@
         EventHub.fire('show-media-manager-dialog', this.value.id)
       },
 
-      async includeImages (includingImages) {
-        const images = this.value.images.slice(0)
+      async handleEvent (filesAndFolders) {
+        this.createFrom.images = await this.getAllNestedFiles(filesAndFolders)
+        this.createFrom.usedBy = this.getUsage(this.createFrom.images)
 
-        includingImages.forEach(includingImage => {
+        if (!this.createFrom.usedBy.length) {
+          return this.includeImages()
+        }
+
+        this.detachImagesConfirmationDialog = true
+      },
+
+      getUsage (images) {
+        const usedBy = []
+
+        images.forEach(image => {
+          image.image.items.forEach(({ id }) => {
+            if (!usedBy.includes(id) && id !== this.value.id) {
+              usedBy.push(id)
+            }
+          })
+        })
+
+        return usedBy
+      },
+
+      includeImagesWithoutDetaching () {
+        this.detachImagesConfirmationDialog = false
+        this.includeImages()
+      },
+
+      includeImagesWithDetaching () {
+        this.detachImagesConfirmationDialog = false
+        this.includeImages(this.createFrom.usedBy)
+      },
+
+      async includeImages (detachFrom = []) {
+        const images = [...this.value.images]
+
+        this.createFrom.images.forEach(includingImage => {
           if (!this.value.images.find(img => img.id === includingImage.image.id)) {
             images.push(includingImage)
           }
         })
 
         try {
-          const { data } = await this.$http.put(`items/${this.value.id}/images?project=catalogue`, { images })
+          const { data } = await this.$http.put(`items/${this.value.id}/images?project=catalogue`, {
+            images,
+            detach_from: detachFrom,
+          })
 
           this.$emit('input', { ...this.value, images: data })
           this.$emit('success', 'Images have been included')
@@ -93,8 +159,9 @@
         }
       },
 
-      async excludeImages (excludingImages) {
-        const images = this.value.images.slice(0)
+      async excludeImages (filesAndFolders) {
+        const excludingImages = await this.getAllNestedFiles(filesAndFolders)
+        const images = [...this.value.images]
 
         excludingImages.forEach(excludingImage => {
           const index = images.findIndex(img => img.id === excludingImage.image.id)

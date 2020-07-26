@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Image;
+use App\Models\Item;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
@@ -30,11 +31,16 @@ class EventServiceProvider extends ServiceProvider
     {
         parent::boot();
 
-        Event::listen('MMFileUploaded', function ($file_path, $mime_type, $options) {
-            Image::create([
+        Event::listen('MMFileUploaded', function ($file_path, $mime_type, $options, $attach_to_item) {
+            $image = Image::create([
                 'def' => $file_path,
                 'rights' => '111',
             ]);
+
+            if ($attach_to_item) {
+                $item = Item::findOrFail($attach_to_item);
+                $item->images()->attach($image);
+            }
         });
 
         Event::listen(['MMFileRenamed', 'MMFileMoved'], function ($old_path, $new_path) {

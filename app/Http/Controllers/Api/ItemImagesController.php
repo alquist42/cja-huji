@@ -16,7 +16,7 @@ class ItemImagesController extends Controller
 
     public function update(Item $item, Request $request)
     {
-        (new ItemService($item))->updateImages($request->input('images'));
+        (new ItemService($item))->updateImages($request->input('images'), $request->input('detach_from', []));
 
         return $item->images;
     }
