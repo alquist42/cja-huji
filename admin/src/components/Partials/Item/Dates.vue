@@ -2,7 +2,7 @@
   <base-material-card class="px-5 py-3">
     <template v-slot:heading>
       <div class="display-2 font-weight-light">
-        Base Fields
+        Dates
       </div>
     </template>
     <v-card-text>
@@ -45,35 +45,6 @@
         :loading="isLoadingActivityDates"
         @input="update('activity_dates_object', $event)"
       />
-      <v-combobox
-        :value="value.copyright"
-        :items="copyrights"
-        :disabled="disabled"
-        :search-input.sync="searchCopyright"
-        item-value="id"
-        item-text="name"
-        label="Copyright"
-        placeholder="Start typing to search"
-        outlined
-        :loading="isLoadingCopyright"
-        @input="update('copyright', $event)"
-      />
-      <v-textarea
-        :value="value.remarks"
-        :disabled="disabled"
-        label="Remarks"
-        outlined
-        counter="200"
-        no-resize
-        @input="update('remarks', $event)"
-      />
-      <v-switch
-        :value="value.artifact_at_risk"
-        :disabled="disabled"
-        label="Artifact at risk"
-        inset
-        @change="update('artifact_at_risk', $event)"
-      />
     </v-card-text>
   </base-material-card>
 </template>
@@ -104,9 +75,6 @@
       activityDates: [],
       searchActivityDates: null,
       isLoadingActivityDates: false,
-      copyrights: [],
-      searchCopyright: null,
-      isLoadingCopyright: false,
     }),
 
     watch: {
@@ -149,20 +117,6 @@
           console.log(e)
         } finally {
           this.isLoadingActivityDates = false
-        }
-      },
-
-      async searchCopyright (val) {
-        if (this.isLoadingCopyright) return
-
-        this.isLoadingCopyright = true
-        try {
-          const { data } = await this.$http.get(`copyrights?project=catalogue&search=${val}`)
-          this.copyrights = data
-        } catch (e) {
-          console.log(e)
-        } finally {
-          this.isLoadingCopyright = false
         }
       },
     },

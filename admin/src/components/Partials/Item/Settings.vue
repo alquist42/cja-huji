@@ -32,6 +32,19 @@
         outlined
         @input="update('projects', $event)"
       />
+      <v-combobox
+        :value="value.copyright"
+        :items="copyrights"
+        :disabled="disabled"
+        :search-input.sync="searchCopyright"
+        item-value="id"
+        item-text="name"
+        label="Copyright"
+        placeholder="Start typing to search"
+        outlined
+        :loading="isLoadingCopyright"
+        @input="update('copyright', $event)"
+      />
       <v-select
         :value="value.publish_state"
         :items="possiblePublishStates"
@@ -41,11 +54,19 @@
         @input="update('publish_state', $event)"
       />
       <v-text-field
+        v-if="value.publish_state === 0"
         :value="value.publish_state_reason"
         :disabled="disabled || isGettingData"
         label="Publish state reason"
         outlined
         @input="update('publish_state_reason', $event)"
+      />
+      <v-switch
+        :value="value.artifact_at_risk"
+        :disabled="disabled"
+        label="Artifact at risk"
+        inset
+        @change="update('artifact_at_risk', $event)"
       />
     </v-card-text>
   </base-material-card>
@@ -77,6 +98,9 @@
       isGettingData: false,
       categories: [],
       projects: [],
+      copyrights: [],
+      searchCopyright: null,
+      isLoadingCopyright: false,
     }),
 
     computed: {
@@ -112,6 +136,23 @@
           },
         ]
       },
+    },
+
+    watch: {
+      async searchCopyright (val) {
+        if (this.isLoadingCopyright) return
+
+        this.isLoadingCopyright = true
+        try {
+          const { data } = await this.$http.get(`copyrights?project=catalogue&search=${val}`)
+          this.copyrights = data
+        } catch (e) {
+          console.log(e)
+        } finally {
+          this.isLoadingCopyright = false
+        }
+      },
+
     },
 
     async mounted () {

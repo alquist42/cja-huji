@@ -2,7 +2,7 @@
   <base-material-card class="px-5 py-3">
     <template v-slot:heading>
       <div class="display-2 font-weight-light">
-        Properties
+        Additional Properties
       </div>
     </template>
     <v-card-text>

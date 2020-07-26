@@ -169,7 +169,7 @@
       ItemBasic: () => import('../components/Partials/Item/Basic'),
       ItemImages: () => import('../components/Partials/Item/Images'),
       ItemSettings: () => import('../components/Partials/Item/Settings'),
-      ItemBaseFields: () => import('../components/Partials/Item/BaseFields'),
+      ItemBaseFields: () => import('../components/Partials/Item/Dates'),
       ItemComposition: () => import('../components/Partials/Item/Composition'),
       ItemMap: () => import('../components/Partials/Item/Map'),
       ItemTaxonomy: () => import('../components/Partials/Item/Taxonomy'),

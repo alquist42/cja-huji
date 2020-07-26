@@ -67,6 +67,16 @@
           @input="update('description', $event)"
         />
       </v-form>
+
+      <v-textarea
+        :value="value.remarks"
+        :disabled="disabled"
+        label="Remarks"
+        outlined
+        counter="200"
+        no-resize
+        @input="update('remarks', $event)"
+      />
     </v-card-text>
   </base-material-card>
 </template>
