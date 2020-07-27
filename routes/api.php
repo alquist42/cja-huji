@@ -11,16 +11,16 @@ Route::group(['namespace' => 'Api'], function () {
         Route::get('/items', 'ItemsController@index');
         Route::get('/items/browse', 'ItemsController@browse');
         Route::get('/items/search', 'ItemsController@search');
-        Route::post('/items', 'ItemsController@store');
+        Route::post('/items', 'ItemsController@store')->middleware('auth:api');
         Route::get('/items/{item}', 'ItemsController@show');
-        Route::put('/items/{item}', 'ItemsController@update');
-        Route::delete('/items/{item}', 'ItemsController@destroy');
+        Route::put('/items/{item}', 'ItemsController@update')->middleware('auth:api');
+        Route::delete('/items/{item}', 'ItemsController@destroy')->middleware('auth:api');
         Route::get('/items/{item}/images', 'ItemImagesController@index');
-        Route::put('/items/{item}/images', 'ItemImagesController@update');
+        Route::put('/items/{item}/images', 'ItemImagesController@update')->middleware('auth:api');
 
         //   Route::get('/images', 'ImagesController@index');
         //  Route::get('/images/{image}', 'ImagesController@show');
-        Route::post('/images/metadata', 'ImageMetadataController@store');
+        Route::post('/images/metadata', 'ImageMetadataController@store')->middleware('auth:api');
 
         Route::get('/taxonomy/{type}', 'TaxonomyController@index');
         Route::get('/taxonomy/{type}/{id}', 'TaxonomyController@show');

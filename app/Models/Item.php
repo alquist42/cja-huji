@@ -2,15 +2,18 @@
 
 namespace App\Models;
 
+use App\Traits\SearchableByIndex;
 use App\Traits\SearchableByName;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Kalnoy\Nestedset\NodeTrait;
-use App\Traits\SearchableByIndex;
+use OwenIt\Auditing\Auditable;
+use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 
-class Item extends Classifiable
+class Item extends Classifiable implements AuditableContract
 {
+    use Auditable;
     use NodeTrait;
     use SearchableByName, SearchableByIndex;
 
