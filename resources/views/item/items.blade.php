@@ -1,12 +1,12 @@
 <div class="container-fluid">
     <div class="row">
-        <div class="card-columns">
+{{--        <div class="card-columns">--}}
 {{--            @foreach ($item->items()->chunk(4) as $chunk)--}}
                 @foreach($item->items() as $obj)
                     <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 mb-4 px-2">
                         <a href="/{{ $obj->url() }}" class="card-link">
                             <div class="card">
-                                @if(count($item->images))
+                                @if(count($obj->images))
                                     <img class="card-img-top lazyload" src="/images/{{ $obj->id }}-{{ $obj->images->first()->id }}-small.png" alt=" {{ $item->name() }}" />
                                 @else
                                     <img class="card-img-top lazyload" src="/not_uploaded.jpg" alt="no image" />
@@ -17,7 +17,7 @@
                                 <div class="card-footer text-muted">
                                         {{ $obj->name() }}
                                         @foreach ($obj->collections as $collection){{$collection->name}}
-                                        @if($collection->details) <span>, {{ $collection->details }}</span> @endif
+                                        @if($collection->details)<span>, {{ $collection->details }}</span>@endif
                                         @endforeach
 
                                 </div>
@@ -26,6 +26,6 @@
                     </div>
                 @endforeach
 {{--            @endforeach--}}
-        </div>
+{{--        </div>--}}
     </div>
 </div>
