@@ -198,7 +198,7 @@ class Item extends Classifiable implements AuditableContract
     public function leaf($full) {
 
         if ($full) {
-            $root = Item::ancestorsOf($this->getKey())->first(function ($value) {
+            $root = Item::ancestorsAndSelf($this->getKey())->first(function ($value) {
                 return $value->isRoot();
             });
 
