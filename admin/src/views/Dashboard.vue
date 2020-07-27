@@ -336,8 +336,20 @@
               <template v-slot:item.user="{ value }">
                 {{ value.name }}
               </template>
-              <template v-slot:item.auditable_type="{ value }">
-                {{ getEntityClass(value) }}
+              <template v-slot:item.auditable_type="{ item }">
+                <router-link
+                  class="text-no-wrap"
+                  v-if="item.id"
+                  :to="{ name: getEntityClass(item.auditable_type), params: { id: item.id } }"
+                >
+                  {{ getEntityClass(item.auditable_type) }} {{ item.id }}
+                </router-link>
+                <span
+                  v-else
+                  class="text-no-wrap"
+                >
+                  {{ getEntityClass(item.auditable_type) }}
+                </span>
               </template>
               <template v-slot:item.new_values="{ value }">
                 <v-chip

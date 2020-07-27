@@ -42,7 +42,7 @@ class DashboardController extends Controller
             ->whereNull('entity_id')
             ->count();
 
-        $lastAudits = Audit::with('user')
+        $lastAudits = Audit::with('auditable', 'user')
             ->latest()
             ->take(15)
             ->get();
