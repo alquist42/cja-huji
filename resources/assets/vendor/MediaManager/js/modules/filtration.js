@@ -27,6 +27,8 @@ export default {
                 return Boolean(this.bulkItemsCount)
             } else if (val == 'locked' && !this.lockedList.length) {
                 return false
+            } else if (!this.files.items) {
+                return false
             } else {
                 return this.files.items.some((item) => this.fileTypeIs(item, val))
             }

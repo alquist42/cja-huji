@@ -24,10 +24,9 @@
         :value="detachImagesConfirmationDialog"
         title="Detach images"
         message="Images are attached to other items. Detach from them?"
-        btn-cancel-text="No"
-        btn-confirm-text="Yes"
-        @cancel="includeImagesWithoutDetaching"
-        @confirm="includeImagesWithDetaching"
+        @cancel="cancelOperation"
+        @no="includeImagesWithoutDetaching"
+        @yes="includeImagesWithDetaching"
       />
 
       <v-carousel height="250">
@@ -136,6 +135,11 @@
         this.includeImages(this.createFrom.usedBy)
       },
 
+      cancelOperation () {
+        this.detachImagesConfirmationDialog = false
+        EventHub.fire('MediaManagerModal-stop-loading')
+      },
+
       async includeImages (detachFrom = []) {
         const images = [...this.value.images]
 
@@ -155,6 +159,8 @@
           this.$emit('success', 'Images have been included')
         } catch (e) {
           this.$emit('error')
+        } finally {
+          EventHub.fire('MediaManagerModal-stop-loading')
         }
       },
 
@@ -175,9 +181,11 @@
 
           this.$emit('input', { ...this.value, images: data })
           this.$emit('success', 'Images have been excluded')
+          EventHub.fire('MediaManagerModal-stop-loading')
           EventHub.fire('MediaManagerModal-images-excluded-from-item')
         } catch (e) {
           this.$emit('error')
+          EventHub.fire('MediaManagerModal-stop-loading')
         }
       },
 

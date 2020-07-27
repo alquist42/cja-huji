@@ -24,19 +24,19 @@
       :value="deleteItemConfirmationDialog"
       title="Delete item"
       :message="`Are you sure you want to delete ${item.name || 'item'}?`"
-      btn-confirm-text="Delete"
+      :show-no-button="false"
+      btn-yes-text="Delete"
       @cancel="deleteItemConfirmationDialog = false"
-      @confirm="deleteItem"
+      @yes="deleteItem"
     />
 
     <confirmation-modal
       :value="detachImagesConfirmationDialog"
       title="Detach images"
       message="Images are attached to other items. Detach from them?"
-      btn-cancel-text="No"
-      btn-confirm-text="Yes"
-      @cancel="createItemWithoutDetachingImages"
-      @confirm="createItemDetachingImages"
+      @cancel="cancelCreatingItemFromImages"
+      @no="createItemWithoutDetachingImages"
+      @yes="createItemDetachingImages"
     />
 
     <dashboard-core-app-bar :loading="isLoading">
@@ -67,6 +67,7 @@
           class="ml-2"
           color="error"
           outlined
+          :loading="isDeleting"
           :disabled="isLoading || hasImages || !id"
           @click="deleteItemConfirmationDialog = true"
         >
@@ -154,6 +155,8 @@
 </template>
 
 <script>
+  /* global EventHub */
+
   import { singular } from 'pluralize'
   import CreateItemFromImages from '../mixins/CreateItemFromImages'
   import SnackBar from '../mixins/SnackBar'
@@ -182,6 +185,7 @@
       deleteItemConfirmationDialog: false,
       isGettingItem: false,
       isSaving: false,
+      isDeleting: false,
       isCreatingChild: false,
       isCopyingAttributes: false,
       isDirty: false,
@@ -271,7 +275,7 @@
       },
 
       isChanging () {
-        return this.isSaving || this.isCopyingAttributes
+        return this.isSaving || this.isCopyingAttributes || this.isDeleting
       },
 
       hasImages () {
@@ -427,18 +431,21 @@
       },
 
       async deleteItem () {
+        this.deleteItemConfirmationDialog = false
+        this.isDeleting = true
         try {
           await this.$http.delete(`items/${this.id}?project=catalogue`)
+          this.showSnackbarSuccess('Item has been deleted')
+          this.isDeleting = false
           this.$router.push({ name: 'Items' })
         } catch (e) {
           this.showSnackbarError('An error occurred')
+          this.isDeleting = false
           console.log(e)
-        } finally {
-          this.deleteItemConfirmationDialog = false
         }
       },
 
-      async createChild (fromImages = []) {
+      async createChild (fromImages = [], detachFrom = []) {
         if (this.isDirty || this.isChanging) {
           if (!confirm('If you proceed - the changes you made will not be saved. Are you sure?')) return
           this.isDirty = false
@@ -481,16 +488,19 @@
         })
 
         this.isCreatingChild = true
+        EventHub.fire('MediaManagerModal-modal-creating-child')
         try {
           const { data } = await this.$http.post('items?project=catalogue', {
             item: child,
             taxonomy: this.taxonomy,
             images: fromImages,
+            detach_from: detachFrom,
           })
           this.showSnackbarSuccess('Child has been created')
+          EventHub.fire('MediaManagerModal-modal-created-child')
           this.$router.push({ name: 'Item', params: { id: data.id } })
         } catch (e) {
-          this.showSnackbarError('An error occurred')
+          this.showSnackbarError()
           console.log(e)
         } finally {
           this.isCreatingChild = false

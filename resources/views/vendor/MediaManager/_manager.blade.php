@@ -314,7 +314,7 @@
 
                     <template>
                        {{-- filter & sort --}}
-                        <div class="level-item" v-if="searchItemsCount != 0 && allItemsCount">
+                        <div class="level-item" v-if="showFilters">
                             <filter-and-sorting :disabled="isLoading"
                                 :filter-name-is="filterNameIs"
                                 :custom-filter-name-is="customFilterNameIs"

@@ -63,6 +63,12 @@ export default {
                 this.isBulkSelecting() && !this.bulkItemsCount
         },
 
+        showFilters () {
+            if (this.customFilterName) return true
+
+            return this.searchItemsCount != 0 && this.allItemsCount
+        },
+
         selectedFiles() {
             let selectedFiles = []
 
