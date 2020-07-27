@@ -67,6 +67,7 @@
           class="ml-2"
           color="error"
           outlined
+          :loading="isDeleting"
           :disabled="isLoading || hasImages || !id"
           @click="deleteItemConfirmationDialog = true"
         >
@@ -184,6 +185,7 @@
       deleteItemConfirmationDialog: false,
       isGettingItem: false,
       isSaving: false,
+      isDeleting: false,
       isCreatingChild: false,
       isCopyingAttributes: false,
       isDirty: false,
@@ -273,7 +275,7 @@
       },
 
       isChanging () {
-        return this.isSaving || this.isCopyingAttributes
+        return this.isSaving || this.isCopyingAttributes || this.isDeleting
       },
 
       hasImages () {
@@ -429,14 +431,17 @@
       },
 
       async deleteItem () {
+        this.deleteItemConfirmationDialog = false
+        this.isDeleting = true
         try {
           await this.$http.delete(`items/${this.id}?project=catalogue`)
+          this.showSnackbarSuccess('Item has been deleted')
+          this.isDeleting = false
           this.$router.push({ name: 'Items' })
         } catch (e) {
           this.showSnackbarError('An error occurred')
+          this.isDeleting = false
           console.log(e)
-        } finally {
-          this.deleteItemConfirmationDialog = false
         }
       },
 
