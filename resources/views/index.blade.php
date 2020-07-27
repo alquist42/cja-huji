@@ -5,17 +5,12 @@
         <div class="container-fluid">
 
             @include('partials.search')
-            {{--{!! html_entity_decode($links) !!} --}}
             @if ($pagination instanceof \Illuminate\Pagination\LengthAwarePaginator)
                 <div class="my-5 pagination-wrapper">
                     {{ $pagination->appends(request()->query())->links('partials.pagination') }}
                 </div>
             @endif
-           {{-- @if ($items instanceof \Illuminate\Pagination\LengthAwarePaginator)
-                <div class="my-5 pagination-wrapper">
-                    {{ $items->appends(request()->query())->links('partials.pagination') }}
-                </div>
-            @endif--}}
+
             <div class="my-5">{{$setsCount}} items found</div>
 
             <div class="row">
@@ -24,7 +19,6 @@
                     <div class="col-xl-3 col-lg-3 col-md-4 col-sm-12 col-12 mb-4">
 
                             <div class="card">
-                              {{--  <img class="card-img-top image-fluid" src="http://cja.huji.ac.il/{{ $item->images[0]->url() }}" alt=" {{ $item->name() }}">--}}
                                 @if(count($item->images))
                                     <img class="card-img-top image-fluid" src="/images/{{ $item->id }}-{{ $item->images->first()->id }}-small.png" alt=" {{ $item->name() }}">
                                 @else
@@ -53,11 +47,7 @@
                     </div>
                 @endforelse
             </div>
-            {{--@if ($items instanceof \Illuminate\Pagination\LengthAwarePaginator)
-                <div class="mt-3 mb-5 pagination-wrapper">
-                    {{ $items->appends(request()->query())->links('partials.pagination') }}
-                </div>
-            @endif--}}
+
             @if ($pagination instanceof \Illuminate\Pagination\LengthAwarePaginator)
                 <div class="my-5 pagination-wrapper">
                     {{ $pagination->appends(request()->query())->links('partials.pagination') }}
