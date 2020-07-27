@@ -196,11 +196,17 @@ class Item extends Classifiable implements AuditableContract
     }
 
     public function leaf($full) {
-        $ancestors = Item::ancestorsAndSelf($this->id);
 
         if ($full) {
-            return $ancestors->merge($this->descendants)->toTree();
+            $root = Item::ancestorsOf($this->getKey())->first(function ($value) {
+                return $value->isRoot();
+            });
+
+            return Item::descendantsAndSelf($root->getKey())
+                ->toTree();
         }
+
+        $ancestors = Item::ancestorsAndSelf($this->id);
 
         foreach ($ancestors as $anc) {
             if (empty($anc->parent_id)) {

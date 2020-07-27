@@ -30,32 +30,45 @@ html, body, h1, h2, h3, h4, h5, h6 {
     font-family: $font-family-sans-serif;
 }
 
-#item-carousel .list-inline {
-    white-space:nowrap;
-    overflow-x:auto;
+.carousel-inner > .item {
+    height: 100vh;
 }
 
-#item-carousel .carousel-indicators {
-    position: static;
-    left: initial;
-    width: initial;
-    margin-left: initial;
-}
-
-#item-carousel .carousel-indicators > li {
-    width: initial;
-    height: initial;
-    text-indent: initial;
-}
-
-#item-carousel .carousel-indicators > li.active img {
-    opacity: 0.7;
-}
-
-#item-carousel .preview {
+.carousel-inner > .item > img {
     position: absolute;
-    z-index: 1;
-    opacity: 0.6;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    max-height: 800px;
+    width: auto;
+}
+
+#item-carousel {
+    .list-inline {
+        white-space: nowrap;
+        overflow-x: auto;
+    }
+    .carousel-indicators {
+        position: relative;
+        margin: 0;
+        display: block;
+        > li {
+            width: initial;
+            height: initial;
+            text-indent: initial;
+            opacity: 1;
+        }
+        > li.active {
+            opacity: 0.7;
+        }
+    }
+    .preview {
+        position: absolute;
+        z-index: 2;
+        opacity: 0.6;
+    }
 }
 
 .link-reset {

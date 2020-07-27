@@ -441,7 +441,7 @@ class Search
      * */
 
     public static function addToIndex($id){
-    //   echo $id . ' ';
+//       echo $id . ' ';
     //   $id=60902;
         $item = Item::findOrFail($id);
         $taxonomies = [
@@ -561,17 +561,7 @@ class Search
             $category = $item->category;
     //    }
 
-        if(!isset($parent) || $parent->addenda != $item->addenda){
-            $text .= $item->addenda . ' ';
-        }
 
-        if(!isset($parent) || $parent->description != $item->description){
-            $text .= $item->description . ' ';
-        }
-
-        if(!isset($parent) || $parent->date != $item->date){
-            $text .= $item->date . ' ';
-        }
 
         $text .= $item->id . ' ' . $category . ' '. $properties . ' ' . $title . ' ' . $projects . ' ' .
             (isset($item->name) ? $item->name : '') . ' ' .
@@ -588,6 +578,18 @@ class Search
                             $sites . ' ' .
                             $locations . ' ' .
                             $photographers;
+
+        if(!isset($parent) || $parent->addenda != $item->addenda){
+            $text .= $item->addenda . ' ';
+        }
+
+        if(!isset($parent) || $parent->description != $item->description){
+            $text .= $item->description . ' ';
+        }
+
+        if(!isset($parent) || $parent->date != $item->date){
+            $text .= $item->date . ' ';
+        }
 
         \App\Models\Search::updateOrCreate(['id' => $item->id], [
             'set_id' => $item->parent_id,

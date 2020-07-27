@@ -143,6 +143,10 @@
       },
     },
 
+    created () {
+      this.getProperties()
+    },
+
     methods: {
       async getProperties () {
         this.isGettingData = true
@@ -172,7 +176,6 @@
         Object.keys(this.propers).forEach((categName, categIndex) => {
           this.propers[categName].forEach((prop) => {
             const pr = this.value.properties.find(p => p.prop_name === prop.prop_name)
-            console.log(categName, pr, prop.prop_name, categIndex)
             if (pr) {
               this.panel.push(categIndex)
             }
