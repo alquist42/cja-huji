@@ -24,19 +24,19 @@
       :value="deleteItemConfirmationDialog"
       title="Delete item"
       :message="`Are you sure you want to delete ${item.name || 'item'}?`"
-      btn-confirm-text="Delete"
+      :show-no-button="false"
+      btn-yes-text="Delete"
       @cancel="deleteItemConfirmationDialog = false"
-      @confirm="deleteItem"
+      @yes="deleteItem"
     />
 
     <confirmation-modal
       :value="detachImagesConfirmationDialog"
       title="Detach images"
       message="Images are attached to other items. Detach from them?"
-      btn-cancel-text="No"
-      btn-confirm-text="Yes"
-      @cancel="createItemWithoutDetachingImages"
-      @confirm="createItemDetachingImages"
+      @cancel="cancelCreatingItemFromImages"
+      @no="createItemWithoutDetachingImages"
+      @yes="createItemDetachingImages"
     />
 
     <dashboard-core-app-bar :loading="isLoading">

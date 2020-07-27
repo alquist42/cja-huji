@@ -24,10 +24,9 @@
       :value="detachImagesConfirmationDialog"
       title="Detach images"
       message="Images are attached to other items. Detach from them?"
-      btn-cancel-text="No"
-      btn-confirm-text="Yes"
-      @cancel="createItemWithoutDetachingImages"
-      @confirm="createItemDetachingImages"
+      @cancel="cancelCreatingItemFromImages"
+      @no="createItemWithoutDetachingImages"
+      @yes="createItemDetachingImages"
     />
 
     <dashboard-core-app-bar :loading="isLoading" />

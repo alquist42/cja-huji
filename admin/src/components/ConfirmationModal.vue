@@ -14,17 +14,25 @@
       <v-card-actions>
         <v-btn
           text
-          color="warning"
-          @click="closeDialog"
+          color="error"
+          @click="$emit('cancel')"
         >
           {{ btnCancelText }}
         </v-btn>
         <v-btn
+          v-if="showNoButton"
+          text
+          color="warning"
+          @click="$emit('no')"
+        >
+          {{ btnNoText }}
+        </v-btn>
+        <v-btn
           text
           color="primary"
-          @click="confirm"
+          @click="$emit('yes')"
         >
-          {{ btnConfirmText }}
+          {{ btnYesText }}
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -43,7 +51,7 @@
 
       title: {
         type: String,
-        default: 'Select item',
+        default: 'Please confirm action',
       },
 
       message: {
@@ -56,9 +64,19 @@
         default: 'Cancel',
       },
 
-      btnConfirmText: {
+      btnNoText: {
         type: String,
-        default: 'OK',
+        default: 'No',
+      },
+
+      btnYesText: {
+        type: String,
+        default: 'Yes',
+      },
+
+      showNoButton: {
+        type: Boolean,
+        default: true,
       },
     },
 
@@ -74,16 +92,6 @@
         handler (val) {
           this.dialog = val
         },
-      },
-    },
-
-    methods: {
-      closeDialog () {
-        this.$emit('cancel')
-      },
-
-      confirm () {
-        this.$emit('confirm')
       },
     },
   }

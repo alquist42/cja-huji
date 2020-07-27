@@ -59,6 +59,11 @@
         return usedBy
       },
 
+      cancelCreatingItemFromImages () {
+        this.detachImagesConfirmationDialog = false
+        EventHub.fire('MediaManagerModal-stop-loading')
+      },
+
       createItemWithoutDetachingImages () {
         this.detachImagesConfirmationDialog = false
         this.createItemFromImages(this.item ? [this.item.id] : [])

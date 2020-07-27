@@ -24,10 +24,9 @@
         :value="detachImagesConfirmationDialog"
         title="Detach images"
         message="Images are attached to other items. Detach from them?"
-        btn-cancel-text="No"
-        btn-confirm-text="Yes"
-        @cancel="includeImagesWithoutDetaching"
-        @confirm="includeImagesWithDetaching"
+        @cancel="cancelOperation"
+        @no="includeImagesWithoutDetaching"
+        @yes="includeImagesWithDetaching"
       />
 
       <v-carousel height="250">
@@ -134,6 +133,11 @@
       includeImagesWithDetaching () {
         this.detachImagesConfirmationDialog = false
         this.includeImages(this.createFrom.usedBy)
+      },
+
+      cancelOperation () {
+        this.detachImagesConfirmationDialog = false
+        EventHub.fire('MediaManagerModal-stop-loading')
       },
 
       async includeImages (detachFrom = []) {
