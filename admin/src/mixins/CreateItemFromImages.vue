@@ -70,18 +70,20 @@
       },
 
       async createItemFromImages (detachFrom = []) {
-        const payload = {
-          item: {
-            parent_id: this.id || null,
-          },
-          images: this.createFrom.images,
-          detach_from: detachFrom,
+        if (this.id) {
+          return await this.createChild(this.createFrom.images, detachFrom)
         }
 
         try {
           this.isCreatingChild = true
           EventHub.fire('MediaManagerModal-modal-creating-child')
-          const { data } = await this.$http.post('items?project=catalogue', payload)
+          const { data } = await this.$http.post('items?project=catalogue', {
+            item: {
+              parent_id: null,
+            },
+            images: this.createFrom.images,
+            detach_from: detachFrom,
+          })
           EventHub.fire('MediaManagerModal-modal-created-child')
           this.$router.push({ name: 'Item', params: { id: data.id } })
         } catch (e) {

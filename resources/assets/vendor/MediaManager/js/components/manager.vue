@@ -599,6 +599,7 @@ export default {
                     if (this.$refs.createNewItem.disabled) return
                 }
 
+                this.isLoading = true;
                 EventHub.fire('MediaManager-create-new-item', this.selectedFiles)
             })
         },

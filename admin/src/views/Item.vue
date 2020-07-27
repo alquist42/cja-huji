@@ -154,6 +154,8 @@
 </template>
 
 <script>
+  /* global EventHub */
+
   import { singular } from 'pluralize'
   import CreateItemFromImages from '../mixins/CreateItemFromImages'
   import SnackBar from '../mixins/SnackBar'
@@ -438,7 +440,7 @@
         }
       },
 
-      async createChild (fromImages = []) {
+      async createChild (fromImages = [], detachFrom = []) {
         if (this.isDirty || this.isChanging) {
           if (!confirm('If you proceed - the changes you made will not be saved. Are you sure?')) return
           this.isDirty = false
@@ -481,16 +483,19 @@
         })
 
         this.isCreatingChild = true
+        EventHub.fire('MediaManagerModal-modal-creating-child')
         try {
           const { data } = await this.$http.post('items?project=catalogue', {
             item: child,
             taxonomy: this.taxonomy,
             images: fromImages,
+            detach_from: detachFrom,
           })
           this.showSnackbarSuccess('Child has been created')
+          EventHub.fire('MediaManagerModal-modal-created-child')
           this.$router.push({ name: 'Item', params: { id: data.id } })
         } catch (e) {
-          this.showSnackbarError('An error occurred')
+          this.showSnackbarError()
           console.log(e)
         } finally {
           this.isCreatingChild = false
