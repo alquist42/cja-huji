@@ -2,13 +2,17 @@
 
 namespace App;
 
-use App\Models\Comment;
-use App\Models\Post;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
+use OwenIt\Auditing\Auditable;
+use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
+use OwenIt\Auditing\Contracts\UserResolver;
 
-class User extends Authenticatable
+class User extends Authenticatable implements AuditableContract, UserResolver
 {
+    use Auditable;
+
     const ROLE_ADMIN = 1;
     const ROLE_MANAGER = 2;
     const ROLE_USER = 3;
@@ -50,14 +54,12 @@ class User extends Authenticatable
         });
     }
 
-    public function posts()
+    /**
+     * {@inheritdoc}
+     */
+    public static function resolveId()
     {
-        return $this->hasMany(Post::class);
-    }
-
-    public function comments()
-    {
-        return $this->hasMany(Comment::class);
+        return Auth::check() ? Auth::user()->getAuthIdentifier() : null;
     }
 
     public function scopeAdmin($query)
