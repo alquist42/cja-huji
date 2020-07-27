@@ -339,10 +339,10 @@
               <template v-slot:item.auditable_type="{ item }">
                 <router-link
                   class="text-no-wrap"
-                  v-if="item.auditable.id"
-                  :to="{ name: getEntityClass(item.auditable_type), params: { id: item.auditable.id } }"
+                  v-if="item.auditable_id"
+                  :to="{ name: getEntityClass(item.auditable_type), params: { id: item.auditable_id } }"
                 >
-                  {{ getEntityClass(item.auditable_type) }} {{ item.auditable.id }}
+                  {{ getEntityClass(item.auditable_type) }} {{ item.auditable_id }}
                 </router-link>
                 <span
                   v-else
@@ -434,6 +434,11 @@
             sortable: false,
             text: 'User',
             value: 'user',
+          },
+          {
+            sortable: false,
+            text: 'Event',
+            value: 'event',
           },
           {
             sortable: false,
