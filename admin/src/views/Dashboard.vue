@@ -226,7 +226,7 @@
           color="info"
           icon="mdi-archive"
           title="Items"
-          :value="`${data.totals.items.all.toString()}/${data.totals.items.root.toString()}`"
+          :value="data.totals.items.all.toString()"
           sub-icon="mdi-clock"
           :sub-text="`Not published yet: ${data.totals.items.not_published}`"
         />
@@ -328,20 +328,32 @@
               :headers="activitiesHeaders"
               :items="data.activities"
             >
+              <template v-slot:item.created_at="{ value }">
+                <span class="text-no-wrap">
+                  {{ value }}
+                </span>
+              </template>
               <template v-slot:item.user="{ value }">
-                {{value.name }}
+                {{ value.name }}
               </template>
               <template v-slot:item.auditable_type="{ value }">
                 {{ getEntityClass(value) }}
               </template>
               <template v-slot:item.new_values="{ value }">
-                {{ { ...value } }}
+                <v-chip
+                  class="mt-1 ml-1"
+                  v-for="(propertyValue, propertyName) in value"
+                  :key="propertyName"
+                  color="primary"
+                  small
+                >
+                  {{ propertyName.toUpperCase() }}
+                </v-chip>
               </template>
             </v-data-table>
           </v-card-text>
         </base-material-card>
       </v-col>
-
     </v-row>
   </v-container>
 </template>
@@ -418,7 +430,7 @@
           },
           {
             sortable: false,
-            text: 'New values',
+            text: 'Changes',
             value: 'new_values',
           },
         ],
