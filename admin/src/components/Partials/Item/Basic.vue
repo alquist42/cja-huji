@@ -3,7 +3,7 @@
     <select-item-modal
       :exclude="value.id"
       v-model="copyAttributesFromObjectDialog"
-      title="Select object to copy attributes from"
+      title="Select item to copy attributes from"
       @selected="copyAttributesFrom"
     />
 

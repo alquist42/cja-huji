@@ -441,7 +441,7 @@ class Search
      * */
 
     public static function addToIndex($id){
-       echo $id . ' ';
+//       echo $id . ' ';
     //   $id=60902;
         $item = Item::findOrFail($id);
         $taxonomies = [

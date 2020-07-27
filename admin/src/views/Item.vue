@@ -108,6 +108,8 @@
           v-model="item"
           :disabled="isLoading"
           @input="isDirty = true"
+          @success="showSnackbarSuccess($event)"
+          @error="showSnackbarError('An error occurred')"
         />
 
         <item-properties
@@ -330,7 +332,6 @@
             this.item = data
           }
           this.isDirty = false
-          console.log(this.item)
         } catch (e) {
           console.log(e)
         } finally {

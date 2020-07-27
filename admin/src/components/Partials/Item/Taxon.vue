@@ -3,6 +3,12 @@
     no-gutters
     class="mb-2"
   >
+    <select-item-modal
+      v-model="copyAttributesFromObjectDialog"
+      :exclude="value.id"
+      title="Select item to copy subject from"
+      @selected="copySubjects"
+    />
     <v-col
       cols="12"
       class="pb-0"
@@ -40,6 +46,24 @@
         :disabled="disabled"
         @input="updateTaxon"
       />
+      <v-tooltip
+        v-if="name === 'subjects'"
+        right
+      >
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            v-bind="attrs"
+            icon
+            :loading="isCopyingAttributes"
+            :disabled="disabled"
+            v-on="on"
+            @click="copyAttributesFromObjectDialog = true"
+          >
+            <v-icon>mdi-content-copy</v-icon>
+          </v-btn>
+        </template>
+        <span>Copy Subject from item</span>
+      </v-tooltip>
     </v-col>
     <v-col cols="12">
       <template v-if="inheritance === 'disabled-own'">
@@ -49,8 +73,8 @@
           class="mb-1 mr-1"
           close
           color="green lighten-2"
-          @click:close="removeTaxonItem(obj.id)"
           :disabled="disabled"
+          @click:close="removeTaxonItem(obj.id)"
         >
           {{ obj.name }}
         </v-chip>
@@ -105,6 +129,7 @@
 
     components: {
       TaxonModal: () => import('../../../components/TaxonModal'),
+      SelectItemModal: () => import('../../../components/SelectItemModal'),
     },
 
     props: {
@@ -123,6 +148,11 @@
         default: false,
       },
     },
+
+    data: () => ({
+      copyAttributesFromObjectDialog: false,
+      isCopyingAttributes: false,
+    }),
 
     computed: {
       hasParent () {
@@ -177,6 +207,23 @@
         const taxonItems = this.value[this.name].filter(taxonItem => taxonItem.id !== taxonId)
 
         this.$emit('input', { ...this.value, [this.name]: taxonItems })
+      },
+
+      async copySubjects (itemId) {
+        this.copyAttributesFromObjectDialog = false
+        this.isCopyingAttributes = true
+        try {
+          const { data } = await this.$http.get(`items/${itemId}?project=catalogue`)
+
+          this.updateTaxon(data[this.name])
+
+          this.$emit('success', 'Subject copied')
+        } catch (e) {
+          this.$emit('error')
+          console.log(e)
+        } finally {
+          this.isCopyingAttributes = false
+        }
       },
     },
   }
