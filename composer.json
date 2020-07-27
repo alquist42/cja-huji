@@ -8,7 +8,6 @@
         "php": ">=5.6.4",
         "algolia/algoliasearch-client-php": "^1.27",
         "ctf0/media-manager": "3.6.7",
-        "doctrine/dbal": "^2.10",
         "intervention/image": "^2.5",
         "kalnoy/nestedset": "4.3.4",
         "laracasts/flash": "^2.0",
