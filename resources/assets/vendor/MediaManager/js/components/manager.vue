@@ -308,6 +308,10 @@ export default {
                 })
             })
 
+            EventHub.listen('MediaManagerModal-stop-loading', () => {
+              this.isLoading = false
+            })
+
             // update images
             EventHub.listen('MediaManagerModal-images-excluded-from-item', () => {
               switch (this.customFilterName) {
@@ -605,6 +609,7 @@ export default {
                     if (this.$refs.includeImagesInItem.disabled) return
                 }
 
+                this.isLoading = true;
                 EventHub.fire('MediaManagerModal-include-images-in-item', this.selectedFiles)
             })
         },
@@ -615,6 +620,7 @@ export default {
                     if (this.$refs.excludeImagesFromItem.disabled) return
                 }
 
+                this.isLoading = true;
                 EventHub.fire('MediaManagerModal-exclude-images-from-item', this.selectedFiles)
             })
         },
