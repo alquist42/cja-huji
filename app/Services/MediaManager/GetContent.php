@@ -101,14 +101,25 @@ trait GetContent
         $list = [];
 
         foreach ($images as $image) {
-            $file = $this->storageDisk->getWithMetadata($image->def, ['mimetype', 'visibility', 'timestamp', 'size']);
+            if ($this->storageDisk->exists($image->def)) {
+                $file = $this->storageDisk->getWithMetadata($image->def, ['mimetype', 'visibility', 'timestamp', 'size']);
+            } else {
+                $file = [
+                    'path' => $image->def,
+                    'timestamp' => -1,
+                    'mimetype' => 'image/jpeg',
+                    'size' => 0,
+                    'visibility' => '',
+                    'missing' => 'https://www.eglsf.info/wp-content/uploads/image-missing.png'
+                ];
+            }
             $path = $file['path'];
             $time = $file['timestamp'];
 
             $list[] = [
                 'name'                   => Util::pathinfo($path)['basename'],
                 'type'                   => $file['mimetype'],
-                'path'                   => $this->resolveUrl($path),
+                'path'                   => isset($file['missing']) ? $file['missing'] : $this->resolveUrl($path),
                 'storage_path'           => $path,
                 'size'                   => $file['size'],
                 'visibility'             => $file['visibility'],
