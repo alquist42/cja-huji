@@ -143,6 +143,10 @@
       },
     },
 
+    created () {
+      this.getProperties()
+    },
+
     methods: {
       async getProperties () {
         this.isGettingData = true
