@@ -67,8 +67,6 @@
     data: () => ({
       items: [],
       selected: [],
-      sortBy: 'id',
-      sortDesc: true,
       headers: [
         {
           value: 'images',
@@ -120,11 +118,11 @@
       },
 
       sortBy () {
-        return this.$route.query.sort_by || ''
+        return this.$route.query.sort_by || 'id'
       },
 
       sortDesc () {
-        return this.$route.query.desc === '1' ? '1' : '0'
+        return this.$route.query.desc || '1'
       },
     },
 
