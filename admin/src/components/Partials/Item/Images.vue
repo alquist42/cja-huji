@@ -35,7 +35,7 @@
           :key="image.id"
         >
           <v-img
-            :src="`/storage/${image.def}`"
+            :src="`/images/${value.id}-${image.id}-small.png`"
             max-height="250px"
             contain
           />
