@@ -38,7 +38,7 @@
                 tile
                 @click="editItem(item.id)"
               >
-                <v-img :src="`/images/${item.id}-${image.id}-thumb.png`" />
+                <v-img :src="`/images/${item.id}-${image.id}-small.png`" />
               </v-avatar>
             </template>
           </template>
@@ -67,6 +67,8 @@
     data: () => ({
       items: [],
       selected: [],
+      sortBy: 'id',
+      sortDesc: true,
       headers: [
         {
           value: 'images',
