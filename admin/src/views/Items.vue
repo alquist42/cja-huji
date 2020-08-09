@@ -28,17 +28,17 @@
         >
           <template v-slot:item.images="{ item }">
             <template
-              v-for="image in item.images"
+              v-if="item.images.length"
             >
               <v-avatar
-                :key="image.id"
+                :key="item.images[0].id"
                 class="profile clickable"
                 color="grey"
                 size="48"
                 tile
                 @click="editItem(item.id)"
               >
-                <v-img :src="`/images/${item.id}-${image.id}-small.png`" />
+                <v-img :src="`/images/${item.id}-${item.images[0].id}-small.png`" />
               </v-avatar>
             </template>
           </template>
